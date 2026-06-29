@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
-import { geoAlbersUsa, geoNaturalEarth1, geoPath, geoGraticule10 } from "d3-geo";
+import { geoAlbersUsa, geoNaturalEarth1, geoMercator, geoPath, geoGraticule10 } from "d3-geo";
 import type { GeoProjection } from "d3-geo";
 import { usStates, usStateBorders, worldCountries, worldBorders } from "../lib/geo";
 import { useElementSize } from "../lib/hooks";
+
+export type ScatterView = "world" | "us" | "china";
 
 export interface ScatterPoint {
   id: string;
@@ -16,11 +18,19 @@ export interface ScatterPoint {
 
 interface Props {
   points: ScatterPoint[];
-  view: "world" | "us";
+  view: ScatterView;
   selectedId?: string | null;
   onSelect?: (id: string) => void;
   height?: number;
 }
+
+// Corner points framing mainland China. A MultiPoint avoids the polygon
+// winding ambiguity that makes d3-geo fit to the spherical complement (and
+// zoom out to the whole globe) for a clockwise ring.
+const CHINA_BOX = {
+  type: "MultiPoint" as const,
+  coordinates: [[73, 18], [135, 18], [135, 53], [73, 53]],
+};
 
 export default function ScatterMap({ points, view, selectedId, onSelect, height = 360 }: Props) {
   const { ref, width } = useElementSize<HTMLDivElement>();
@@ -34,9 +44,9 @@ export default function ScatterMap({ points, view, selectedId, onSelect, height 
       [pad, pad],
       [width - pad, h - pad],
     ];
-    return view === "us"
-      ? geoAlbersUsa().fitExtent(extent, usStates as never)
-      : geoNaturalEarth1().fitExtent(extent, { type: "Sphere" } as never);
+    if (view === "us") return geoAlbersUsa().fitExtent(extent, usStates as never);
+    if (view === "china") return geoMercator().fitExtent(extent, CHINA_BOX as never);
+    return geoNaturalEarth1().fitExtent(extent, { type: "Sphere" } as never);
   }, [view, width, h]);
 
   const geo = useMemo(() => {
@@ -50,12 +60,13 @@ export default function ScatterMap({ points, view, selectedId, onSelect, height 
         graticule: "",
       };
     }
-    return {
-      land: worldCountries.features.map((f) => path(f) ?? ""),
-      border: path(worldBorders) ?? "",
-      sphere: path({ type: "Sphere" }) ?? "",
-      graticule: path(geoGraticule10()) ?? "",
-    };
+    const land = worldCountries.features.map((f) => path(f) ?? "");
+    const border = path(worldBorders) ?? "";
+    // Sphere + graticule only make sense for the full-globe Natural Earth view.
+    if (view === "world") {
+      return { land, border, sphere: path({ type: "Sphere" }) ?? "", graticule: path(geoGraticule10()) ?? "" };
+    }
+    return { land, border, sphere: "", graticule: "" };
   }, [projection, view]);
 
   const plotted = useMemo(() => {
@@ -65,6 +76,9 @@ export default function ScatterMap({ points, view, selectedId, onSelect, height 
       if (p.lat == null || p.lng == null) continue;
       const xy = projection([p.lng, p.lat]);
       if (!xy) continue;
+      // Cull points projected outside the viewport (e.g. non-China sites in the
+      // China view) so they are not kept in the DOM.
+      if (xy[0] < -40 || xy[0] > width + 40 || xy[1] < -40 || xy[1] > h + 40) continue;
       out.push({ p, x: xy[0], y: xy[1] });
     }
     out.sort((a, b) => {
@@ -73,7 +87,7 @@ export default function ScatterMap({ points, view, selectedId, onSelect, height 
       return b.p.r - a.p.r;
     });
     return out;
-  }, [points, projection, selectedId]);
+  }, [points, projection, selectedId, width, h]);
 
   const hover = hoverId ? plotted.find((m) => m.p.id === hoverId) : null;
 

@@ -3,7 +3,7 @@ import { DATACENTERS } from "../data/datacenters";
 import type { DataCenter, DCStatus, FacilityType } from "../types";
 import { DC_STATUS, DC_STATUS_ORDER, FACILITY_TYPE, FACILITY_TYPE_ORDER } from "../lib/theme";
 import { formatGW, formatCapacity } from "../lib/format";
-import ScatterMap, { type ScatterPoint } from "./ScatterMap";
+import ScatterMap, { type ScatterPoint, type ScatterView } from "./ScatterMap";
 
 function toggle<T>(s: Set<T>, v: T): Set<T> {
   const n = new Set(s);
@@ -16,7 +16,7 @@ export default function DataCentersView() {
   const [statuses, setStatuses] = useState<Set<DCStatus>>(new Set());
   const [types, setTypes] = useState<Set<FacilityType>>(new Set());
   const [aiOnly, setAiOnly] = useState(false);
-  const [view, setView] = useState<"world" | "us">("world");
+  const [view, setView] = useState<ScatterView>("world");
   const [selected, setSelected] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
@@ -79,6 +79,8 @@ export default function DataCentersView() {
     return { arr, max: Math.max(1, ...arr.map(([, n]) => n)) };
   }, [filtered]);
 
+  const selFac = useMemo(() => DATACENTERS.find((d) => d.id === selected) ?? null, [selected]);
+
   const anyFilter = statuses.size + types.size > 0 || aiOnly || query.length > 0;
 
   return (
@@ -107,6 +109,7 @@ export default function DataCentersView() {
         <div className="dc-mapctl">
           <div className="map__viewtoggle" style={{ position: "static" }}>
             <button className="seg" aria-pressed={view === "world"} onClick={() => setView("world")}>Global</button>
+            <button className="seg" aria-pressed={view === "china"} onClick={() => setView("china")}>China</button>
             <button className="seg" aria-pressed={view === "us"} onClick={() => setView("us")}>US</button>
           </div>
           <div className="dc-legend">
@@ -131,6 +134,8 @@ export default function DataCentersView() {
           </div>
         </div>
       </div>
+
+      {selFac && <FacilityCard d={selFac} onClose={() => setSelected(null)} />}
 
       <div className="dc-toolbar">
         <div className="dc-search" role="search">
@@ -178,6 +183,39 @@ export default function DataCentersView() {
           ))}
         </ul>
         {filtered.length === 0 && <div className="dc-empty">No facilities match. Try clearing a filter.</div>}
+      </div>
+    </div>
+  );
+}
+
+function FacilityCard({ d, onClose }: { d: DataCenter; onClose: () => void }) {
+  return (
+    <div className="fac-card" role="region" aria-label="Selected facility">
+      <button className="fac-card__close" onClick={onClose} aria-label="Close facility detail">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+          <line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" />
+        </svg>
+      </button>
+      <div className="fac-card__head">
+        <span className="fac-card__dot" style={{ background: DC_STATUS[d.status].color }} />
+        <div className="dc-cell-main">
+          <span className="fac-card__name">{d.facility}</span>
+          <span className="dc-op">
+            {d.operator}
+            {d.parentCompany && d.parentCompany !== d.operator ? ` · ${d.parentCompany}` : ""}
+            {d.aiOriented && <span className="dc-ai">AI</span>}
+          </span>
+        </div>
+      </div>
+      <p className="fac-card__sum">{d.summary}</p>
+      <div className="fac-card__meta">
+        <span>{[d.city, d.region, d.country].filter(Boolean).join(", ")}</span>
+        <span>{FACILITY_TYPE[d.facilityType]}</span>
+        <span>{DC_STATUS[d.status].label}</span>
+        {d.capacityMW != null && <span>{formatCapacity(d.capacityMW)}</span>}
+        {d.yearOperational && <span>Online {d.yearOperational}</span>}
+        {d.powerSource && <span>Power: {d.powerSource}</span>}
+        <a href={d.sourceUrl} target="_blank" rel="noopener noreferrer">Source: {d.sourceName} ↗</a>
       </div>
     </div>
   );
