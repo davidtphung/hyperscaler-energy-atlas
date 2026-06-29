@@ -900,6 +900,8 @@ a { color: inherit; }
     var(--ink-900);
 }
 .page { max-width: 1120px; margin: 0 auto; padding: 38px 28px 64px; }
+/* Stacked sections within one route (Analysis = Portfolio + Forecast, About + Sources). */
+.page + .page { padding-top: 4px; }
 .page__head { margin-bottom: 30px; max-width: 760px; }
 .page__title {
   font-family: var(--font-display);

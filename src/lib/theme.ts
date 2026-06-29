@@ -131,6 +131,11 @@ export const BUYER_ACCENT: Record<string, string> = {
   "Crusoe Energy": "#e08a5a",
   "Holtec International": "#cdb06a",
   "Undisclosed hyperscaler": "#8a929b",
+  Alibaba: "#ff6a00",
+  Tencent: "#3ec5c0",
+  Baidu: "#3b6fd6",
+  GDS: "#e0916b",
+  Chindata: "#9ad17a",
 };
 
 export function buyerAccent(buyer: string): string {

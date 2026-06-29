@@ -269,10 +269,18 @@ export default function App() {
             {page === "datacenters" && <DataCentersView />}
             {page === "contested" && <ContestedView />}
             {page === "policy" && <PolicyView />}
-            {page === "forecast" && <ForecastView />}
-            {page === "portfolio" && <PortfolioView commitments={facetFiltered} />}
-            {page === "sources" && <SourcesView commitments={facetFiltered} />}
-            {page === "about" && <AboutView total={prepared.length} totalGW={formatGW(domain.totalMW)} />}
+            {page === "portfolio" && (
+              <>
+                <PortfolioView commitments={facetFiltered} />
+                <ForecastView />
+              </>
+            )}
+            {page === "about" && (
+              <>
+                <AboutView total={prepared.length} totalGW={formatGW(domain.totalMW)} />
+                <SourcesView commitments={facetFiltered} />
+              </>
+            )}
             {page === "donate" && <DonateView />}
           </div>
         )}

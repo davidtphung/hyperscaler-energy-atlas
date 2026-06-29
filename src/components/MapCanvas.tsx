@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from "react";
-import { geoAlbersUsa, geoNaturalEarth1, geoPath, geoGraticule10 } from "d3-geo";
+import { geoAlbersUsa, geoNaturalEarth1, geoMercator, geoPath, geoGraticule10 } from "d3-geo";
 import type { GeoProjection } from "d3-geo";
 import type { PreparedCommitment } from "../types";
 import { techColor, TECH } from "../lib/theme";
@@ -8,7 +8,14 @@ import { formatCapacity, formatLocation } from "../lib/format";
 import { useElementSize } from "../lib/hooks";
 import { usStates, usStateBorders, worldCountries, worldBorders } from "../lib/geo";
 
-export type MapView = "us" | "world";
+export type MapView = "us" | "world" | "china";
+
+// Corner points framing mainland China. A MultiPoint avoids the polygon winding
+// ambiguity that makes d3-geo fit to the spherical complement (whole globe).
+const CHINA_BOX = {
+  type: "MultiPoint" as const,
+  coordinates: [[73, 18], [135, 18], [135, 53], [73, 53]],
+};
 
 interface Props {
   /** Facet-filtered candidates (visible on the map). */
@@ -68,6 +75,9 @@ export default function MapCanvas({
     ];
     if (view === "us") {
       return geoAlbersUsa().fitExtent(extent, usStates as never);
+    }
+    if (view === "china") {
+      return geoMercator().fitExtent(extent, CHINA_BOX as never);
     }
     return geoNaturalEarth1().fitExtent(extent, { type: "Sphere" } as never);
   }, [view, width, height]);
@@ -280,6 +290,9 @@ export default function MapCanvas({
       <div className="map__viewtoggle" role="group" aria-label="Map view">
         <button className="seg" aria-pressed={view === "us"} onClick={() => onViewChange("us")}>
           United States
+        </button>
+        <button className="seg" aria-pressed={view === "china"} onClick={() => onViewChange("china")}>
+          China
         </button>
         <button className="seg" aria-pressed={view === "world"} onClick={() => onViewChange("world")}>
           Global
