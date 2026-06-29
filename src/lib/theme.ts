@@ -18,6 +18,7 @@ export const TECH: Record<
   hydro: { label: "Hydro", short: "Hydro", color: "#5aa9e6", group: "renewable" },
   "mixed-renewable": { label: "Mixed renewable", short: "Renewable", color: "#9ad17a", group: "renewable" },
   gas: { label: "Natural gas", short: "Gas", color: "#9aa3ad", group: "firm" },
+  "fuel-cell": { label: "Fuel cells", short: "Fuel cell", color: "#e0916b", group: "firm" },
   storage: { label: "Storage", short: "Storage", color: "#6ee7b7", group: "firm" },
   grid: { label: "Grid / transmission", short: "Grid", color: "#c0c7d0", group: "firm" },
   datacenter: { label: "Datacenter campus", short: "Datacenter", color: "#c8f135", group: "build" },
@@ -34,10 +35,68 @@ export const TECH_ORDER: TechType[] = [
   "hydro",
   "mixed-renewable",
   "gas",
+  "fuel-cell",
   "storage",
   "grid",
   "datacenter",
 ];
+
+// Higher-level energy-source buckets for the portfolio view. Datacenter load is
+// demand, not supply, so it is tracked separately from the generation mix.
+export type SourceGroup =
+  | "Nuclear"
+  | "Fusion"
+  | "Geothermal"
+  | "Solar and wind"
+  | "Gas and fuel cells"
+  | "Storage and grid"
+  | "Datacenter load";
+
+export const SOURCE_GROUP_ORDER: SourceGroup[] = [
+  "Nuclear",
+  "Geothermal",
+  "Solar and wind",
+  "Fusion",
+  "Gas and fuel cells",
+  "Storage and grid",
+  "Datacenter load",
+];
+
+export const SOURCE_GROUP_COLOR: Record<SourceGroup, string> = {
+  Nuclear: "#f2a93b",
+  Fusion: "#a78bfa",
+  Geothermal: "#ef6f53",
+  "Solar and wind": "#f5d547",
+  "Gas and fuel cells": "#9aa3ad",
+  "Storage and grid": "#6ee7b7",
+  "Datacenter load": "#c8f135",
+};
+
+export function sourceGroup(t: TechType): SourceGroup {
+  switch (t) {
+    case "nuclear-restart":
+    case "nuclear-existing":
+    case "smr":
+      return "Nuclear";
+    case "fusion":
+      return "Fusion";
+    case "geothermal":
+      return "Geothermal";
+    case "solar":
+    case "wind":
+    case "hydro":
+    case "mixed-renewable":
+      return "Solar and wind";
+    case "gas":
+    case "fuel-cell":
+      return "Gas and fuel cells";
+    case "storage":
+    case "grid":
+      return "Storage and grid";
+    case "datacenter":
+      return "Datacenter load";
+  }
+}
 
 export const STATUS: Record<Status, { label: string; rank: number }> = {
   operational: { label: "Operational", rank: 0 },

@@ -2,14 +2,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { COMMITMENTS } from "./data/commitments";
 import { prepare, domainOf, applyFacets, facetCounts, sumMW } from "./lib/select";
 import type { FilterState } from "./lib/select";
-import type { TechType, Status, Category } from "./types";
-import { formatCapacity } from "./lib/format";
+import type { TechType, Status, Category, Era } from "./types";
+import { formatCapacity, formatGW } from "./lib/format";
 import { useMediaQuery, useReducedMotion } from "./lib/hooks";
-import TopBar from "./components/TopBar";
+import TopBar, { type Page } from "./components/TopBar";
 import FilterRail from "./components/FilterRail";
 import MapCanvas, { type MapView } from "./components/MapCanvas";
 import Timeline from "./components/Timeline";
 import DetailPanel from "./components/DetailPanel";
+import PortfolioView from "./components/PortfolioView";
+import SourcesView from "./components/SourcesView";
+import AboutView from "./components/AboutView";
 
 const PLAY_DURATION = 16_000; // ms to sweep the full timeline
 
@@ -28,8 +31,10 @@ export default function App() {
     techs: new Set(),
     statuses: new Set(),
     categories: new Set(),
+    eras: new Set(),
     query: "",
   });
+  const [page, setPage] = useState<Page>("atlas");
   const [view, setView] = useState<MapView>("us");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [scrubT, setScrubT] = useState(domain.maxT);
@@ -40,7 +45,6 @@ export default function App() {
   const [announce, setAnnounce] = useState("");
 
   const isCompact = useMediaQuery("(max-width: 1180px)");
-  const isMobile = useMediaQuery("(max-width: 720px)");
   const reducedMotion = useReducedMotion();
 
   // Boot reveal.
@@ -119,9 +123,15 @@ export default function App() {
   );
 
   const clearFilters = useCallback(
-    () => setFilters({ buyers: new Set(), techs: new Set(), statuses: new Set(), categories: new Set(), query: "" }),
+    () => setFilters({ buyers: new Set(), techs: new Set(), statuses: new Set(), categories: new Set(), eras: new Set(), query: "" }),
     []
   );
+
+  const onPageChange = useCallback((p: Page) => {
+    setPage(p);
+    setRailOpen(false);
+    setDetailOpen(false);
+  }, []);
 
   // Escape closes overlays / clears selection.
   useEffect(() => {
@@ -139,7 +149,7 @@ export default function App() {
     return () => window.removeEventListener("keydown", onKey);
   }, [selectedId, railOpen, detailOpen, isCompact]);
 
-  const showScrim = isCompact && (railOpen || detailOpen);
+  const showScrim = page === "atlas" && isCompact && (railOpen || detailOpen);
 
   return (
     <>
@@ -149,6 +159,8 @@ export default function App() {
 
       <div className="app">
         <TopBar
+          page={page}
+          onPageChange={onPageChange}
           query={filters.query}
           onQuery={(q) => setFilters((f) => ({ ...f, query: q }))}
           onToggleRail={() => {
@@ -159,56 +171,68 @@ export default function App() {
             setDetailOpen((v) => !v);
             setRailOpen(false);
           }}
-          isCompact={isMobile}
         />
 
-        <FilterRail
-          filters={filters}
-          counts={counts}
-          buyers={domain.buyers}
-          open={railOpen}
-          onToggleBuyer={(v) => setFilters((f) => ({ ...f, buyers: toggle(f.buyers, v) }))}
-          onToggleTech={(v: TechType) => setFilters((f) => ({ ...f, techs: toggle(f.techs, v) }))}
-          onToggleStatus={(v: Status) => setFilters((f) => ({ ...f, statuses: toggle(f.statuses, v) }))}
-          onToggleCategory={(v: Category) => setFilters((f) => ({ ...f, categories: toggle(f.categories, v) }))}
-          onClear={clearFilters}
-          onClose={() => setRailOpen(false)}
-        />
+        {page === "atlas" ? (
+          <>
+            <FilterRail
+              filters={filters}
+              counts={counts}
+              buyers={domain.buyers}
+              query={filters.query}
+              onQuery={(q) => setFilters((f) => ({ ...f, query: q }))}
+              open={railOpen}
+              onToggleBuyer={(v) => setFilters((f) => ({ ...f, buyers: toggle(f.buyers, v) }))}
+              onToggleTech={(v: TechType) => setFilters((f) => ({ ...f, techs: toggle(f.techs, v) }))}
+              onToggleStatus={(v: Status) => setFilters((f) => ({ ...f, statuses: toggle(f.statuses, v) }))}
+              onToggleCategory={(v: Category) => setFilters((f) => ({ ...f, categories: toggle(f.categories, v) }))}
+              onToggleEra={(v: Era) => setFilters((f) => ({ ...f, eras: toggle(f.eras, v) }))}
+              onClear={clearFilters}
+              onClose={() => setRailOpen(false)}
+            />
 
-        <MapCanvas
-          commitments={facetFiltered}
-          inRange={inRange}
-          selectedId={selectedId}
-          onSelect={onSelect}
-          view={view}
-          onViewChange={setView}
-        />
+            <MapCanvas
+              commitments={facetFiltered}
+              inRange={inRange}
+              selectedId={selectedId}
+              onSelect={onSelect}
+              view={view}
+              onViewChange={setView}
+            />
 
-        <DetailPanel
-          selected={selected}
-          visible={visible}
-          totalAll={prepared.length}
-          open={isCompact ? detailOpen : true}
-          onSelect={onSelect}
-          onClose={() => {
-            setSelectedId(null);
-            setDetailOpen(false);
-          }}
-        />
+            <DetailPanel
+              selected={selected}
+              visible={visible}
+              totalAll={prepared.length}
+              open={isCompact ? detailOpen : true}
+              onSelect={onSelect}
+              onClose={() => {
+                setSelectedId(null);
+                setDetailOpen(false);
+              }}
+            />
 
-        <Timeline
-          commitments={facetFiltered}
-          minT={domain.minT}
-          maxT={domain.maxT}
-          scrubT={scrubT}
-          onScrub={onScrub}
-          playing={playing}
-          onTogglePlay={onTogglePlay}
-          selectedId={selectedId}
-          onSelect={onSelect}
-          cumulativeGW={cumulativeGW}
-          countInRange={visible.length}
-        />
+            <Timeline
+              commitments={facetFiltered}
+              minT={domain.minT}
+              maxT={domain.maxT}
+              scrubT={scrubT}
+              onScrub={onScrub}
+              playing={playing}
+              onTogglePlay={onTogglePlay}
+              selectedId={selectedId}
+              onSelect={onSelect}
+              cumulativeGW={cumulativeGW}
+              countInRange={visible.length}
+            />
+          </>
+        ) : (
+          <div className="page-wrap" key={page}>
+            {page === "portfolio" && <PortfolioView commitments={facetFiltered} />}
+            {page === "sources" && <SourcesView commitments={facetFiltered} all={prepared} />}
+            {page === "about" && <AboutView total={prepared.length} totalGW={formatGW(domain.totalMW)} />}
+          </div>
+        )}
       </div>
 
       {showScrim && (

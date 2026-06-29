@@ -96,7 +96,7 @@ function Overview({
                     style={{ width: `${(mw / stats.maxBar) * 100}%`, background: buyerAccent(name) }}
                   />
                 </span>
-                <span className="bar__val">{mw ? `${formatGW(mw)} GW` : "—"}</span>
+                <span className="bar__val">{mw ? `${formatGW(mw)} GW` : "n/a"}</span>
               </div>
             ))}
           </div>

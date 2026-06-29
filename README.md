@@ -1,4 +1,4 @@
-# HYPERGRID — Hyperscaler Energy Atlas
+# HYPERGRID · Hyperscaler Energy Atlas
 
 An interactive atlas of the energy and datacenter commitments powering the AI era. Explore how the hyperscalers and frontier AI compute buyers (Microsoft, Google, Amazon, Meta, OpenAI, Oracle, xAI, Anthropic, CoreWeave) are buying the future of energy: nuclear restarts, small modular reactors, fusion, geothermal, gigawatt datacenter campuses, and renewable portfolios, mapped across time and space.
 

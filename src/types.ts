@@ -10,10 +10,14 @@ export type TechType =
   | "wind"
   | "hydro"
   | "gas"
+  | "fuel-cell"
   | "storage"
   | "grid"
   | "datacenter"
   | "mixed-renewable";
+
+/** Eras relative to the generative-AI boom (ChatGPT, late 2022). */
+export type Era = "pre-ai" | "ai-onset" | "acceleration" | "current" | "forecast";
 
 export type Category = "energy" | "datacenter";
 
@@ -58,6 +62,7 @@ export interface PreparedCommitment extends Commitment {
   /** Parsed timestamp (ms) of the commitment date. */
   t: number;
   year: number;
+  era: Era;
   /** Projected screen coordinates for the active map projection, or null if off-map. */
   point: [number, number] | null;
 }

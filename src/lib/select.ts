@@ -1,11 +1,13 @@
-import type { Commitment, PreparedCommitment, TechType, Status, Category } from "../types";
+import type { Commitment, PreparedCommitment, TechType, Status, Category, Era } from "../types";
 import { parseDate } from "./format";
+import { classifyEra } from "./era";
 
 export interface FilterState {
   buyers: Set<string>;
   techs: Set<TechType>;
   statuses: Set<Status>;
   categories: Set<Category>;
+  eras: Set<Era>;
   query: string;
 }
 
@@ -13,7 +15,7 @@ export function prepare(commitments: Commitment[]): PreparedCommitment[] {
   return commitments
     .map((c) => {
       const t = parseDate(c.date);
-      return { ...c, t, year: new Date(t).getUTCFullYear(), point: null };
+      return { ...c, t, year: new Date(t).getUTCFullYear(), era: classifyEra(t), point: null };
     })
     .sort((a, b) => a.t - b.t);
 }
@@ -59,6 +61,7 @@ export function applyFacets(list: PreparedCommitment[], f: FilterState): Prepare
       (f.techs.size === 0 || f.techs.has(c.techType)) &&
       (f.statuses.size === 0 || f.statuses.has(c.status)) &&
       (f.categories.size === 0 || f.categories.has(c.category)) &&
+      (f.eras.size === 0 || f.eras.has(c.era)) &&
       matchesQuery(c, f.query)
   );
 }
@@ -72,6 +75,7 @@ export interface FacetCounts {
   techs: Record<string, number>;
   statuses: Record<string, number>;
   categories: Record<string, number>;
+  eras: Record<string, number>;
 }
 
 /**
@@ -82,10 +86,11 @@ export interface FacetCounts {
  */
 export function facetCounts(list: PreparedCommitment[], f: FilterState): FacetCounts {
   const q = (c: Commitment) => matchesQuery(c, f.query);
-  const okBuyer = (c: Commitment) => f.buyers.size === 0 || f.buyers.has(c.buyer);
-  const okTech = (c: Commitment) => f.techs.size === 0 || f.techs.has(c.techType);
-  const okStatus = (c: Commitment) => f.statuses.size === 0 || f.statuses.has(c.status);
-  const okCat = (c: Commitment) => f.categories.size === 0 || f.categories.has(c.category);
+  const okBuyer = (c: PreparedCommitment) => f.buyers.size === 0 || f.buyers.has(c.buyer);
+  const okTech = (c: PreparedCommitment) => f.techs.size === 0 || f.techs.has(c.techType);
+  const okStatus = (c: PreparedCommitment) => f.statuses.size === 0 || f.statuses.has(c.status);
+  const okCat = (c: PreparedCommitment) => f.categories.size === 0 || f.categories.has(c.category);
+  const okEra = (c: PreparedCommitment) => f.eras.size === 0 || f.eras.has(c.era);
 
   const tally = <K extends string>(pick: (c: PreparedCommitment) => K, keep: (c: PreparedCommitment) => boolean) => {
     const m: Record<string, number> = {};
@@ -94,9 +99,10 @@ export function facetCounts(list: PreparedCommitment[], f: FilterState): FacetCo
   };
 
   return {
-    buyers: tally((c) => c.buyer, (c) => okTech(c) && okStatus(c) && okCat(c)),
-    techs: tally((c) => c.techType, (c) => okBuyer(c) && okStatus(c) && okCat(c)),
-    statuses: tally((c) => c.status, (c) => okBuyer(c) && okTech(c) && okCat(c)),
-    categories: tally((c) => c.category, (c) => okBuyer(c) && okTech(c) && okStatus(c)),
+    buyers: tally((c) => c.buyer, (c) => okTech(c) && okStatus(c) && okCat(c) && okEra(c)),
+    techs: tally((c) => c.techType, (c) => okBuyer(c) && okStatus(c) && okCat(c) && okEra(c)),
+    statuses: tally((c) => c.status, (c) => okBuyer(c) && okTech(c) && okCat(c) && okEra(c)),
+    categories: tally((c) => c.category, (c) => okBuyer(c) && okTech(c) && okStatus(c) && okEra(c)),
+    eras: tally((c) => c.era, (c) => okBuyer(c) && okTech(c) && okStatus(c) && okCat(c)),
   };
 }
