@@ -14,6 +14,11 @@ interface Props {
   onScrub: (t: number) => void;
   playing: boolean;
   onTogglePlay: () => void;
+  speed: number;
+  onSetSpeed: (s: number) => void;
+  onLive: () => void;
+  onReset: () => void;
+  atLive: boolean;
   selectedId: string | null;
   onSelect: (id: string) => void;
   cumulativeGW: number;
@@ -24,6 +29,12 @@ const PAD_L = 10;
 const PAD_R = 10;
 const DAY = 86_400_000;
 
+const SPEEDS: { v: number; label: string }[] = [
+  { v: 1, label: "1mo/s" },
+  { v: 6, label: "6mo/s" },
+  { v: 12, label: "1yr/s" },
+];
+
 export default function Timeline({
   commitments,
   minT,
@@ -32,6 +43,11 @@ export default function Timeline({
   onScrub,
   playing,
   onTogglePlay,
+  speed,
+  onSetSpeed,
+  onLive,
+  onReset,
+  atLive,
   selectedId,
   onSelect,
   cumulativeGW,
@@ -127,35 +143,61 @@ export default function Timeline({
   return (
     <section className="timeline" aria-label="Timeline">
       <div className="timeline__head">
-        <button
-          className="tl-play"
-          onClick={onTogglePlay}
-          aria-pressed={playing}
-          aria-label={playing ? "Pause timeline playback" : "Play timeline buildout"}
-        >
-          {playing ? (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="6" y="5" width="4" height="14" rx="1" />
-              <rect x="14" y="5" width="4" height="14" rx="1" />
-            </svg>
-          ) : (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M7 5l12 7-12 7z" />
-            </svg>
-          )}
-        </button>
+        <div className="tl-controls" role="group" aria-label="Timeline playback">
+          <button
+            className="tlc-icon"
+            onClick={onTogglePlay}
+            aria-pressed={playing}
+            aria-label={playing ? "Pause playback" : "Play playback"}
+          >
+            {playing ? (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7 5l12 7-12 7z" />
+              </svg>
+            )}
+          </button>
 
-        <div className="tl-readout">
-          <span className="tl-readout__date">{formatMonthYear(new Date(scrubT).toISOString().slice(0, 7))}</span>
-          <span className="tl-readout__sep">/</span>
-          <span className="tl-readout__gw">
-            <b>{formatGW(cumulativeGW)}</b> GW committed
+          <button className="tlc-seg" aria-pressed={atLive && !playing} onClick={onLive}>
+            Live
+          </button>
+
+          {SPEEDS.map((s) => (
+            <button
+              key={s.v}
+              className="tlc-seg"
+              aria-pressed={playing && speed === s.v}
+              aria-label={`Play at ${s.label.replace("mo/s", " months per second").replace("yr/s", " year per second")}`}
+              onClick={() => onSetSpeed(s.v)}
+            >
+              {s.label}
+            </button>
+          ))}
+
+          <span className="tlc-div" aria-hidden="true" />
+          <span className="tlc-clock" aria-hidden="true">
+            {formatMonthYear(new Date(scrubT).toISOString().slice(0, 7)).toUpperCase()}
           </span>
-          <span className="tl-readout__count">{countInRange} sites</span>
+
+          <button className="tlc-icon" onClick={onReset} aria-label="Rewind to start of record">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M3 3v6h6" />
+              <path d="M3.5 13a9 9 0 1 0 2.6-6.4L3 9" />
+            </svg>
+          </button>
         </div>
 
         <div className="timeline__spacer" />
-        <span className="tl-hint" aria-hidden="true">Drag, play, or use arrow keys to scrub</span>
+
+        <div className="tl-stat" aria-hidden="true">
+          <b>{formatGW(cumulativeGW)}</b> GW committed
+          <span className="tl-stat__sep">·</span>
+          <span className="tl-stat__count">{countInRange} sites</span>
+        </div>
       </div>
 
       <div

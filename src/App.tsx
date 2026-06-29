@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { COMMITMENTS } from "./data/commitments";
 import { prepare, domainOf, applyFacets, facetCounts, sumMW } from "./lib/select";
 import type { FilterState } from "./lib/select";
@@ -14,7 +14,10 @@ import PortfolioView from "./components/PortfolioView";
 import SourcesView from "./components/SourcesView";
 import AboutView from "./components/AboutView";
 
-const PLAY_DURATION = 16_000; // ms to sweep the full timeline
+// Average month in ms. Playback speed is expressed as simulated months per real
+// second, so "6mo/s" advances the scrubber six months for every wall-clock
+// second, mirroring the speed-mode pill on a live tracker.
+const MONTH_MS = 2.6298e9;
 
 function toggle<T>(set: Set<T>, value: T): Set<T> {
   const next = new Set(set);
@@ -39,6 +42,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [scrubT, setScrubT] = useState(domain.maxT);
   const [playing, setPlaying] = useState(false);
+  const [speed, setSpeed] = useState(6); // simulated months per real second
   const [railOpen, setRailOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const [booted, setBooted] = useState(false);
@@ -66,21 +70,19 @@ export default function App() {
     setAnnounce(`${facetFiltered.length} commitment${facetFiltered.length === 1 ? "" : "s"} match the current filters.`);
   }, [facetFiltered.length]);
 
-  // Timeline playback.
-  const playingRef = useRef(playing);
-  playingRef.current = playing;
+  // Timeline playback. The scrubber advances by `speed` simulated months for
+  // every real second, frame by frame, until it reaches the present.
   useEffect(() => {
     if (!playing || reducedMotion) return;
     let raf = 0;
     let last = 0;
     let running = true;
-    const span = Math.max(1, domain.maxT - domain.minT);
     const tick = (ts: number) => {
       if (!last) last = ts;
       const dt = Math.min(80, ts - last);
       last = ts;
       setScrubT((prev) => {
-        const next = prev + (span * dt) / PLAY_DURATION;
+        const next = prev + speed * MONTH_MS * (dt / 1000);
         if (next >= domain.maxT) {
           running = false;
           return domain.maxT;
@@ -92,7 +94,7 @@ export default function App() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [playing, reducedMotion, domain.maxT, domain.minT]);
+  }, [playing, speed, reducedMotion, domain.maxT]);
 
   const onTogglePlay = useCallback(() => {
     if (reducedMotion) {
@@ -103,7 +105,33 @@ export default function App() {
       if (!p && scrubT >= domain.maxT) setScrubT(domain.minT);
       return !p;
     });
-  }, [reducedMotion, scrubT, domain.maxT, domain.minT]);
+  }, [reducedMotion, scrubT, domain.maxT]);
+
+  // Pick a speed and start playing. Restart from the beginning if parked at the present.
+  const onSetSpeed = useCallback(
+    (s: number) => {
+      setSpeed(s);
+      if (reducedMotion) {
+        setScrubT(domain.maxT);
+        return;
+      }
+      setScrubT((t) => (t >= domain.maxT ? domain.minT : t));
+      setPlaying(true);
+    },
+    [reducedMotion, domain.maxT, domain.minT]
+  );
+
+  // Jump to the present and stop. This is the "Live" state.
+  const onLive = useCallback(() => {
+    setPlaying(false);
+    setScrubT(domain.maxT);
+  }, [domain.maxT]);
+
+  // Rewind to the start of the record and stop.
+  const onResetScrub = useCallback(() => {
+    setPlaying(false);
+    setScrubT(domain.minT);
+  }, [domain.minT]);
 
   const onScrub = useCallback((t: number) => {
     setPlaying(false);
@@ -220,6 +248,11 @@ export default function App() {
               onScrub={onScrub}
               playing={playing}
               onTogglePlay={onTogglePlay}
+              speed={speed}
+              onSetSpeed={onSetSpeed}
+              onLive={onLive}
+              onReset={onResetScrub}
+              atLive={scrubT >= domain.maxT}
               selectedId={selectedId}
               onSelect={onSelect}
               cumulativeGW={cumulativeGW}
