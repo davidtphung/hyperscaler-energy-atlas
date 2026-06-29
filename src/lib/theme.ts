@@ -1,0 +1,83 @@
+import type { TechType, Status, Category } from "../types";
+
+// Technology palette. Colors are tuned for AA contrast on the deep-ink ground
+// and to stay distinguishable for the most common forms of color vision
+// deficiency. Color is never the sole carrier of meaning: every marker also
+// exposes a text label, and the legend pairs each hue with a name.
+export const TECH: Record<
+  TechType,
+  { label: string; short: string; color: string; group: "nuclear" | "renewable" | "firm" | "build" }
+> = {
+  "nuclear-restart": { label: "Nuclear restart", short: "Restart", color: "#f2a93b", group: "nuclear" },
+  "nuclear-existing": { label: "Nuclear (existing)", short: "Nuclear", color: "#f6c66b", group: "nuclear" },
+  smr: { label: "Small modular reactor", short: "SMR", color: "#36c5bf", group: "nuclear" },
+  fusion: { label: "Fusion", short: "Fusion", color: "#a78bfa", group: "nuclear" },
+  geothermal: { label: "Geothermal", short: "Geo", color: "#ef6f53", group: "renewable" },
+  solar: { label: "Solar", short: "Solar", color: "#f5d547", group: "renewable" },
+  wind: { label: "Wind", short: "Wind", color: "#7fc4ec", group: "renewable" },
+  hydro: { label: "Hydro", short: "Hydro", color: "#5aa9e6", group: "renewable" },
+  "mixed-renewable": { label: "Mixed renewable", short: "Renewable", color: "#9ad17a", group: "renewable" },
+  gas: { label: "Natural gas", short: "Gas", color: "#9aa3ad", group: "firm" },
+  storage: { label: "Storage", short: "Storage", color: "#6ee7b7", group: "firm" },
+  grid: { label: "Grid / transmission", short: "Grid", color: "#c0c7d0", group: "firm" },
+  datacenter: { label: "Datacenter campus", short: "Datacenter", color: "#c8f135", group: "build" },
+};
+
+export const TECH_ORDER: TechType[] = [
+  "nuclear-restart",
+  "nuclear-existing",
+  "smr",
+  "fusion",
+  "geothermal",
+  "solar",
+  "wind",
+  "hydro",
+  "mixed-renewable",
+  "gas",
+  "storage",
+  "grid",
+  "datacenter",
+];
+
+export const STATUS: Record<Status, { label: string; rank: number }> = {
+  operational: { label: "Operational", rank: 0 },
+  construction: { label: "Under construction", rank: 1 },
+  "ppa-signed": { label: "PPA signed", rank: 2 },
+  announced: { label: "Announced", rank: 3 },
+  exploratory: { label: "Exploratory", rank: 4 },
+  cancelled: { label: "Cancelled", rank: 5 },
+};
+
+export const CATEGORY: Record<Category, { label: string }> = {
+  energy: { label: "Energy supply" },
+  datacenter: { label: "Datacenter" },
+};
+
+// Accent color per buyer, used in the timeline ledger and detail header.
+export const BUYER_ACCENT: Record<string, string> = {
+  Microsoft: "#7fc4ec",
+  Google: "#f5d547",
+  "Google / Alphabet": "#f5d547",
+  Alphabet: "#f5d547",
+  Amazon: "#f2a93b",
+  "Amazon / AWS": "#f2a93b",
+  AWS: "#f2a93b",
+  Meta: "#a78bfa",
+  OpenAI: "#6ee7b7",
+  Oracle: "#ef6f53",
+  xAI: "#c0c7d0",
+  Anthropic: "#d9a066",
+  CoreWeave: "#9ad17a",
+  SoftBank: "#8fa0ad",
+  "Crusoe Energy": "#e08a5a",
+  "Holtec International": "#cdb06a",
+  "Undisclosed hyperscaler": "#8a929b",
+};
+
+export function buyerAccent(buyer: string): string {
+  return BUYER_ACCENT[buyer] ?? "#c8f135";
+}
+
+export function techColor(t: TechType): string {
+  return TECH[t]?.color ?? "#c8f135";
+}
