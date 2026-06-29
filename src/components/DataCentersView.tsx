@@ -5,6 +5,16 @@ import { DC_STATUS, DC_STATUS_ORDER, FACILITY_TYPE, FACILITY_TYPE_ORDER } from "
 import { formatGW, formatCapacity } from "../lib/format";
 import ScatterMap, { type ScatterPoint, type ScatterView } from "./ScatterMap";
 
+type SortKey = "facility" | "location" | "type" | "status" | "mw";
+
+const COLUMNS: { key: SortKey; label: string; num?: boolean }[] = [
+  { key: "facility", label: "Facility" },
+  { key: "location", label: "Location" },
+  { key: "type", label: "Type" },
+  { key: "status", label: "Status" },
+  { key: "mw", label: "MW", num: true },
+];
+
 function toggle<T>(s: Set<T>, v: T): Set<T> {
   const n = new Set(s);
   n.has(v) ? n.delete(v) : n.add(v);
@@ -18,6 +28,10 @@ export default function DataCentersView() {
   const [aiOnly, setAiOnly] = useState(false);
   const [view, setView] = useState<ScatterView>("world");
   const [selected, setSelected] = useState<string | null>(null);
+  const [sort, setSort] = useState<{ key: SortKey | null; dir: "asc" | "desc" }>({ key: null, dir: "desc" });
+
+  const onSort = (key: SortKey) =>
+    setSort((s) => (s.key === key ? { key, dir: s.dir === "asc" ? "desc" : "asc" } : { key, dir: key === "mw" ? "desc" : "asc" }));
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -32,6 +46,35 @@ export default function DataCentersView() {
       return true;
     });
   }, [query, statuses, types, aiOnly]);
+
+  const sorted = useMemo(() => {
+    if (!sort.key) return filtered;
+    const key = sort.key;
+    const dir = sort.dir === "asc" ? 1 : -1;
+    const arr = [...filtered];
+    arr.sort((a, b) => {
+      switch (key) {
+        case "mw": {
+          // Undisclosed capacity always sinks to the bottom, both directions.
+          if (a.capacityMW == null && b.capacityMW == null) return 0;
+          if (a.capacityMW == null) return 1;
+          if (b.capacityMW == null) return -1;
+          return (a.capacityMW - b.capacityMW) * dir;
+        }
+        case "facility":
+          return a.facility.localeCompare(b.facility) * dir;
+        case "location":
+          return `${a.country} ${a.region} ${a.city}`.localeCompare(`${b.country} ${b.region} ${b.city}`) * dir;
+        case "type":
+          return (FACILITY_TYPE_ORDER.indexOf(a.facilityType) - FACILITY_TYPE_ORDER.indexOf(b.facilityType)) * dir;
+        case "status":
+          return (DC_STATUS_ORDER.indexOf(a.status) - DC_STATUS_ORDER.indexOf(b.status)) * dir;
+        default:
+          return 0;
+      }
+    });
+    return arr;
+  }, [filtered, sort]);
 
   const stats = useMemo(() => {
     const operators = new Set(filtered.map((d) => d.operator));
@@ -174,11 +217,25 @@ export default function DataCentersView() {
       </div>
 
       <div className="dc-table-wrap">
-        <div className="dc-row dc-row--head" aria-hidden="true">
-          <span>Facility</span><span>Location</span><span>Type</span><span>Status</span><span className="dc-num">MW</span>
+        <div className="dc-row dc-row--head" role="row">
+          {COLUMNS.map((c) => {
+            const active = sort.key === c.key;
+            return (
+              <button
+                key={c.key}
+                className={`dc-th${c.num ? " dc-num" : ""}${active ? " is-active" : ""}`}
+                onClick={() => onSort(c.key)}
+                aria-label={`Sort by ${c.label}${active ? (sort.dir === "asc" ? ", ascending" : ", descending") : ""}`}
+                aria-sort={active ? (sort.dir === "asc" ? "ascending" : "descending") : "none"}
+              >
+                {c.label}
+                <span className="dc-th__arrow" aria-hidden="true">{active ? (sort.dir === "asc" ? "↑" : "↓") : "↕"}</span>
+              </button>
+            );
+          })}
         </div>
         <ul className="dc-table" role="list">
-          {filtered.map((d) => (
+          {sorted.map((d) => (
             <Row key={d.id} d={d} open={selected === d.id} onToggle={() => setSelected(selected === d.id ? null : d.id)} />
           ))}
         </ul>
