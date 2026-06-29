@@ -72,6 +72,13 @@ export default function DataCentersView() {
     return { st, ty };
   }, []);
 
+  const topCountries = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const d of filtered) m.set(d.country, (m.get(d.country) ?? 0) + 1);
+    const arr = [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+    return { arr, max: Math.max(1, ...arr.map(([, n]) => n)) };
+  }, [filtered]);
+
   const anyFilter = statuses.size + types.size > 0 || aiOnly || query.length > 0;
 
   return (
@@ -80,9 +87,9 @@ export default function DataCentersView() {
         <p className="overview__eyebrow">Global directory</p>
         <h1 className="page__title">Data centers, mapped and searchable</h1>
         <p className="page__lead">
-          A source-backed directory of operating, under-construction, and proposed data centers worldwide, with a
-          China focus across the East Data West Compute hubs. Search and filter the full set, then read each site to
-          its source.
+          A source-backed directory of data centers worldwide, from the 1945 origins of computing to today's gigawatt
+          AI campuses, with a deep China focus across the East Data West Compute hubs. Search and filter the full set,
+          then read each site to its source.
         </p>
       </header>
 
@@ -108,6 +115,18 @@ export default function DataCentersView() {
                 <span className="dc-legend__dot" style={{ background: DC_STATUS[s].color }} />
                 {DC_STATUS[s].label}
               </span>
+            ))}
+          </div>
+          <div className="ct-types">
+            <h3 className="sources-h">Top countries</h3>
+            {topCountries.arr.map(([c, n]) => (
+              <div className="ct-type" key={c}>
+                <span className="ct-type__l">{c}</span>
+                <span className="ct-type__track">
+                  <span className="ct-type__fill" style={{ width: `${(n / topCountries.max) * 100}%`, background: "var(--signal)", opacity: 0.85 }} />
+                </span>
+                <span className="ct-type__n">{n}</span>
+              </div>
             ))}
           </div>
         </div>
