@@ -139,6 +139,28 @@ export interface ContestedProject {
   severity: number;
 }
 
+// ---- AI data center policy ----
+
+export type PolicyStance = "for" | "against" | "mixed";
+export type PolicyLevel = "local" | "state" | "national" | "supranational";
+
+export interface PolicyRecord {
+  id: string;
+  title: string;
+  jurisdiction: string;
+  level: PolicyLevel;
+  country: string;
+  stance: PolicyStance;
+  category: string;
+  date: string;
+  summary: string;
+  lat: number | null;
+  lng: number | null;
+  sourceName: string;
+  sourceUrl: string;
+  confidence: Confidence;
+}
+
 /** A commitment with derived, render-ready fields attached. */
 export interface PreparedCommitment extends Commitment {
   /** Parsed timestamp (ms) of the commitment date. */

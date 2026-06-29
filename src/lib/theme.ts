@@ -1,4 +1,4 @@
-import type { TechType, Status, Category, DCStatus, FacilityType, ContestedStatus, ContestationType } from "../types";
+import type { TechType, Status, Category, DCStatus, FacilityType, ContestedStatus, ContestationType, PolicyStance, PolicyLevel } from "../types";
 
 // Technology palette. Colors are tuned for AA contrast on the deep-ink ground
 // and to stay distinguishable for the most common forms of color vision
@@ -171,6 +171,36 @@ export const CONTESTED_STATUS: Record<ContestedStatus, { label: string; color: s
 export const CONTESTED_STATUS_ORDER: ContestedStatus[] = [
   "blocked", "withdrawn", "denied", "moratorium", "litigation", "stalled", "proposed", "approved-revised", "operating",
 ];
+
+// Policy.
+export const POLICY_STANCE: Record<PolicyStance, { label: string; color: string }> = {
+  for: { label: "For", color: "#9ad17a" },
+  against: { label: "Against", color: "#ef6f53" },
+  mixed: { label: "Mixed", color: "#f5d547" },
+};
+export const POLICY_LEVEL: Record<PolicyLevel, string> = {
+  local: "Local",
+  state: "State / province",
+  national: "National",
+  supranational: "Supranational",
+};
+export const POLICY_CATEGORY_LABEL: Record<string, string> = {
+  "tax-incentive": "Tax incentive",
+  "green-mandate": "Green power mandate",
+  "fast-track-permitting": "Fast-track permitting",
+  "direct-power": "Direct power access",
+  "industrial-clustering": "Industrial clustering",
+  "grid-modernization": "Grid modernization",
+  moratorium: "Moratorium",
+  "zoning-ban": "Zoning ban",
+  "environmental-review": "Environmental review",
+  "water-restriction": "Water restriction",
+  "grid-interconnection": "Grid interconnection",
+  "pending-bill": "Pending bill",
+  "contested-permit": "Contested permit",
+  "disclosure-rule": "Disclosure rule",
+  "ratepayer-protection": "Ratepayer protection",
+};
 
 export const CONTESTATION_LABEL: Record<ContestationType, string> = {
   nimby: "NIMBY / neighborhood",

@@ -1,4 +1,4 @@
-export type Page = "atlas" | "datacenters" | "contested" | "portfolio" | "sources" | "about" | "donate";
+export type Page = "atlas" | "datacenters" | "contested" | "policy" | "forecast" | "portfolio" | "sources" | "about" | "donate";
 
 interface Props {
   page: Page;
@@ -13,6 +13,8 @@ const PAGES: { id: Page; label: string }[] = [
   { id: "atlas", label: "Atlas" },
   { id: "datacenters", label: "Data Centers" },
   { id: "contested", label: "Contested" },
+  { id: "policy", label: "Policy" },
+  { id: "forecast", label: "Forecast" },
   { id: "portfolio", label: "Portfolio" },
   { id: "sources", label: "Sources" },
   { id: "about", label: "About" },

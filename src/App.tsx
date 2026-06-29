@@ -15,6 +15,8 @@ import SourcesView from "./components/SourcesView";
 import AboutView from "./components/AboutView";
 import DataCentersView from "./components/DataCentersView";
 import ContestedView from "./components/ContestedView";
+import PolicyView from "./components/PolicyView";
+import ForecastView from "./components/ForecastView";
 import DonateView from "./components/DonateView";
 
 // Average month in ms. Playback speed is expressed as simulated months per real
@@ -266,6 +268,8 @@ export default function App() {
           <div className="page-wrap" key={page}>
             {page === "datacenters" && <DataCentersView />}
             {page === "contested" && <ContestedView />}
+            {page === "policy" && <PolicyView />}
+            {page === "forecast" && <ForecastView />}
             {page === "portfolio" && <PortfolioView commitments={facetFiltered} />}
             {page === "sources" && <SourcesView commitments={facetFiltered} />}
             {page === "about" && <AboutView total={prepared.length} totalGW={formatGW(domain.totalMW)} />}
