@@ -13,6 +13,9 @@ import DetailPanel from "./components/DetailPanel";
 import PortfolioView from "./components/PortfolioView";
 import SourcesView from "./components/SourcesView";
 import AboutView from "./components/AboutView";
+import DataCentersView from "./components/DataCentersView";
+import ContestedView from "./components/ContestedView";
+import DonateView from "./components/DonateView";
 
 // Average month in ms. Playback speed is expressed as simulated months per real
 // second, so "6mo/s" advances the scrubber six months for every wall-clock
@@ -261,9 +264,12 @@ export default function App() {
           </>
         ) : (
           <div className="page-wrap" key={page}>
+            {page === "datacenters" && <DataCentersView />}
+            {page === "contested" && <ContestedView />}
             {page === "portfolio" && <PortfolioView commitments={facetFiltered} />}
-            {page === "sources" && <SourcesView commitments={facetFiltered} all={prepared} />}
+            {page === "sources" && <SourcesView commitments={facetFiltered} />}
             {page === "about" && <AboutView total={prepared.length} totalGW={formatGW(domain.totalMW)} />}
+            {page === "donate" && <DonateView />}
           </div>
         )}
       </div>

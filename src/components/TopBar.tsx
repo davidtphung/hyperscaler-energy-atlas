@@ -1,4 +1,4 @@
-export type Page = "atlas" | "portfolio" | "sources" | "about";
+export type Page = "atlas" | "datacenters" | "contested" | "portfolio" | "sources" | "about" | "donate";
 
 interface Props {
   page: Page;
@@ -11,9 +11,12 @@ interface Props {
 
 const PAGES: { id: Page; label: string }[] = [
   { id: "atlas", label: "Atlas" },
+  { id: "datacenters", label: "Data Centers" },
+  { id: "contested", label: "Contested" },
   { id: "portfolio", label: "Portfolio" },
   { id: "sources", label: "Sources" },
   { id: "about", label: "About" },
+  { id: "donate", label: "Donate" },
 ];
 
 export default function TopBar({ page, onPageChange, query, onQuery, onToggleRail, onToggleDetail }: Props) {

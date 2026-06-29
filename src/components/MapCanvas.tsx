@@ -241,8 +241,17 @@ export default function MapCanvas({
                     {operational && (
                       <circle className="marker__pulse" r={m.r} fill="none" stroke={color} strokeWidth={1.4} />
                     )}
-                    <circle className="marker__halo" r={m.r + 7} fill={color} opacity={0.18} />
-                    <circle className="marker__core" r={m.r} fill={color} fillOpacity={0.92} />
+                    <circle className="marker__halo" r={m.r + 9} fill={color} opacity={0.15} />
+                    <circle className="marker__halo2" r={m.r + 3} fill={color} opacity={0.28} />
+                    <circle className="marker__core" r={m.r} fill={color} fillOpacity={0.96} />
+                    <circle
+                      className="marker__gloss"
+                      r={m.r * 0.62}
+                      cx={-m.r * 0.26}
+                      cy={-m.r * 0.3}
+                      fill="#ffffff"
+                      opacity={0.24}
+                    />
                     {isSel && <circle className="marker__ring" r={m.r + 5} />}
                     <circle className="marker__hit" r={Math.max(m.r + 8, 22)} />
                   </g>

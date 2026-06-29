@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
-import { downloadCSV } from "../lib/csv";
 
 interface Props {
   commitments: PreparedCommitment[];
-  all: PreparedCommitment[];
 }
 
 const REFERENCES: { name: string; what: string; url: string }[] = [
@@ -17,7 +15,7 @@ const REFERENCES: { name: string; what: string; url: string }[] = [
   { name: "carbonintensity.org.uk", what: "Live Great Britain grid carbon intensity and generation mix", url: "https://carbonintensity.org.uk/" },
 ];
 
-export default function SourcesView({ commitments, all }: Props) {
+export default function SourcesView({ commitments }: Props) {
   const sources = useMemo(() => {
     const map = new Map<string, { url: string; count: number; high: number }>();
     for (const c of commitments) {
@@ -36,21 +34,8 @@ export default function SourcesView({ commitments, all }: Props) {
         <h1 className="page__title">Sources and evidence</h1>
         <p className="page__lead">
           Every commitment in the atlas links to a primary source. Below is the full list of sources behind the
-          {" "}current view, the reference trackers that frame the space, and the underlying data to audit or export.
+          {" "}current view, plus the reference trackers that frame the space.
         </p>
-        <div className="page__actions">
-          <button className="btn-primary" onClick={() => downloadCSV(all)}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 3v12m0 0l4-4m-4 4l-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-            </svg>
-            Export all {all.length} records (CSV)
-          </button>
-          {commitments.length !== all.length && (
-            <button className="btn-ghost" onClick={() => downloadCSV(commitments, "hyperscaler-commitments-filtered.csv")}>
-              Export {commitments.length} filtered
-            </button>
-          )}
-        </div>
       </header>
 
       <div className="sources-cols">

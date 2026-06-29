@@ -1,4 +1,4 @@
-import type { TechType, Status, Category } from "../types";
+import type { TechType, Status, Category, DCStatus, FacilityType, ContestedStatus, ContestationType } from "../types";
 
 // Technology palette. Colors are tuned for AA contrast on the deep-ink ground
 // and to stay distinguishable for the most common forms of color vision
@@ -136,6 +136,59 @@ export const BUYER_ACCENT: Record<string, string> = {
 export function buyerAccent(buyer: string): string {
   return BUYER_ACCENT[buyer] ?? "#c8f135";
 }
+
+// Data center directory.
+export const DC_STATUS: Record<DCStatus, { label: string; color: string }> = {
+  operating: { label: "Operating", color: "#c8f135" },
+  construction: { label: "Under construction", color: "#36c5bf" },
+  announced: { label: "Announced", color: "#7fc4ec" },
+  proposed: { label: "Proposed", color: "#a78bfa" },
+  paused: { label: "Paused", color: "#9aa3ad" },
+};
+export const DC_STATUS_ORDER: DCStatus[] = ["operating", "construction", "announced", "proposed", "paused"];
+
+export const FACILITY_TYPE: Record<FacilityType, string> = {
+  hyperscale: "Hyperscale",
+  colocation: "Colocation",
+  "cloud-region": "Cloud region",
+  "ai-campus": "AI campus",
+  enterprise: "Enterprise",
+};
+export const FACILITY_TYPE_ORDER: FacilityType[] = ["hyperscale", "ai-campus", "colocation", "cloud-region", "enterprise"];
+
+// Contested projects.
+export const CONTESTED_STATUS: Record<ContestedStatus, { label: string; color: string }> = {
+  proposed: { label: "Proposed", color: "#7fc4ec" },
+  stalled: { label: "Stalled", color: "#f5d547" },
+  moratorium: { label: "Moratorium", color: "#f2a93b" },
+  litigation: { label: "In litigation", color: "#a78bfa" },
+  denied: { label: "Denied", color: "#ef6f53" },
+  blocked: { label: "Blocked", color: "#e0533a" },
+  withdrawn: { label: "Withdrawn", color: "#9aa3ad" },
+  "approved-revised": { label: "Approved after revisions", color: "#9ad17a" },
+  operating: { label: "Operating", color: "#c8f135" },
+};
+export const CONTESTED_STATUS_ORDER: ContestedStatus[] = [
+  "blocked", "withdrawn", "denied", "moratorium", "litigation", "stalled", "proposed", "approved-revised", "operating",
+];
+
+export const CONTESTATION_LABEL: Record<ContestationType, string> = {
+  nimby: "NIMBY / neighborhood",
+  environmental: "Environmental",
+  water: "Water scarcity",
+  "grid-power": "Grid / power",
+  "noise-traffic": "Noise / traffic",
+  "zoning-denial": "Zoning denial",
+  "state-review": "State review",
+  referendum: "Referendum",
+  moratorium: "Moratorium",
+  litigation: "Litigation",
+  "utility-delay": "Utility delay",
+  "federal-review": "Federal review",
+  "political-backlash": "Political backlash",
+  "company-withdrawal": "Company withdrawal",
+  uncertain: "Uncertain cause",
+};
 
 export function techColor(t: TechType): string {
   return TECH[t]?.color ?? "#c8f135";
