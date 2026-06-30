@@ -10,6 +10,13 @@ import { usStates, usStateBorders, worldCountries, worldBorders } from "../lib/g
 
 export type MapView = "us" | "world" | "china";
 
+// Safari (macOS) reports a trackpad pinch through these gesture events instead
+// of a ctrl+wheel, and they are absent from the standard DOM lib types.
+interface GestureEvent extends MouseEvent {
+  readonly scale: number;
+  readonly rotation: number;
+}
+
 // Corner points framing mainland China. A MultiPoint avoids the polygon winding
 // ambiguity that makes d3-geo fit to the spherical complement (whole globe).
 const CHINA_BOX = {
@@ -68,27 +75,70 @@ export default function MapCanvas({
   const [transform, setTransform] = useState<Transform>(IDENTITY);
   const [hoverId, setHoverId] = useState<string | null>(null);
 
-  // Native, non-passive wheel listener so we can preventDefault. Without this,
-  // a trackpad pinch (ctrl+wheel) also triggers the browser's page zoom, which
-  // is what made the map appear to jump or pan to another location.
+  // Native, non-passive listeners so we can preventDefault and own every zoom
+  // gesture. Two distinct paths have to be covered or the browser zooms the
+  // whole page instead, which is what made the map appear to jump to another
+  // location:
+  //   - Chrome / Firefox: a trackpad pinch arrives as a ctrl+wheel event, and
+  //     a plain wheel also zooms (the map cell is fixed, so there is no page
+  //     scroll to preserve).
+  //   - Safari (macOS): a trackpad pinch fires gesturestart/change/end events,
+  //     never a wheel, so the wheel listener alone leaves Safari to page-zoom.
   useEffect(() => {
     const el = wheelNode;
     if (!el) return;
-    const onWheelNative = (e: WheelEvent) => {
-      e.preventDefault();
-      const rect = el.getBoundingClientRect();
-      const fx = e.clientX - rect.left;
-      const fy = e.clientY - rect.top;
-      const factor = Math.exp(-e.deltaY * 0.0016);
+
+    // Zoom by `factor` while keeping the world point under (fx, fy) fixed.
+    const zoomAt = (factor: number, fx: number, fy: number, w: number, h: number) => {
       setTransform((t) => {
         const k = t.k * factor;
         const wx = (fx - t.tx) / t.k;
         const wy = (fy - t.ty) / t.k;
-        return clampTransform({ k, tx: fx - wx * k, ty: fy - wy * k }, rect.width, rect.height);
+        return clampTransform({ k, tx: fx - wx * k, ty: fy - wy * k }, w, h);
       });
     };
-    el.addEventListener("wheel", onWheelNative, { passive: false });
-    return () => el.removeEventListener("wheel", onWheelNative);
+
+    const onWheel = (e: WheelEvent) => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      // Clamp the per-event delta so a trackpad momentum spike cannot teleport
+      // the zoom in one frame.
+      const dy = Math.max(-60, Math.min(60, e.deltaY));
+      zoomAt(Math.exp(-dy * 0.0016), e.clientX - rect.left, e.clientY - rect.top, rect.width, rect.height);
+    };
+
+    // Anchor the pinch to where it began and hold it there for the whole
+    // gesture, so the focal point never drifts mid-zoom.
+    let lastScale = 1;
+    let gfx = 0;
+    let gfy = 0;
+    const onGestureStart = (e: GestureEvent) => {
+      e.preventDefault();
+      lastScale = e.scale || 1;
+      const rect = el.getBoundingClientRect();
+      gfx = e.clientX ? e.clientX - rect.left : rect.width / 2;
+      gfy = e.clientY ? e.clientY - rect.top : rect.height / 2;
+    };
+    const onGestureChange = (e: GestureEvent) => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const s = e.scale || 1;
+      const factor = s / (lastScale || 1);
+      lastScale = s;
+      zoomAt(factor, gfx, gfy, rect.width, rect.height);
+    };
+    const onGestureEnd = (e: GestureEvent) => e.preventDefault();
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    el.addEventListener("gesturestart", onGestureStart as EventListener, { passive: false });
+    el.addEventListener("gesturechange", onGestureChange as EventListener, { passive: false });
+    el.addEventListener("gestureend", onGestureEnd as EventListener, { passive: false });
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("gesturestart", onGestureStart as EventListener);
+      el.removeEventListener("gesturechange", onGestureChange as EventListener);
+      el.removeEventListener("gestureend", onGestureEnd as EventListener);
+    };
   }, [wheelNode]);
 
   const pointers = useRef(new Map<number, { x: number; y: number }>());
@@ -217,7 +267,7 @@ export default function MapCanvas({
     <main className="map" aria-label="Commitment map" id="map">
       <div
         ref={setRefs}
-        style={{ position: "absolute", inset: 0 }}
+        style={{ position: "absolute", inset: 0, touchAction: "none" }}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endPointer}
