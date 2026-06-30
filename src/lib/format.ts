@@ -42,6 +42,22 @@ export function formatGW(mw: number): string {
   return `${gw >= 10 ? trim(gw, 1) : trim(gw, 2)}`;
 }
 
+/** USD compact: 9.6e9 -> "$9.6B"; 7.5e8 -> "$750M". */
+export function formatUSD(v: number | null): string {
+  if (v == null) return "n/a";
+  if (v >= 1e9) return `$${trim(v / 1e9, 1)}B`;
+  if (v >= 1e6) return `$${Math.round(v / 1e6)}M`;
+  if (v >= 1e3) return `$${Math.round(v / 1e3)}K`;
+  return `$${Math.round(v)}`;
+}
+
+export function formatSqft(v: number | null): string {
+  if (v == null) return "n/a";
+  if (v >= 1e6) return `${trim(v / 1e6, 1)}M sqft`;
+  if (v >= 1e3) return `${Math.round(v / 1e3)}K sqft`;
+  return `${Math.round(v)} sqft`;
+}
+
 export function formatLocation(city: string, state: string, country: string): string {
   return [city, state, country === "United States" ? "" : country]
     .filter(Boolean)

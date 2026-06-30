@@ -161,6 +161,88 @@ export interface PolicyRecord {
   confidence: Confidence;
 }
 
+// ---- Real estate deals ----
+
+export type DealType =
+  | "acquisition"
+  | "portfolio-m&a"
+  | "sale-leaseback"
+  | "land-purchase"
+  | "development-jv"
+  | "lease"
+  | "take-private";
+
+export interface RealEstateDeal {
+  id: string;
+  project: string;
+  buyer: string;
+  seller: string;
+  operator: string;
+  country: string;
+  region: string;
+  city: string;
+  lat: number | null;
+  lng: number | null;
+  dealDate: string;
+  dealType: DealType;
+  grossSqft: number | null;
+  landAcres: number | null;
+  priceUSD: number | null;
+  pricePerSqft: number | null;
+  sizeMW: number | null;
+  capRatePct: number | null;
+  summary: string;
+  sourceName: string;
+  sourceUrl: string;
+  confidence: Confidence;
+}
+
+// ---- Construction materials + cost benchmarks ----
+
+export type ConstructionKind = "material" | "cost";
+
+export interface ConstructionRecord {
+  id: string;
+  kind: ConstructionKind;
+  label: string;
+  category: string;
+  market: string;
+  year: number | null;
+  unit: string;
+  leadTimeWeeksLow: number | null;
+  leadTimeWeeksHigh: number | null;
+  unitCostUSD: number | null;
+  costPerMwMillionUSD: number | null;
+  costPerSqftUSD: number | null;
+  summary: string;
+  sourceName: string;
+  sourceUrl: string;
+  confidence: Confidence;
+}
+
+// ---- History milestones ----
+
+export type HistoryEra =
+  | "mainframe"
+  | "client-server"
+  | "dotcom"
+  | "colocation"
+  | "cloud-hyperscale"
+  | "edge"
+  | "ai-factory";
+
+export interface HistoryMilestone {
+  id: string;
+  year: number;
+  era: HistoryEra;
+  title: string;
+  description: string;
+  type: "milestone" | "facility" | "company" | "technology" | "policy";
+  sourceName: string;
+  sourceUrl: string;
+  confidence: Confidence;
+}
+
 /** A commitment with derived, render-ready fields attached. */
 export interface PreparedCommitment extends Commitment {
   /** Parsed timestamp (ms) of the commitment date. */

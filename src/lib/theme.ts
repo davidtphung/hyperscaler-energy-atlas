@@ -1,4 +1,4 @@
-import type { TechType, Status, Category, DCStatus, FacilityType, ContestedStatus, ContestationType, PolicyStance, PolicyLevel } from "../types";
+import type { TechType, Status, Category, DCStatus, FacilityType, ContestedStatus, ContestationType, PolicyStance, PolicyLevel, DealType, HistoryEra } from "../types";
 
 // Technology palette. Colors are tuned for AA contrast on the deep-ink ground
 // and to stay distinguishable for the most common forms of color vision
@@ -175,6 +175,34 @@ export const CONTESTED_STATUS: Record<ContestedStatus, { label: string; color: s
 };
 export const CONTESTED_STATUS_ORDER: ContestedStatus[] = [
   "blocked", "withdrawn", "denied", "moratorium", "litigation", "stalled", "proposed", "approved-revised", "operating",
+];
+
+// Real estate deals.
+export const DEAL_TYPE: Record<DealType, { label: string; color: string }> = {
+  "portfolio-m&a": { label: "Portfolio M&A", color: "#c8f135" },
+  "take-private": { label: "Take-private", color: "#a78bfa" },
+  acquisition: { label: "Acquisition", color: "#36c5bf" },
+  "sale-leaseback": { label: "Sale-leaseback", color: "#7fc4ec" },
+  "land-purchase": { label: "Land purchase", color: "#f2a93b" },
+  "development-jv": { label: "Development JV", color: "#9ad17a" },
+  lease: { label: "Lease", color: "#9aa3ad" },
+};
+export const DEAL_TYPE_ORDER: DealType[] = [
+  "portfolio-m&a", "take-private", "acquisition", "sale-leaseback", "land-purchase", "development-jv", "lease",
+];
+
+// History eras.
+export const HISTORY_ERA: Record<HistoryEra, { label: string; color: string; span: string }> = {
+  mainframe: { label: "Mainframe", color: "#9aa3ad", span: "1945 to 1970s" },
+  "client-server": { label: "Client-server", color: "#7fc4ec", span: "1980s" },
+  dotcom: { label: "Dot-com and carrier hotels", color: "#5aa9e6", span: "1990s" },
+  colocation: { label: "Colocation and IX", color: "#36c5bf", span: "late 1990s to 2000s" },
+  "cloud-hyperscale": { label: "Cloud and hyperscale", color: "#9ad17a", span: "2006 to 2020" },
+  edge: { label: "Edge", color: "#f5d547", span: "2010s" },
+  "ai-factory": { label: "AI factory", color: "#c8f135", span: "2023 to now" },
+};
+export const HISTORY_ERA_ORDER: HistoryEra[] = [
+  "mainframe", "client-server", "dotcom", "colocation", "cloud-hyperscale", "edge", "ai-factory",
 ];
 
 // Policy.

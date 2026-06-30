@@ -1189,6 +1189,39 @@ a { color: inherit; }
 .fc-note b { color: var(--text-2); font-weight: 500; }
 .fc-note__dot { width: 8px; height: 8px; border-radius: 50%; flex: none; margin-top: 4px; }
 
+/* History */
+.hist-era { margin-bottom: 18px; }
+.hist-era__head { display: flex; align-items: center; gap: 11px; padding: 10px 0; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
+.hist-era__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--era, var(--signal)); flex: none; }
+.hist-era__name { font-family: var(--font-display); font-size: 17px; font-weight: 700; letter-spacing: -0.02em; flex: 1; }
+.hist-era__span { font-family: var(--font-mono); font-size: 11px; color: var(--text-4); }
+.hist-items { border-left: 1px solid var(--line-2); margin-left: 5px; }
+.hist-item { position: relative; display: grid; grid-template-columns: 60px 1fr; gap: 16px; padding: 11px 0 11px 22px; }
+.hist-item::before { content: ""; position: absolute; left: -4px; top: 17px; width: 7px; height: 7px; border-radius: 50%; background: var(--era, var(--line-3)); }
+.hist-item__year { font-family: var(--font-mono); font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.hist-item__title { font-size: 14.5px; font-weight: 600; margin-bottom: 4px; }
+.hist-item__desc { font-size: 13px; line-height: 1.6; color: var(--text-2); margin-bottom: 6px; max-width: 760px; }
+.hist-item__src { font-size: 11.5px; color: var(--text-3); text-decoration: none; }
+.hist-item__src:hover { color: var(--signal); }
+
+/* Economics */
+.econ-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.card--full { grid-column: 1 / -1; }
+.bench { display: flex; flex-direction: column; gap: 9px; margin-top: 14px; }
+.bench__row { display: grid; grid-template-columns: 150px 1fr 58px; gap: 10px; align-items: center; }
+.bench__name { font-size: 12px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bench__track { height: 8px; background: var(--ink-700); border-radius: 4px; overflow: hidden; }
+.bench__fill { display: block; height: 100%; background: var(--signal); opacity: 0.85; border-radius: 4px; }
+.bench__val { font-family: var(--font-mono); font-size: 11.5px; color: var(--text-3); text-align: right; }
+.lead { display: flex; flex-direction: column; gap: 9px; margin-top: 14px; }
+.lead__row { display: grid; grid-template-columns: 230px 1fr 92px; gap: 12px; align-items: center; }
+.lead__name { font-size: 12.5px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lead__track { position: relative; height: 9px; background: var(--ink-700); border-radius: 5px; }
+.lead__bar { position: absolute; top: 0; height: 100%; background: #f2a93b; opacity: 0.9; border-radius: 5px; min-width: 4px; }
+.lead__val { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); text-align: right; }
+.econ-row { grid-template-columns: 2.2fr 1.2fr 84px 66px 52px 78px; }
+.econ-row--head { background: var(--ink-850); }
+
 /* Page responsive */
 @media (max-width: 880px) {
   .donate-grid { grid-template-columns: 1fr; gap: 26px; }
@@ -1200,6 +1233,12 @@ a { color: inherit; }
   .ct-row .dc-status { display: none; }
   .pol-row { grid-template-columns: 12px 1.7fr 76px; }
   .fc-notes { grid-template-columns: 1fr; gap: 10px; }
+  .econ-grid { grid-template-columns: 1fr; }
+  .econ-row { grid-template-columns: 1.6fr 80px 76px; }
+  .econ-row > :nth-child(2), .econ-row > :nth-child(4), .econ-row > :nth-child(5) { display: none; }
+  .lead__row { grid-template-columns: 130px 1fr 78px; }
+  .bench__row { grid-template-columns: 110px 1fr 52px; }
+  .hist-item { grid-template-columns: 46px 1fr; gap: 10px; }
   .portfolio-grid { grid-template-columns: 1fr; }
   .card--span2 { grid-column: span 1; }
   .sources-cols, .about-grid { grid-template-columns: 1fr; gap: 26px; }
