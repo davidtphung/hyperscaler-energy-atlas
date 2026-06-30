@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { geoAlbersUsa, geoNaturalEarth1, geoMercator, geoPath, geoGraticule10 } from "d3-geo";
 import type { GeoProjection } from "d3-geo";
 import type { PreparedCommitment } from "../types";
@@ -56,9 +56,40 @@ export default function MapCanvas({
   view,
   onViewChange,
 }: Props) {
-  const { ref, width, height } = useElementSize<HTMLDivElement>();
+  const { ref: sizeRef, width, height } = useElementSize<HTMLDivElement>();
+  const [wheelNode, setWheelNode] = useState<HTMLDivElement | null>(null);
+  const setRefs = useCallback(
+    (n: HTMLDivElement | null) => {
+      sizeRef(n);
+      setWheelNode(n);
+    },
+    [sizeRef]
+  );
   const [transform, setTransform] = useState<Transform>(IDENTITY);
   const [hoverId, setHoverId] = useState<string | null>(null);
+
+  // Native, non-passive wheel listener so we can preventDefault. Without this,
+  // a trackpad pinch (ctrl+wheel) also triggers the browser's page zoom, which
+  // is what made the map appear to jump or pan to another location.
+  useEffect(() => {
+    const el = wheelNode;
+    if (!el) return;
+    const onWheelNative = (e: WheelEvent) => {
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      const fx = e.clientX - rect.left;
+      const fy = e.clientY - rect.top;
+      const factor = Math.exp(-e.deltaY * 0.0016);
+      setTransform((t) => {
+        const k = t.k * factor;
+        const wx = (fx - t.tx) / t.k;
+        const wy = (fy - t.ty) / t.k;
+        return clampTransform({ k, tx: fx - wx * k, ty: fy - wy * k }, rect.width, rect.height);
+      });
+    };
+    el.addEventListener("wheel", onWheelNative, { passive: false });
+    return () => el.removeEventListener("wheel", onWheelNative);
+  }, [wheelNode]);
 
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pan = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
@@ -157,11 +188,6 @@ export default function MapCanvas({
     });
   };
 
-  const onWheel = (e: React.WheelEvent) => {
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    zoomAround(Math.exp(-e.deltaY * 0.0016), e.clientX - rect.left, e.clientY - rect.top);
-  };
-
   const zoomBy = (factor: number) => zoomAround(factor, width / 2, height / 2);
   const reset = () => setTransform(IDENTITY);
 
@@ -190,9 +216,8 @@ export default function MapCanvas({
   return (
     <main className="map" aria-label="Commitment map" id="map">
       <div
-        ref={ref}
+        ref={setRefs}
         style={{ position: "absolute", inset: 0 }}
-        onWheel={onWheel}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endPointer}
