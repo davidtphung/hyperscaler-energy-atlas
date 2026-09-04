@@ -1,28 +1,82 @@
-export type Page = "atlas" | "datacenters" | "economics" | "history" | "contested" | "policy" | "portfolio" | "about" | "donate";
+import { useEffect, useRef, useState } from "react";
+import type { RouteSection } from "../lib/routes";
+
+export type Page =
+  | "atlas"
+  | "datacenters"
+  | "economics"
+  | "history"
+  | "forecast"
+  | "contested"
+  | "policy"
+  | "portfolio"
+  | "about";
+
+export type PageChange = (page: Page, section?: RouteSection) => void;
 
 interface Props {
   page: Page;
-  onPageChange: (p: Page) => void;
+  aboutSection?: RouteSection;
+  onPageChange: PageChange;
   query: string;
   onQuery: (q: string) => void;
   onToggleRail: () => void;
   onToggleDetail: () => void;
 }
 
-const PAGES: { id: Page; label: string }[] = [
+const PRIMARY: { id: Page; label: string }[] = [
   { id: "atlas", label: "Atlas" },
+  { id: "forecast", label: "Forecast Lab" },
+  { id: "about", label: "About" },
+];
+
+const MORE: { id: Page; label: string; section?: RouteSection }[] = [
   { id: "datacenters", label: "Data Centers" },
   { id: "economics", label: "Economics" },
   { id: "history", label: "History" },
   { id: "contested", label: "Contested" },
   { id: "policy", label: "Policy" },
   { id: "portfolio", label: "Analysis" },
-  { id: "about", label: "About" },
-  { id: "donate", label: "Donate" },
+  { id: "about", label: "Support", section: "support" },
 ];
 
-export default function TopBar({ page, onPageChange, query, onQuery, onToggleRail, onToggleDetail }: Props) {
+const MORE_PAGE_IDS = new Set<Page>(["datacenters", "economics", "history", "contested", "policy", "portfolio"]);
+
+export default function TopBar({
+  page,
+  aboutSection,
+  onPageChange,
+  query,
+  onQuery,
+  onToggleRail,
+  onToggleDetail,
+}: Props) {
   const onAtlas = page === "atlas";
+  const moreActive = MORE_PAGE_IDS.has(page);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onDoc = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMoreOpen(false);
+    };
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [moreOpen]);
+
+  const go = (id: Page, section?: RouteSection) => {
+    setMoreOpen(false);
+    onPageChange(id, section);
+  };
+
   return (
     <header className="topbar">
       {onAtlas && (
@@ -35,7 +89,7 @@ export default function TopBar({ page, onPageChange, query, onQuery, onToggleRai
         </button>
       )}
 
-      <div className="brand">
+      <button className="brand" type="button" onClick={() => go("atlas")} aria-label="HYPERGRID home">
         <span className="brand__mark" aria-hidden="true">
           <svg width="17" height="17" viewBox="0 0 32 32" fill="currentColor">
             <path d="M17.5 4 7 18h6.5L12 28l12-14h-7z" />
@@ -45,19 +99,53 @@ export default function TopBar({ page, onPageChange, query, onQuery, onToggleRai
           <span className="brand__name">HYPERGRID</span>
           <span className="brand__sub">Hyperscaler Energy Atlas</span>
         </span>
-      </div>
+      </button>
 
       <nav className="nav-tabs" aria-label="Views">
-        {PAGES.map((p) => (
+        {PRIMARY.map((p) => (
           <button
             key={p.id}
             className="nav-tab"
             aria-current={page === p.id ? "page" : undefined}
-            onClick={() => onPageChange(p.id)}
+            onClick={() => go(p.id)}
           >
             {p.label}
           </button>
         ))}
+        <div className="nav-more" ref={moreRef}>
+          <button
+            type="button"
+            className="nav-tab"
+            aria-haspopup="menu"
+            aria-expanded={moreOpen}
+            aria-current={moreActive ? "true" : undefined}
+            onClick={() => setMoreOpen((v) => !v)}
+          >
+            More
+          </button>
+          {moreOpen && (
+            <div className="nav-more__menu" role="menu" aria-label="More views">
+              {MORE.map((p) => {
+                const current =
+                  p.section === "support"
+                    ? page === "about" && (aboutSection === "support" || aboutSection === "donate")
+                    : page === p.id && !(p.id === "about");
+                return (
+                  <button
+                    key={`${p.id}-${p.section ?? "page"}`}
+                    type="button"
+                    role="menuitem"
+                    className="nav-more__item"
+                    aria-current={current ? "page" : undefined}
+                    onClick={() => go(p.id, p.section)}
+                  >
+                    {p.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </nav>
 
       <div className="topbar__spacer" />

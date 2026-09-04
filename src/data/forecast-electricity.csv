@@ -1,0 +1,22 @@
+geography,year,twh,status,scenario,source,sourceUrl,notes
+world,2023,360,historical,,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.1/A.4
+world,2024,416,historical,,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.1/A.4
+world,2025,485,estimate,,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.1/A.4 near-term
+world,2030,945,scenario,Base,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.1
+world,2030,1008,scenario,Lift-Off,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.1
+world,2030,868,scenario,High Efficiency,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.1
+world,2030,833,scenario,Headwinds,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.1
+US,2023,154,historical,,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.4
+US,2024,183,historical,,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.4
+US,2025,224,estimate,,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.4
+US,2030,426,scenario,Base,IEA,https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf,Table A.4
+US,2014,60,historical,,LBNL-2024,https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers,~60 TWh flat 2014-2016 ES
+US,2015,60,historical,,LBNL-2024,https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers,~60 TWh flat 2014-2016 ES
+US,2016,60,historical,,LBNL-2024,https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers,~60 TWh flat 2014-2016 ES
+US,2018,76,historical,,LBNL-2024,https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers,1.9% of US electricity
+US,2023,176,historical,,LBNL-2024,https://www.energy.gov/articles/doe-releases-new-report-evaluating-increase-electricity-demand-data-centers,4.4% of US electricity
+US,2024,192,historical,,LBNL-2025,https://doi.org/10.71468/P1RP4F,last historical year in 2025 Update
+US,2028,464,scenario,Reference,LBNL-2025,https://doi.org/10.71468/P1RP4F,
+US,2030,649,scenario,Reference,LBNL-2025,https://doi.org/10.71468/P1RP4F,11.8% of US
+US,2030,521,scenario,Compounded-Low,LBNL-2025,https://doi.org/10.71468/P1RP4F,
+US,2030,843,scenario,Compounded-High,LBNL-2025,https://doi.org/10.71468/P1RP4F,
