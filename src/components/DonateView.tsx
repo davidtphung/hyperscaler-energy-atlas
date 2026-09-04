@@ -24,13 +24,16 @@ const NOTES = [
   "This is not a 501(c)(3) nonprofit. Contributions are not tax deductible.",
 ];
 
-export default function DonateView() {
-  return (
-    <div className="page page--donate">
-      <div className="donate2">
-        <header className="donate2__head">
+export default function DonateView({ nested = false }: { nested?: boolean }) {
+  const TitleTag = nested ? "h2" : "h1";
+  const inner = (
+      <div className={`donate2${nested ? " donate2--nested" : ""}`}>
+        <span id="donate" className="hash-anchor" />
+        <header className="donate2__head" id="support">
           <p className="overview__eyebrow">Support</p>
-          <h1 className="donate2__title">Support HYPERGRID</h1>
+          <TitleTag id="support-title" className="donate2__title">
+            Support HYPERGRID
+          </TitleTag>
           <p className="donate2__lead">
             Independent, source-backed data. No ads, no paywalls, no corporate sponsors, no user tracking. Your
             contribution funds research, data, and hosting.
@@ -78,8 +81,17 @@ export default function DonateView() {
           on X.
         </p>
       </div>
-    </div>
   );
+
+  if (nested) {
+    return (
+      <section className="about-support" aria-labelledby="support-title">
+        {inner}
+      </section>
+    );
+  }
+
+  return <div className="page page--donate">{inner}</div>;
 }
 
 function MethodCard({ m }: { m: Method }) {

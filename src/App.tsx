@@ -20,8 +20,13 @@ import ForecastView from "./components/ForecastView";
 import ForecastLabView from "./components/ForecastLabView";
 import EconomicsView from "./components/EconomicsView";
 import HistoryView from "./components/HistoryView";
-import DonateView from "./components/DonateView";
-import { isForecastPath, pageFromLocation, syncPageUrl } from "./lib/routes";
+import {
+  aboutSectionFromLocation,
+  pageFromLocation,
+  replaceDonatePathWithSupportHash,
+  syncPageUrl,
+  type RouteSection,
+} from "./lib/routes";
 
 // Average month in ms. Playback speed is expressed as simulated months per real
 // second, so "6mo/s" advances the scrubber six months for every wall-clock
@@ -46,7 +51,10 @@ export default function App() {
     eras: new Set(),
     query: "",
   });
-  const [page, setPage] = useState<Page>(() => (isForecastPath(window.location.pathname) ? "forecast" : "atlas"));
+  const [page, setPage] = useState<Page>(() => pageFromLocation());
+  const [aboutSection, setAboutSection] = useState<RouteSection | undefined>(() =>
+    aboutSectionFromLocation(),
+  );
   const [view, setView] = useState<MapView>("us");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [scrubT, setScrubT] = useState(domain.maxT);
@@ -164,25 +172,50 @@ export default function App() {
     []
   );
 
-  const onPageChange = useCallback((p: Page) => {
+  const onPageChange = useCallback((p: Page, section?: RouteSection) => {
     setPage(p);
+    setAboutSection(p === "about" ? section : undefined);
     setRailOpen(false);
     setDetailOpen(false);
-    syncPageUrl(p);
+    syncPageUrl(p, p === "about" ? section : undefined);
   }, []);
 
   useEffect(() => {
-    const onPop = () => setPage(pageFromLocation());
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
+    replaceDonatePathWithSupportHash();
+    const syncFromLocation = () => {
+      setPage(pageFromLocation());
+      setAboutSection(aboutSectionFromLocation());
+    };
+    syncFromLocation();
+    window.addEventListener("popstate", syncFromLocation);
+    window.addEventListener("hashchange", syncFromLocation);
+    return () => {
+      window.removeEventListener("popstate", syncFromLocation);
+      window.removeEventListener("hashchange", syncFromLocation);
+    };
   }, []);
+
+  useEffect(() => {
+    if (page !== "about") return;
+    const t = window.setTimeout(() => {
+      if (aboutSection === "support" || aboutSection === "donate") {
+        const node = document.getElementById("support") ?? document.getElementById("donate");
+        node?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      document.querySelector(".page-wrap")?.scrollTo({ top: 0 });
+    }, 40);
+    return () => window.clearTimeout(t);
+  }, [page, aboutSection]);
 
   useEffect(() => {
     document.title =
       page === "forecast"
         ? "Forecast Lab · HYPERGRID"
-        : "HYPERGRID · Hyperscaler Energy Atlas";
-  }, [page]);
+        : page === "about" && (aboutSection === "support" || aboutSection === "donate")
+          ? "Support · HYPERGRID"
+          : "HYPERGRID · Hyperscaler Energy Atlas";
+  }, [page, aboutSection]);
 
   // Escape closes overlays / clears selection.
   useEffect(() => {
@@ -211,6 +244,7 @@ export default function App() {
       <div className="app">
         <TopBar
           page={page}
+          aboutSection={aboutSection}
           onPageChange={onPageChange}
           query={filters.query}
           onQuery={(q) => setFilters((f) => ({ ...f, query: q }))}
@@ -302,7 +336,6 @@ export default function App() {
                 <SourcesView commitments={facetFiltered} />
               </>
             )}
-            {page === "donate" && <DonateView />}
           </div>
         )}
       </div>

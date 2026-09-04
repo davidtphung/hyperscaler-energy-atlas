@@ -38,6 +38,7 @@ import {
 } from "../data/forecast";
 import { formatGW } from "../lib/format";
 import { useElementSize } from "../lib/hooks";
+import { urlForPage } from "../lib/routes";
 
 const FAN_ORDER: FanCase[] = ["bear", "base", "bull"];
 
@@ -393,7 +394,11 @@ export default function ForecastLabView() {
       <section className="flab-method prose">
         <h2>What this lab will not do</h2>
         <p>
-          It will not default to the Analysis CAGR toy (8 / 20 / 34). It will not plot announcement MW on the TWh
+          It will not default to the{" "}
+          <a className="flab-inline-link" href={urlForPage("portfolio")}>
+            Analysis
+          </a>{" "}
+          CAGR toy (8 / 20 / 34). It will not plot announcement MW on the TWh
           axis. It will not invent LBNL yearly intermediates for 2017 or 2019 through 2022. It will not silently
           average IEA and LBNL US history. It will not invent bottleneck midpoints or restudy months. It will not sum OEM backlogs or merge firm with
           SRA. It will not invent a hyperscaler GT ownership table. The EIA-860 name × technology filter is empty:

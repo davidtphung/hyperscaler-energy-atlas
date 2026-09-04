@@ -891,7 +891,35 @@ a { color: inherit; }
   transition: color 0.15s var(--ease), background 0.15s var(--ease);
 }
 .nav-tab:hover { color: var(--text); }
-.nav-tab[aria-current="page"] { color: #0a0c10; background: var(--signal); font-weight: 500; }
+.nav-tab[aria-current="page"],
+.nav-tab[aria-current="true"] { color: #0a0c10; background: var(--signal); font-weight: 500; }
+
+.nav-more { position: relative; }
+.nav-more__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 196px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--ink-800);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-pop);
+  z-index: 60;
+}
+.nav-more__item {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.nav-more__item:hover { background: var(--ink-780); color: var(--text); }
+.nav-more__item[aria-current="page"] { color: var(--signal); }
 
 /* =========================================================================
    Page shell (Portfolio / Sources / About)
@@ -1061,7 +1089,14 @@ a { color: inherit; }
 .about-credit a:hover { color: var(--signal); border-color: var(--signal-line); }
 
 /* Donate (crypto wallets + Venmo, copy-to-clipboard) */
+.hash-anchor, #support { scroll-margin-top: calc(var(--topbar-h) + 16px); }
+.about-support {
+  margin-top: 48px;
+  padding-top: 36px;
+  border-top: 1px solid var(--line);
+}
 .donate2 { max-width: 600px; margin: 0 auto; }
+.donate2--nested { max-width: 680px; margin: 0; }
 .donate2__head { margin-bottom: 30px; }
 .donate2__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 4vw, 34px); letter-spacing: -0.03em; line-height: 1.1; margin: 6px 0 14px; }
 .donate2__lead { font-size: 15px; line-height: 1.65; color: var(--text-2); }
