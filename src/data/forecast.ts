@@ -570,10 +570,16 @@ export function pinFromPeak(p: ForecastPeakCard): InspectablePin {
 }
 
 export function pinFromBottleneck(b: BottleneckPin): InspectablePin {
+  const value =
+    b.kind === "open"
+      ? `>${b.valueLow}`
+      : b.kind === "duration"
+        ? `${b.approx ? "~" : ""}${b.valueLow}`
+        : `${b.approx ? "~" : ""}${b.valueLow} to ${b.valueHigh}`;
   return {
     id: b.id,
     title: b.label,
-    value: b.displayLabel,
+    value,
     unit: b.unit,
     year: b.year || "not stated",
     geography: b.geography,
