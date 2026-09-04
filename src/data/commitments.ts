@@ -6,7 +6,7 @@ import type { Commitment } from "../types";
 //
 // Compiled and cross-checked across company press releases, Reuters, AP, CNBC,
 // World Nuclear News, DOE, and utility investor-relations pages through a
-// multi-agent verification pass. 89 commitments, 2021-05 to 2026-06.
+// multi-agent verification pass. 109 commitments, 2021-05 to 2026-06.
 
 export const COMMITMENTS: Commitment[] = [
   {
@@ -1417,6 +1417,28 @@ export const COMMITMENTS: Commitment[] = [
     "confidence": "high"
   },
   {
+    "id": "fluidstack-lake-mariner-it-360",
+    "buyer": "Fluidstack",
+    "counterparty": "TeraWulf",
+    "project": "Lake Mariner AI hosting (CB-3/4 and CB-5)",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 360,
+    "city": "Somerset",
+    "state": "New York",
+    "country": "United States",
+    "lat": 43.3472,
+    "lng": -78.5553,
+    "date": "2025-08-18",
+    "status": "construction",
+    "headline": "TeraWulf contracts 360 MW critical IT to Fluidstack at Lake Mariner",
+    "summary": "TeraWulf contracted about 360 MW of critical IT load to Fluidstack at Lake Mariner in Western New York (CB-3 and CB-4 about 200 MW plus CB-5 160 MW). The figure is contracted IT, not campus COD and not Fluidstack-owned generation. Google backstops Fluidstack lease obligations as credit support, not electrons. TeraWulf's Q2 2026 update says CB-5 is phased for early 2027. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
+    "sourceName": "TeraWulf",
+    "sourceUrl": "https://investors.terawulf.com/news-events/press-releases/detail/112/terawulf-signs-200-mw-10-year-ai-hosting-agreements-with-fluidstack",
+    "confidence": "high",
+    "numberKind": "contracted IT"
+  },
+  {
     "id": "meta-entergy-hyperion-gas-three",
     "buyer": "Meta",
     "counterparty": "Entergy Louisiana",
@@ -1795,6 +1817,28 @@ export const COMMITMENTS: Commitment[] = [
     "confidence": "high"
   },
   {
+    "id": "fluidstack-abernathy-it-168",
+    "buyer": "Fluidstack",
+    "counterparty": "TeraWulf",
+    "project": "Abernathy AI compute joint venture",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 168,
+    "city": "Abernathy",
+    "state": "Texas",
+    "country": "United States",
+    "lat": 33.8323,
+    "lng": -101.8427,
+    "date": "2025-10-28",
+    "status": "construction",
+    "headline": "TeraWulf and Fluidstack JV delivers 168 MW critical IT at Abernathy",
+    "summary": "TeraWulf and Fluidstack formed a joint venture to deliver 168 MW of critical IT load (240 MW gross) at Abernathy, Texas, under a long-term hosting commitment. Fluidstack later took a majority interest in July 2026. The figure is contracted IT, not generation. Google backstops Fluidstack lease obligations as credit support, not electrons. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
+    "sourceName": "TeraWulf",
+    "sourceUrl": "https://investors.terawulf.com/news-events/press-releases/detail/121/terawulf-expands-strategic-partnership-with-fluidstack-through-new-168-mw-ai-compute-joint-venture",
+    "confidence": "high",
+    "numberKind": "contracted IT"
+  },
+  {
     "id": "stargate-saline-michigan-related",
     "buyer": "OpenAI",
     "counterparty": "Oracle, Related Digital",
@@ -1919,6 +1963,50 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Microsoft Source",
     "sourceUrl": "https://news.microsoft.com/source/features/ai/from-wisconsin-to-atlanta-microsoft-connects-datacenters-to-build-its-first-ai-superfactory/",
     "confidence": "high"
+  },
+  {
+    "id": "fluidstack-barber-lake-it-207",
+    "buyer": "Fluidstack",
+    "counterparty": "Cipher Mining",
+    "project": "Barber Lake AI hosting (168 plus 39 MW critical IT)",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 207,
+    "city": "Colorado City",
+    "state": "Texas",
+    "country": "United States",
+    "lat": 32.3882,
+    "lng": -100.8621,
+    "date": "2025-11-20",
+    "status": "construction",
+    "headline": "Cipher leases Fluidstack 207 MW critical IT at Barber Lake",
+    "summary": "Cipher Mining leased Fluidstack 207 MW of critical IT load at Barber Lake, Texas (168 MW plus 39 MW), covering the entire 300 MW campus capacity. The figure is contracted IT, not generation. Google backstops Fluidstack lease obligations as credit support, not electrons. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
+    "sourceName": "SEC (Cipher Mining 8-K)",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1819989/000095010325012168/dp234624_8k.htm",
+    "confidence": "high",
+    "numberKind": "contracted IT"
+  },
+  {
+    "id": "fluidstack-river-bend-it-245",
+    "buyer": "Fluidstack",
+    "counterparty": "Hut 8",
+    "project": "River Bend AI data center lease",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 245,
+    "city": "West Feliciana Parish",
+    "state": "Louisiana",
+    "country": "United States",
+    "lat": 30.7572,
+    "lng": -91.3334,
+    "date": "2025-12-17",
+    "status": "construction",
+    "headline": "Hut 8 leases Fluidstack 245 MW IT capacity at River Bend",
+    "summary": "Hut 8 signed a 15-year lease with Fluidstack for 245 MW of IT capacity at the River Bend campus in Louisiana. Hut 8 secured 330 MW of utility capacity from Entergy for the campus (utility interconnection path, not a behind-the-meter mix). The figure is contracted IT, not generation. Google backstops Fluidstack lease obligations as credit support, not electrons. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
+    "sourceName": "Hut 8 (PR Newswire)",
+    "sourceUrl": "https://www.prnewswire.com/news-releases/hut-8-signs-15-year-245-mw-ai-data-center-lease-at-river-bend-campus-with-total-contract-value-of-7-0-billion-302644600.html",
+    "confidence": "high",
+    "numberKind": "contracted IT"
   },
   {
     "id": "alphabet-intersect-power-acquisition-4-75b",
@@ -2129,6 +2217,28 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Fortune",
     "sourceUrl": "https://fortune.com/2026/03/27/meta-hyperion-10-gas-power-plants-louisiana-entergy/",
     "confidence": "high"
+  },
+  {
+    "id": "fluidstack-meridian-arc-indiana-it-430",
+    "buyer": "Fluidstack",
+    "counterparty": "Meridian Arc HoldCo (Next Frontier)",
+    "project": "Meridian Arc Sullivan County AI campus",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 430,
+    "city": "New Lebanon",
+    "state": "Indiana",
+    "country": "United States",
+    "lat": 39.0406,
+    "lng": -87.4403,
+    "date": "2026-04",
+    "status": "announced",
+    "headline": "Meridian Arc finances 430 MW critical IT campus in Indiana",
+    "summary": "Meridian Arc HoldCo, a Next Frontier and Fluidstack joint venture, priced senior secured notes to finance two turnkey halls totaling 430 MW of critical IT load (245 MW plus 185 MW) in Sullivan County, Indiana. Latham advised the offering; Fitch rated the notes BB. The figure is contracted IT, not generation. Google lease guarantees are credit support, not electrons. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
+    "sourceName": "Latham & Watkins",
+    "sourceUrl": "https://www.lw.com/en/news/2026/04/latham-advises-on-meridian-arc-holdco-senior-secured-notes-offering-to-finance-ai-data-center",
+    "confidence": "high",
+    "numberKind": "contracted IT"
   },
   {
     "id": "microsoft-chevron-west-texas-gas",
