@@ -52,8 +52,9 @@ export default function AboutView({ total, totalGW }: Props) {
           <h2>Forecast Lab versus the Analysis toy</h2>
           <p>
             Forecast Lab at /forecast is the sourced electricity product: a bottleneck schedule from IEA, EPRI, and
-            Southern Nuclear pins, a thin inventory layer that keeps OEM firm and SRA books separate, IEA and LBNL TWh
-            series kept apart, and bull/base/bear pins with a source on every point. The Analysis page still carries an
+            Southern Nuclear pins, a thin inventory layer that keeps OEM firm and SRA books separate and labels the
+            EIA-860 hyperscaler in-service CT/CC filter as empty, IEA and LBNL TWh series kept apart, and
+            bull/base/bear pins with a source on every point. The Analysis page still carries an
             8 / 20 / 34 percent CAGR cone of atlas announcement capacity. That cone is a model toy, not a sourced
             forecast.
           </p>

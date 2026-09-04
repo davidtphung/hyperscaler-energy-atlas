@@ -426,8 +426,41 @@ const ERCOT_FACT_SHEET =
 export const INVENTORY_CALLOUT =
   "Queue is a wish list. Reality is what is on and spinning.";
 
-export const INVENTORY_GAP =
-  "No hyperscaler in-service large GT ownership table this pass. Do not invent owners.";
+export const EIA_860_URL = "https://www.eia.gov/electricity/data/eia860/index.php";
+export const EIA_860M_URL = "https://www.eia.gov/electricity/data/eia860m/";
+
+/** Empty primary finding. Not an ownership table. Not a pin of named plants. */
+export const INVENTORY_GAP = {
+  id: "hyperscaler-inservice-gt-gap",
+  label: "Gap (labeled)",
+  value: "0",
+  unit: "CT/CC",
+  filter: "EIA-860 Y2024 + Y2025ER + 860M Jul 2026 name × technology filter",
+  names: "Amazon / Microsoft / Google / Meta / Oracle / Apple / xAI / Equinix / Vantage Data / affiliates",
+  body: "Hyperscalers mostly buy watts (PPA / electrons). Utilities and landlords own most spinning metal.",
+  insight: "Empty is the finding. Cloud buys electrons; utilities and landlords own the turbines.",
+  sources: [
+    { name: "EIA-860", url: EIA_860_URL },
+    { name: "EIA-860M", url: EIA_860M_URL },
+  ],
+} as const;
+
+export const INVENTORY_GAP_PIN: InventoryPin = {
+  id: INVENTORY_GAP.id,
+  column: "delivered",
+  kind: "gap",
+  weight: "hero",
+  label: "Hyperscaler in-service CT/CC",
+  value: INVENTORY_GAP.value,
+  unit: INVENTORY_GAP.unit,
+  source: "EIA-860 / 860M",
+  sourceUrl: EIA_860_URL,
+  year: "Y2024 + Y2025ER + Jul 2026",
+  geography: "US",
+  notes:
+    `${INVENTORY_GAP.filter} → ${INVENTORY_GAP.value} ${INVENTORY_GAP.unit} under ${INVENTORY_GAP.names}. ${INVENTORY_GAP.body} ${INVENTORY_GAP.insight} Not an ownership table.`,
+  numberKind: "sourced",
+};
 
 export const GEV_LABELED_SUM =
   "GEV 53 GW firm + 63 GW SRA = 116 GW labeled sum of those two books only. Not an industry total. Not a single backlog bar.";
@@ -647,6 +680,13 @@ export const INVENTORY_PINS: InventoryPin[] = [
 
 if (INVENTORY_PINS.some((p) => p.numberKind !== "sourced")) {
   throw new Error("Inventory pins must be sourced");
+}
+if (INVENTORY_PINS.some((p) => p.column === "delivered" && p.kind === "gap")) {
+  throw new Error("Do not invent a hyperscaler GT ownership table; keep the empty gap as a label");
+}
+const DELIVERED_IDS = INVENTORY_PINS.filter((p) => p.column === "delivered").map((p) => p.id);
+if (DELIVERED_IDS.join(",") !== "gev-ha-fleet,vistra-gas-net") {
+  throw new Error("Delivered pins stay GEV HA fleet and Vistra gas net only");
 }
 
 export const ERCOT_FACT_SHEET_URL = ERCOT_FACT_SHEET;

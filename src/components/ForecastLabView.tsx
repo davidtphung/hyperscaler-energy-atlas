@@ -13,6 +13,7 @@ import {
   GT_FAST_PATH_CALLOUT,
   INVENTORY_CALLOUT,
   INVENTORY_GAP,
+  INVENTORY_GAP_PIN,
   INVENTORY_PINS,
   PEAK_GW_CARDS,
   SOURCE_SERIES_COLOR,
@@ -394,15 +395,17 @@ export default function ForecastLabView() {
         <p>
           It will not default to the Analysis CAGR toy (8 / 20 / 34). It will not plot announcement MW on the TWh
           axis. It will not invent LBNL yearly intermediates for 2017 or 2019 through 2022. It will not silently
-          average IEA and LBNL US history.           It will not invent bottleneck midpoints or restudy months. It will not sum OEM backlogs or merge firm with
-          SRA. It will not invent hyperscaler GT ownership. Peak GW cards stay off the electricity chart.
+          average IEA and LBNL US history. It will not invent bottleneck midpoints or restudy months. It will not sum OEM backlogs or merge firm with
+          SRA. It will not invent a hyperscaler GT ownership table. The EIA-860 name × technology filter is empty:
+          0 CT/CC. Peak GW cards stay off the electricity chart.
         </p>
         <p>
           Data credits: IEA Key Questions on Energy and AI (Tables A.1 / A.4 and §1.3), IEA battery-storage commentary,
           LBNL 2024 and 2025 data-center electricity series, EPRI Powering Intelligence peak cases and EPRI / Utility
-          Dive gas-turbine waits, DOE July 2025 midpoint incremental GW, Southern Nuclear Vogtle CODs. The default
-          bottleneck strip is sourced pins only. Inventory is a thin sourced layer under it: GEV, Siemens Energy, MHI,
-          Vistra 10-K, and ERCOT / IEA queue snapshots. Wood Mackenzie transformer weeks are omitted from this strip.
+          Dive gas-turbine waits, DOE July 2025 midpoint incremental GW, Southern Nuclear Vogtle CODs, EIA-860 / 860M
+          empty hyperscaler CT/CC filter. The default bottleneck strip is sourced pins only. Inventory is a thin sourced
+          layer under it: GEV, Siemens Energy, MHI, Vistra 10-K, ERCOT / IEA queue snapshots, and the labeled empty
+          EIA-860 finding. Wood Mackenzie transformer weeks are omitted from this strip.
         </p>
       </section>
 
@@ -463,7 +466,39 @@ function InventoryLayer({
               <InventoryChip key={p.id} pin={p} selected={selectedId === p.id} onSelect={onSelect} />
             ))}
           </div>
-          <p className="flab-inv-gap">{INVENTORY_GAP}</p>
+          <div
+            className={`flab-inv-gap${selectedId === INVENTORY_GAP.id ? " is-on" : ""}`}
+            role="note"
+          >
+            <button
+              type="button"
+              className="flab-inv-gap__hit"
+              onClick={() => onSelect(INVENTORY_GAP_PIN)}
+            >
+              <span className="flab-inv-gap__k">{INVENTORY_GAP.label}</span>
+              <span className="flab-inv-gap__v">
+                {INVENTORY_GAP.value}
+                <small> {INVENTORY_GAP.unit}</small>
+              </span>
+              <span className="flab-inv-gap__filter">
+                {INVENTORY_GAP.filter} → <strong>{INVENTORY_GAP.value}</strong> {INVENTORY_GAP.unit} under{" "}
+                {INVENTORY_GAP.names}.
+              </span>
+              <span className="flab-inv-gap__body">{INVENTORY_GAP.body}</span>
+              <span className="flab-inv-gap__insight">{INVENTORY_GAP.insight}</span>
+            </button>
+            <p className="flab-inv-gap__src">
+              Sources:{" "}
+              {INVENTORY_GAP.sources.map((s, i) => (
+                <span key={s.url}>
+                  {i > 0 ? " · " : null}
+                  <a href={s.url} target="_blank" rel="noopener noreferrer">
+                    {s.name}
+                  </a>
+                </span>
+              ))}
+            </p>
+          </div>
         </div>
         <div className="flab-inv-col">
           <h3 className="flab-inv-col__h">Queue vs exists</h3>
