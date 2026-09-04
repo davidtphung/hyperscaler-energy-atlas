@@ -35,8 +35,8 @@ export function domainOf(prepared: PreparedCommitment[]): Domain {
   for (const c of prepared) {
     minT = Math.min(minT, c.t);
     maxT = Math.max(maxT, c.t);
-    totalMW += c.capacityMW ?? 0;
-    buyers.set(c.buyer, (buyers.get(c.buyer) ?? 0) + (c.capacityMW ?? 0));
+    totalMW += mwForAggregate(c);
+    buyers.set(c.buyer, (buyers.get(c.buyer) ?? 0) + mwForAggregate(c));
   }
   const ordered = [...buyers.entries()].sort((a, b) => b[1] - a[1]).map(([b]) => b);
   return { minT, maxT, buyers: ordered, totalMW };
@@ -66,8 +66,14 @@ export function applyFacets(list: PreparedCommitment[], f: FilterState): Prepare
   );
 }
 
-export function sumMW(list: { capacityMW: number | null }[]): number {
-  return list.reduce((acc, c) => acc + (c.capacityMW ?? 0), 0);
+/** Contracted IT is a lease unit, not headline generation. Do not Atlas-sum it. */
+export function mwForAggregate(c: { capacityMW: number | null; numberKind?: string }): number {
+  if (c.numberKind === "contracted IT") return 0;
+  return c.capacityMW ?? 0;
+}
+
+export function sumMW(list: { capacityMW: number | null; numberKind?: string }[]): number {
+  return list.reduce((acc, c) => acc + mwForAggregate(c), 0);
 }
 
 export interface FacetCounts {

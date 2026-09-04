@@ -41,7 +41,10 @@ function Overview({
     const buyers = new Set(visible.map((c) => c.buyer));
     const opGW = sumMW(visible.filter((c) => c.status === "operational"));
     const byBuyer = new Map<string, number>();
-    for (const c of visible) byBuyer.set(c.buyer, (byBuyer.get(c.buyer) ?? 0) + (c.capacityMW ?? 0));
+    for (const c of visible) {
+      if (c.numberKind === "contracted IT") continue;
+      byBuyer.set(c.buyer, (byBuyer.get(c.buyer) ?? 0) + (c.capacityMW ?? 0));
+    }
     const bars = [...byBuyer.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
     const maxBar = Math.max(1, ...bars.map((b) => b[1]));
     return { totalGW, buyers: buyers.size, opGW, bars, maxBar };
@@ -147,7 +150,13 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
         <div className="detail__loc">{formatLocation(c.city, c.state, c.country) || c.country}</div>
         <div className="detail__capten">
           <span className="detail__cap">{formatCapacity(c.capacityMW)}</span>
-          <span className="detail__cap-label">{c.capacityMW ? "committed capacity" : "capacity undisclosed"}</span>
+          <span className="detail__cap-label">
+            {c.numberKind === "contracted IT"
+              ? "contracted IT (critical IT load)"
+              : c.capacityMW
+                ? "committed capacity"
+                : "capacity undisclosed"}
+          </span>
         </div>
       </div>
 
@@ -195,7 +204,9 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
         </a>
 
         <p style={{ fontSize: 11, color: "var(--text-4)", marginTop: 2 }}>
-          {formatGW(c.capacityMW ?? 0)} GW equivalent. Figures reflect publicly reported headline capacity.
+          {c.numberKind === "contracted IT"
+            ? "Figure is contracted IT (critical IT load), not campus COD and not generation."
+            : `${formatGW(c.capacityMW ?? 0)} GW equivalent. Figures reflect publicly reported headline capacity.`}
         </p>
       </div>
     </div>
