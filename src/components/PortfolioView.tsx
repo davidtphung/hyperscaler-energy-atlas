@@ -19,6 +19,7 @@ export default function PortfolioView({ commitments }: Props) {
     const byGroup = new Map<SourceGroup, number>();
     for (const c of energy) {
       const g = sourceGroup(c.techType);
+      if (c.numberKind === "contracted IT") continue;
       byGroup.set(g, (byGroup.get(g) ?? 0) + (c.capacityMW ?? 0));
     }
     const groups = SOURCE_GROUP_ORDER.filter((g) => g !== "Datacenter load")

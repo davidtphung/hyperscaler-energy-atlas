@@ -73,7 +73,7 @@ export default function Timeline({
     let acc = 0;
     const steps: { t: number; v: number }[] = [{ t: minT, v: 0 }];
     for (const c of sorted) {
-      acc += c.capacityMW ?? 0;
+      acc += c.numberKind === "contracted IT" ? 0 : (c.capacityMW ?? 0);
       steps.push({ t: c.t, v: acc });
     }
     steps.push({ t: maxT, v: acc });

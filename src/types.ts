@@ -55,6 +55,8 @@ export interface Commitment {
   sourceName: string;
   sourceUrl: string;
   confidence: Confidence;
+  /** How capacityMW should be read. Omitted on legacy headline-MW rows. */
+  numberKind?: "contracted IT";
 }
 
 // ---- Global data center directory ----

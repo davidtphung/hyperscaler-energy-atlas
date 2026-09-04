@@ -24,7 +24,10 @@ export default function ForecastView() {
     const prep = prepare(COMMITMENTS);
     const startYear = Math.min(...prep.map((c) => c.year));
     const now = 2026;
-    const cumAt = (y: number) => prep.filter((c) => c.year <= y).reduce((a, c) => a + (c.capacityMW ?? 0), 0);
+    const cumAt = (y: number) =>
+      prep
+        .filter((c) => c.year <= y && c.numberKind !== "contracted IT")
+        .reduce((a, c) => a + (c.capacityMW ?? 0), 0);
     const hist: { year: number; mw: number }[] = [];
     for (let y = startYear; y <= now; y++) hist.push({ year: y, mw: cumAt(y) });
     const base2026 = hist[hist.length - 1].mw;
