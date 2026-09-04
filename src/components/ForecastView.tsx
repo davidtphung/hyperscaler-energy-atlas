@@ -58,12 +58,16 @@ export default function ForecastView() {
   return (
     <div className="page page--forecast">
       <header className="page__head">
-        <p className="overview__eyebrow">Forecast</p>
+        <p className="overview__eyebrow">Analysis model toy</p>
         <h1 className="page__title">Where the buildout could go</h1>
         <p className="page__lead">
-          A transparent projection of committed capacity through {PROJ_END}, extending the observed buildout under three
-          compound scenarios. This is a model, not a source-backed forecast. The cone shows how policy, power, and
-          permitting could widen or pinch the path.
+          Model toy, not sourced forecast. This cone applies 8 / 20 / 34 percent CAGR to atlas announcement capacity. It
+          is not the Forecast Lab default and it is not a source-backed electricity path. For sourced IEA, LBNL, EPRI,
+          and DOE pins plus the bottleneck schedule, open{" "}
+          <a className="flab-inline-link" href="./forecast/">
+            Forecast Lab
+          </a>
+          .
         </p>
       </header>
 

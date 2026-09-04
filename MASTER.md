@@ -1,6 +1,6 @@
 # HYPERGRID · Master Document
 
-**Version 1.2 · 2026-06-29**
+**Version 1.3 · 2026-09-04**
 
 The Hyperscaler Energy Atlas. A premium, source-backed, interactive mission dashboard mapping the energy, infrastructure, real estate, and policy behind the AI buildout, from the 1940s origins of computing to the gigawatt AI factories of today.
 
@@ -17,7 +17,7 @@ HYPERGRID is a single static single-page application that unifies several source
 
 ---
 
-## 2. Views (9 tabs)
+## 2. Views (10 tabs)
 
 | Tab | What it does |
 |---|---|
@@ -25,9 +25,10 @@ HYPERGRID is a single static single-page application that unifies several source
 | **Data Centers** | Searchable, sortable global directory of 260 facilities across 46 countries (93 in China). Map views Global / China / US, click a dot for a facility info card, top-countries breakdown, click-to-sort columns (MW top and least, undisclosed last). |
 | **Economics** | 25 real estate transactions (M&A, take-privates, sale-leasebacks, land) on a deal map with sortable table, a price-per-square-foot scatter, construction cost benchmarks (USD millions per MW by market), and a long-lead equipment chart (transformers 128 to 210 weeks, generators, switchgear, chillers, UPS). |
 | **History** | 28 source-backed milestones from ENIAC (1945) through carrier hotels, colocation, cloud and hyperscale, edge, and the AI factory era, grouped on an editorial timeline by era. |
+| **Forecast Lab** | First-class `/forecast` (also `/forecast-lab`) product. Bottleneck schedule is the main chart (desk estimate ranges, not measurements). History is annual DC electricity TWh with IEA and LBNL US as separate series. Sourced bull/base/bear fan from IEA/LBNL pins. Peak GW cards (EPRI, DOE) off the TWh axis. Atlas announcement GW in the sidebar only. |
 | **Contested** | Investigative tracker of 23 data center projects that were blocked, stalled, denied, withdrawn, put under moratorium, or litigated. Severity scored 1 to 5, US and world maps, contestation themes. |
 | **Policy** | 41 for / against / mixed AI data center policy actions (FERC RM26-4, White House ratepayer pledge, Texas SB6, Ireland CRU and LEAP, Virginia bills) with a stance map, balance bar, and level filters. |
-| **Analysis** | Energy source portfolio (donut, firm vs speculative, evidence strength, before and after the AI boom era comparison), a live Great Britain national grid generation feed, and a forecast fan chart (constrained / base / aggressive) of committed capacity to 2031. |
+| **Analysis** | Energy source portfolio (donut, firm vs speculative, evidence strength, before and after the AI boom era comparison), a live Great Britain national grid generation feed, and a CAGR model toy (8 / 20 / 34) of committed capacity to 2031, labeled "model toy, not sourced forecast". |
 | **About** | Methodology, data schema, scope and limits, plus the full source and provenance list. |
 | **Donate** | Crypto wallets (Bitcoin, cbBTC, USDC, Ethereum) with copy-to-clipboard, Venmo, and disclaimers. |
 
@@ -42,6 +43,7 @@ HYPERGRID is a single static single-page application that unifies several source
 | Real estate deals | `src/data/realestate.ts` | 25 |
 | Construction (materials + cost) | `src/data/construction.ts` | 20 (13 materials, 7 benchmarks) |
 | History milestones | `src/data/history.ts` | 28 |
+| Forecast Lab TWh pins | `src/data/forecast-electricity.csv` | 20 sourced rows (IEA + LBNL, no invented intermediates) |
 | Contested projects | `src/data/contested.ts` | 23 |
 | Policy actions | `src/data/policy.ts` | 41 |
 
@@ -98,12 +100,16 @@ DNS: GoDaddy CNAME `hypergrid` to `davidtphung.github.io` (GitHub Pages, not the
 - Capacity figures are headline program sizes in electrical megawatts, not instantaneous nameplate generation.
 - Confidence reflects how well figures are sourced; firmness (status) is tracked separately from confidence.
 - Per-tenant cloud spend programs (Microsoft MACC, Azure and AWS savings plans) are private billing metrics and are intentionally out of scope. Public, primary-source-backed commitments are tracked.
-- The forecast is a transparent compound-growth model, not a source-backed projection.
+- Forecast Lab is the sourced electricity product. The Analysis CAGR cone is a transparent compound-growth model toy, not a source-backed projection, and is not the Forecast Lab default.
 - The directory is a curated, source-backed subset of the many thousands of facilities worldwide.
 
 ---
 
 ## 9. Changelog
+
+### v1.3 — 2026-09-04
+- Added first-class **Forecast Lab** at `/forecast` and `/forecast-lab`: bottleneck schedule (Energy Desk ranges), sourced IEA/LBNL TWh history and bull/base/bear pins, EPRI/DOE peak GW cards, atlas announcement GW sidebar.
+- Analysis CAGR (8 / 20 / 34) remains, labeled as a model toy, not a sourced forecast.
 
 ### v1.2 — 2026-06-29
 - Added **Economics** view: 25 real estate deals, deal map, $/sqft scatter, construction cost benchmarks, long-lead equipment lead-time chart.

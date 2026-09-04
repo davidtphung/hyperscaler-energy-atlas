@@ -1,4 +1,14 @@
-export type Page = "atlas" | "datacenters" | "economics" | "history" | "contested" | "policy" | "portfolio" | "about" | "donate";
+export type Page =
+  | "atlas"
+  | "datacenters"
+  | "economics"
+  | "history"
+  | "forecast"
+  | "contested"
+  | "policy"
+  | "portfolio"
+  | "about"
+  | "donate";
 
 interface Props {
   page: Page;
@@ -14,6 +24,7 @@ const PAGES: { id: Page; label: string }[] = [
   { id: "datacenters", label: "Data Centers" },
   { id: "economics", label: "Economics" },
   { id: "history", label: "History" },
+  { id: "forecast", label: "Forecast Lab" },
   { id: "contested", label: "Contested" },
   { id: "policy", label: "Policy" },
   { id: "portfolio", label: "Analysis" },
@@ -35,7 +46,7 @@ export default function TopBar({ page, onPageChange, query, onQuery, onToggleRai
         </button>
       )}
 
-      <div className="brand">
+      <button className="brand" type="button" onClick={() => onPageChange("atlas")} aria-label="HYPERGRID home">
         <span className="brand__mark" aria-hidden="true">
           <svg width="17" height="17" viewBox="0 0 32 32" fill="currentColor">
             <path d="M17.5 4 7 18h6.5L12 28l12-14h-7z" />
@@ -45,7 +56,7 @@ export default function TopBar({ page, onPageChange, query, onQuery, onToggleRai
           <span className="brand__name">HYPERGRID</span>
           <span className="brand__sub">Hyperscaler Energy Atlas</span>
         </span>
-      </div>
+      </button>
 
       <nav className="nav-tabs" aria-label="Views">
         {PAGES.map((p) => (

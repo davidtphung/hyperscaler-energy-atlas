@@ -49,6 +49,14 @@ export default function AboutView({ total, totalGW }: Props) {
             still speculative on capacity, and the interface keeps those two ideas distinct.
           </p>
 
+          <h2>Forecast Lab versus the Analysis toy</h2>
+          <p>
+            Forecast Lab at /forecast is the sourced electricity product: a bottleneck schedule, IEA and LBNL TWh
+            series kept apart, and bull/base/bear pins with a source on every point. The Analysis page still carries an
+            8 / 20 / 34 percent CAGR cone of atlas announcement capacity. That cone is a model toy, not a sourced
+            forecast.
+          </p>
+
           <h2>Live grid input</h2>
           <p>
             The Portfolio view includes a live reading of the Great Britain national grid from the free, keyless

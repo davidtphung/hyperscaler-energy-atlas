@@ -17,9 +17,11 @@ import DataCentersView from "./components/DataCentersView";
 import ContestedView from "./components/ContestedView";
 import PolicyView from "./components/PolicyView";
 import ForecastView from "./components/ForecastView";
+import ForecastLabView from "./components/ForecastLabView";
 import EconomicsView from "./components/EconomicsView";
 import HistoryView from "./components/HistoryView";
 import DonateView from "./components/DonateView";
+import { isForecastPath, pageFromLocation, syncPageUrl } from "./lib/routes";
 
 // Average month in ms. Playback speed is expressed as simulated months per real
 // second, so "6mo/s" advances the scrubber six months for every wall-clock
@@ -44,7 +46,7 @@ export default function App() {
     eras: new Set(),
     query: "",
   });
-  const [page, setPage] = useState<Page>("atlas");
+  const [page, setPage] = useState<Page>(() => (isForecastPath(window.location.pathname) ? "forecast" : "atlas"));
   const [view, setView] = useState<MapView>("us");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [scrubT, setScrubT] = useState(domain.maxT);
@@ -166,7 +168,21 @@ export default function App() {
     setPage(p);
     setRailOpen(false);
     setDetailOpen(false);
+    syncPageUrl(p);
   }, []);
+
+  useEffect(() => {
+    const onPop = () => setPage(pageFromLocation());
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  useEffect(() => {
+    document.title =
+      page === "forecast"
+        ? "Forecast Lab · HYPERGRID"
+        : "HYPERGRID · Hyperscaler Energy Atlas";
+  }, [page]);
 
   // Escape closes overlays / clears selection.
   useEffect(() => {
@@ -188,8 +204,8 @@ export default function App() {
 
   return (
     <>
-      <a className="skip-link" href="#map">
-        Skip to map
+      <a className="skip-link" href={page === "forecast" ? "#flab-bn-title" : "#map"}>
+        {page === "forecast" ? "Skip to bottleneck schedule" : "Skip to map"}
       </a>
 
       <div className="app">
@@ -271,6 +287,7 @@ export default function App() {
             {page === "datacenters" && <DataCentersView />}
             {page === "economics" && <EconomicsView />}
             {page === "history" && <HistoryView />}
+            {page === "forecast" && <ForecastLabView />}
             {page === "contested" && <ContestedView />}
             {page === "policy" && <PolicyView />}
             {page === "portfolio" && (

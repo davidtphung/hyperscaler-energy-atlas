@@ -1,0 +1,514 @@
+import { useMemo, useState } from "react";
+import { COMMITMENTS } from "../data/commitments";
+import {
+  BOTTLENECKS,
+  CONFLICT_CALLOUT,
+  FAN_CASE_META,
+  FORECAST_TWH,
+  PEAK_GW_CARDS,
+  SOURCE_SERIES_COLOR,
+  fanAnchor,
+  historyPoints,
+  ieaUsBase2030,
+  lastHistoryOrEstimate,
+  pinFromBottleneck,
+  pinFromPeak,
+  pinFromTwh,
+  scenarioPoints,
+  type FanCase,
+  type ForecastGeo,
+  type ForecastTwhPoint,
+  type InspectablePin,
+} from "../data/forecast";
+import { formatGW } from "../lib/format";
+import { useElementSize } from "../lib/hooks";
+
+const FAN_ORDER: FanCase[] = ["bear", "base", "bull"];
+
+export default function ForecastLabView() {
+  const [geo, setGeo] = useState<ForecastGeo>("US");
+  const [fanCase, setFanCase] = useState<FanCase>("base");
+  const [selected, setSelected] = useState<InspectablePin | null>(null);
+  const { ref, width } = useElementSize<HTMLDivElement>();
+
+  const atlas = useMemo(() => {
+    const withMw = COMMITMENTS.filter((c) => c.capacityMW != null);
+    const totalMW = withMw.reduce((a, c) => a + (c.capacityMW ?? 0), 0);
+    const top = [...withMw].sort((a, b) => (b.capacityMW ?? 0) - (a.capacityMW ?? 0)).slice(0, 8);
+    return { totalMW, n: COMMITMENTS.length, nWithMw: withMw.length, top };
+  }, []);
+
+  const model = useMemo(() => buildChartModel(geo, fanCase), [geo, fanCase]);
+
+  const h = 340;
+  const padL = 48;
+  const padR = 16;
+  const padT = 18;
+  const padB = 30;
+  const innerW = Math.max(1, width - padL - padR);
+  const innerH = h - padT - padB;
+  const x = (year: number) => padL + ((year - model.xMin) / (model.xMax - model.xMin)) * innerW;
+  const y = (twh: number) => padT + innerH - (twh / model.yMax) * innerH;
+  const line = (pts: ForecastTwhPoint[]) =>
+    pts.map((p, i) => `${i ? "L" : "M"}${x(p.year)},${y(p.twh)}`).join(" ");
+
+  const onSelectTwh = (p: ForecastTwhPoint) => setSelected(pinFromTwh(p));
+
+  return (
+    <div className="page page--flab">
+      <header className="flab-head">
+        <p className="overview__eyebrow">Forecast Lab</p>
+        <h1 className="page__title">Bottlenecks first. Sourced electricity second.</h1>
+        <p className="page__lead">
+          Four layers, four axes. The schedule is the product. History is annual DC electricity in TWh, IEA and LBNL
+          kept apart. The fan is sourced pins, not an 8 / 20 / 34 percent CAGR toy. Atlas announcement GW stays in the
+          sidebar as Hypergrid commitments intent.
+        </p>
+      </header>
+
+      <section className="flab-bn" aria-labelledby="flab-bn-title">
+        <div className="flab-bn__head">
+          <div>
+            <h2 id="flab-bn-title" className="flab-h2">
+              Bottleneck schedule
+            </h2>
+            <p className="flab-bn__lead">
+              Main chart. Horizontal lead-time strip. Every number below is assumed: desk estimate, not a measurement.
+            </p>
+          </div>
+          <span className="flab-tag flab-tag--assumed">assumed · desk estimate</span>
+        </div>
+        <BottleneckStrip selectedId={selected?.id ?? null} onSelect={(b) => setSelected(pinFromBottleneck(b))} />
+      </section>
+
+      {geo === "US" && (
+        <aside className="flab-conflict" role="note">
+          <strong>{CONFLICT_CALLOUT.title}.</strong> {CONFLICT_CALLOUT.body}
+        </aside>
+      )}
+
+      <div className="flab-layout">
+        <div className="flab-main">
+          <section className="flab-card" aria-labelledby="flab-hist-title">
+            <div className="flab-card__head">
+              <div>
+                <h2 id="flab-hist-title" className="flab-h2">
+                  History and sourced fan
+                </h2>
+                <p className="card__sub">
+                  Annual DC electricity, TWh only. {geo === "US" ? "IEA and LBNL as separate series." : "IEA world series."}{" "}
+                  No invented LBNL 2017 or 2019-2022 yearly rows. Fan cases map to IEA / LBNL pins.
+                </p>
+              </div>
+              <div className="flab-toggles">
+                <div className="chips" role="group" aria-label="Geography">
+                  <button className="chip" aria-pressed={geo === "world"} onClick={() => setGeo("world")}>
+                    World
+                  </button>
+                  <button className="chip" aria-pressed={geo === "US"} onClick={() => setGeo("US")}>
+                    US
+                  </button>
+                </div>
+                <div className="chips" role="group" aria-label="Fan case">
+                  {FAN_ORDER.map((k) => (
+                    <button key={k} className="chip" aria-pressed={fanCase === k} onClick={() => setFanCase(k)}>
+                      <span className="chip__dot" style={{ background: FAN_CASE_META[k].color }} />
+                      {FAN_CASE_META[k].label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="fc-chart flab-chart" ref={ref} style={{ height: h }}>
+              {width > 0 && (
+                <svg
+                  width={width}
+                  height={h}
+                  role="img"
+                  aria-label={`${geo} annual data-center electricity in TWh with sourced ${FAN_CASE_META[fanCase].label} fan`}
+                >
+                  {model.yTicks.map((v) => (
+                    <g key={v}>
+                      <line x1={padL} y1={y(v)} x2={width - padR} y2={y(v)} className="tl-tick" />
+                      <text x={padL - 8} y={y(v) + 3} textAnchor="end" className="tl-tick-label">
+                        {v}
+                      </text>
+                    </g>
+                  ))}
+                  {model.xTicks.map((yr) => (
+                    <text key={yr} x={x(yr)} y={h - 8} textAnchor="middle" className="tl-tick-label">
+                      {yr}
+                    </text>
+                  ))}
+                  <text x={padL} y={12} className="tl-tick-label">
+                    TWh
+                  </text>
+
+                  {model.fanBand && (
+                    <path d={fanBandPath(model.fanBand, x, y)} fill="rgba(245,213,71,0.07)" stroke="none" />
+                  )}
+
+                  {model.histSeries.map((s) => (
+                    <path
+                      key={s.key}
+                      d={line(s.pts)}
+                      fill="none"
+                      stroke={s.color}
+                      strokeWidth={2.1}
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                    />
+                  ))}
+
+                  {model.fanRays.map((r) => (
+                    <path
+                      key={r.key}
+                      d={line(r.pts)}
+                      fill="none"
+                      stroke={r.color}
+                      strokeWidth={r.active ? 2.4 : 1.2}
+                      strokeDasharray="5 4"
+                      opacity={r.active ? 1 : 0.35}
+                    />
+                  ))}
+
+                  {model.allPins.map((p) => {
+                    const active = selected?.id === p.id;
+                    const r = p.status === "estimate" ? 5.2 : 4.4;
+                    return (
+                      <g key={p.id}>
+                        <circle
+                          cx={x(p.year)}
+                          cy={y(p.twh)}
+                          r={active ? r + 2.4 : r}
+                          fill={p.status === "scenario" ? "var(--ink-800)" : SOURCE_SERIES_COLOR[p.source] ?? "#f1efe8"}
+                          stroke={SOURCE_SERIES_COLOR[p.source] ?? "#f1efe8"}
+                          strokeWidth={p.status === "scenario" ? 2 : 1.2}
+                          className="flab-pin"
+                          role="button"
+                          tabIndex={0}
+                          aria-label={`${p.twh} TWh ${p.geography} ${p.year} ${p.source} ${p.status}`}
+                          onClick={() => onSelectTwh(p)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              onSelectTwh(p);
+                            }
+                          }}
+                        />
+                        {p.status === "estimate" && (
+                          <circle
+                            cx={x(p.year)}
+                            cy={y(p.twh)}
+                            r={1.6}
+                            fill="var(--ink-900)"
+                            pointerEvents="none"
+                          />
+                        )}
+                      </g>
+                    );
+                  })}
+                </svg>
+              )}
+            </div>
+
+            <ul className="flab-legend">
+              <li>
+                <span className="flab-sw" style={{ background: SOURCE_SERIES_COLOR.IEA }} />
+                IEA sourced
+              </li>
+              {geo === "US" && (
+                <li>
+                  <span className="flab-sw" style={{ background: SOURCE_SERIES_COLOR["LBNL-2024"] }} />
+                  LBNL sourced
+                </li>
+              )}
+              <li>
+                <span className="flab-sw flab-sw--open" />
+                Scenario pin
+              </li>
+              <li>
+                <span className="flab-sw flab-sw--est" />
+                Near-term estimate
+              </li>
+            </ul>
+            <p className="flab-case-note">
+              <b>{FAN_CASE_META[fanCase].label} case.</b> {FAN_CASE_META[fanCase].note} Each pin keeps unit, year,
+              geography, and sourceUrl.
+            </p>
+          </section>
+
+          <section className="flab-peaks" aria-labelledby="flab-peak-title">
+            <div className="flab-card__head">
+              <div>
+                <h2 id="flab-peak-title" className="flab-h2">
+                  Peak GW cards
+                </h2>
+                <p className="card__sub">
+                  Peak and incremental gigawatts. Separate from the TWh chart. Do not read these as annual electricity.
+                </p>
+              </div>
+              <span className="flab-tag flab-tag--sourced">sourced · GW, not TWh</span>
+            </div>
+            <div className="flab-peak-grid">
+              {PEAK_GW_CARDS.map((card) => (
+                <button
+                  key={card.id}
+                  className={`flab-peak${selected?.id === card.id ? " is-on" : ""}`}
+                  onClick={() => setSelected(pinFromPeak(card))}
+                >
+                  <span className="flab-peak__v">
+                    {card.unit === "GW incremental" ? "+" : ""}
+                    {card.gw}
+                    <small> {card.unit}</small>
+                  </span>
+                  <span className="flab-peak__l">{card.label}</span>
+                  <span className="flab-peak__s">
+                    {card.source} · {card.year} · {card.geography}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <aside className="flab-side">
+          <section className="flab-card flab-card--side" aria-labelledby="flab-atlas-title">
+            <div className="flab-card__head">
+              <div>
+                <h2 id="flab-atlas-title" className="flab-h2">
+                  Atlas announcement GW
+                </h2>
+                <p className="card__sub">
+                  Sidebar only. Hypergrid commitments intent. Never the TWh axis.
+                </p>
+              </div>
+              <span className="flab-tag">intent · GW</span>
+            </div>
+            <div className="flab-atlas-stat">
+              <span className="flab-atlas-stat__v">
+                {formatGW(atlas.totalMW)}
+                <small> GW</small>
+              </span>
+              <span className="flab-atlas-stat__l">
+                Sum of {atlas.nWithMw} atlas rows with disclosed MW, of {atlas.n} commitments. Headline program size,
+                not generation and not TWh.
+              </span>
+            </div>
+            <ol className="flab-atlas-list">
+              {atlas.top.map((c) => (
+                <li key={c.id}>
+                  <span className="flab-atlas-list__n">{c.project}</span>
+                  <span className="flab-atlas-list__m">{formatGW(c.capacityMW ?? 0)} GW</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          <section className="flab-card flab-card--side" aria-labelledby="flab-pin-title">
+            <h2 id="flab-pin-title" className="flab-h2">
+              Pin inspector
+            </h2>
+            {selected ? (
+              <dl className="flab-pin-dl">
+                <div>
+                  <dt>Value</dt>
+                  <dd>
+                    {selected.value} {selected.unit}
+                  </dd>
+                </div>
+                <div>
+                  <dt>Year</dt>
+                  <dd>{selected.year}</dd>
+                </div>
+                <div>
+                  <dt>Geography</dt>
+                  <dd>{selected.geography}</dd>
+                </div>
+                <div>
+                  <dt>Status</dt>
+                  <dd>{selected.status}</dd>
+                </div>
+                <div>
+                  <dt>Scenario</dt>
+                  <dd>{selected.scenario}</dd>
+                </div>
+                <div>
+                  <dt>Source</dt>
+                  <dd>{selected.source}</dd>
+                </div>
+                <div>
+                  <dt>Honest label</dt>
+                  <dd>{selected.numberKind === "assumed" ? "assumed · desk estimate" : "sourced"}</dd>
+                </div>
+                {selected.notes && (
+                  <div className="flab-pin-dl--wide">
+                    <dt>Notes</dt>
+                    <dd>{selected.notes}</dd>
+                  </div>
+                )}
+                {selected.sourceUrl && (
+                  <div className="flab-pin-dl--wide">
+                    <dt>sourceUrl</dt>
+                    <dd>
+                      <a href={selected.sourceUrl} target="_blank" rel="noopener noreferrer">
+                        {selected.sourceUrl}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+              </dl>
+            ) : (
+              <p className="card__sub">Click a TWh pin, a peak GW card, or a bottleneck bar. Inspector shows unit, year, geography, status, and sourceUrl.</p>
+            )}
+          </section>
+        </aside>
+      </div>
+
+      <section className="flab-method prose">
+        <h2>What this lab will not do</h2>
+        <p>
+          It will not default to the Analysis CAGR toy (8 / 20 / 34). It will not plot announcement MW on the TWh
+          axis. It will not invent LBNL yearly intermediates for 2017 or 2019 through 2022. It will not silently
+          average IEA and LBNL US history. Peak GW cards stay off the electricity chart.
+        </p>
+        <p>
+          Data credits: IEA Key Questions on Energy and AI (Tables A.1 / A.4), LBNL 2024 and 2025 data-center
+          electricity series, EPRI Powering Intelligence peak cases, DOE July 2025 midpoint incremental GW. Bottleneck
+          months are Energy Desk ranges. Sourced transformer week ranges remain on the Economics page and are not mixed
+          into this strip.
+        </p>
+      </section>
+
+      <footer className="flab-foot">
+        Built by{" "}
+        <a href="https://x.com/davidtphung" target="_blank" rel="noopener noreferrer">
+          David T Phung
+        </a>
+        . {FORECAST_TWH.length} sourced TWh rows, embedded exactly.
+      </footer>
+    </div>
+  );
+}
+
+function BottleneckStrip({
+  selectedId,
+  onSelect,
+}: {
+  selectedId: string | null;
+  onSelect: (b: (typeof BOTTLENECKS)[number]) => void;
+}) {
+  const monthsMax = 192;
+  const ticks = [
+    { m: 0, l: "0" },
+    { m: 12, l: "1y" },
+    { m: 24, l: "2y" },
+    { m: 36, l: "3y" },
+    { m: 84, l: "7y" },
+    { m: 96, l: "8y" },
+    { m: 180, l: "15y" },
+  ];
+
+  return (
+    <div className="flab-strip">
+      <div className="flab-strip__axis" aria-hidden="true">
+        {ticks.map((t) => (
+          <span key={t.m} className="flab-strip__tick" style={{ left: `${(t.m / monthsMax) * 100}%` }}>
+            {t.l}
+          </span>
+        ))}
+      </div>
+      {BOTTLENECKS.map((b) => {
+        const left = (b.lowMonths / monthsMax) * 100;
+        const width = ((b.highMonths - b.lowMonths) / monthsMax) * 100;
+        const range = b.highOpen
+          ? `${b.lowMonths / 12} to ${b.highMonths / 12}+ years`
+          : `${b.lowMonths} to ${b.highMonths} months`;
+        return (
+          <button
+            key={b.id}
+            className={`flab-strip__row${selectedId === b.id ? " is-on" : ""}`}
+            onClick={() => onSelect(b)}
+          >
+            <span className="flab-strip__lab">
+              <b>{b.short}</b>
+              <em>assumed</em>
+            </span>
+            <span className="flab-strip__track">
+              <span className="flab-strip__bar" style={{ left: `${left}%`, width: `${Math.max(width, 1.4)}%` }} />
+              {b.highOpen && <span className="flab-strip__plus" style={{ left: `${(b.highMonths / monthsMax) * 100}%` }} />}
+            </span>
+            <span className="flab-strip__val">
+              {range}
+              <small>desk estimate, not a measurement</small>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function buildChartModel(geo: ForecastGeo, fanCase: FanCase) {
+  const ieaHist = historyPoints(geo, "IEA");
+  const lbnlHist = geo === "US" ? historyPoints(geo, "LBNL") : [];
+  const scenarios = scenarioPoints(geo);
+  const allPins = [...ieaHist, ...lbnlHist, ...scenarios];
+  const xMin = geo === "US" ? 2014 : 2023;
+  const xMax = 2030;
+  const yMax = Math.max(200, ...allPins.map((p) => p.twh)) * 1.08;
+  const step = geo === "world" ? 200 : 150;
+  const yTicks: number[] = [];
+  for (let v = 0; v <= yMax; v += step) yTicks.push(v);
+  const xTicks = geo === "US" ? [2014, 2016, 2018, 2023, 2025, 2028, 2030] : [2023, 2024, 2025, 2028, 2030];
+
+  const histSeries = [
+    { key: "IEA", color: SOURCE_SERIES_COLOR.IEA, pts: ieaHist },
+    ...(lbnlHist.length ? [{ key: "LBNL", color: SOURCE_SERIES_COLOR["LBNL-2024"], pts: lbnlHist }] : []),
+  ];
+
+  const fanRays: { key: string; color: string; active: boolean; pts: ForecastTwhPoint[] }[] = [];
+  for (const k of FAN_ORDER) {
+    const dest = fanAnchor(geo, k);
+    const start =
+      geo === "US"
+        ? lastHistoryOrEstimate(lbnlHist) ?? lastHistoryOrEstimate(ieaHist)
+        : lastHistoryOrEstimate(ieaHist);
+    if (!start) continue;
+    fanRays.push({
+      key: k,
+      color: FAN_CASE_META[k].color,
+      active: k === fanCase,
+      pts: [start, dest],
+    });
+  }
+  if (geo === "US") {
+    const ieaStart = lastHistoryOrEstimate(ieaHist);
+    const ieaBase = ieaUsBase2030();
+    if (ieaStart) {
+      fanRays.push({
+        key: "iea-us-base",
+        color: SOURCE_SERIES_COLOR.IEA,
+        active: fanCase === "base",
+        pts: [ieaStart, ieaBase],
+      });
+    }
+  }
+
+  const bear = fanAnchor(geo, "bear");
+  const bull = fanAnchor(geo, "bull");
+  const start =
+    geo === "US" ? lastHistoryOrEstimate(lbnlHist) ?? lastHistoryOrEstimate(ieaHist) : lastHistoryOrEstimate(ieaHist);
+  const fanBand = start ? { start, low: bear, high: bull } : null;
+
+  return { histSeries, fanRays, fanBand, allPins, xMin, xMax, yMax, yTicks, xTicks };
+}
+
+function fanBandPath(
+  band: { start: ForecastTwhPoint; low: ForecastTwhPoint; high: ForecastTwhPoint },
+  x: (y: number) => number,
+  y: (t: number) => number
+): string {
+  return `M${x(band.start.year)},${y(band.start.twh)} L${x(band.high.year)},${y(band.high.twh)} L${x(band.low.year)},${y(band.low.twh)} Z`;
+}
