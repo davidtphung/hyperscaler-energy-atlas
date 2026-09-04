@@ -5,10 +5,15 @@ import {
   BOTTLENECK_CHIPS,
   BOTTLENECK_SCALE_DAYS,
   CONFLICT_CALLOUT,
+  ERCOT_FACT_SHEET_URL,
   ERCOT_QUEUE_NOTE,
   FAN_CASE_META,
   FORECAST_TWH,
+  GEV_LABELED_SUM,
   GT_FAST_PATH_CALLOUT,
+  INVENTORY_CALLOUT,
+  INVENTORY_GAP,
+  INVENTORY_PINS,
   PEAK_GW_CARDS,
   SOURCE_SERIES_COLOR,
   bottleneckToDays,
@@ -18,11 +23,13 @@ import {
   lastHistoryOrEstimate,
   pinFromBottleneck,
   pinFromBottleneckChip,
+  pinFromInventory,
   pinFromPeak,
   pinFromTwh,
   scenarioPoints,
   type BottleneckChip,
   type BottleneckPin,
+  type InventoryPin,
   type FanCase,
   type ForecastGeo,
   type ForecastTwhPoint,
@@ -94,6 +101,8 @@ export default function ForecastLabView() {
           onSelectChip={(c) => setSelected(pinFromBottleneckChip(c))}
         />
       </section>
+
+      <InventoryLayer selectedId={selected?.id ?? null} onSelect={(p) => setSelected(pinFromInventory(p))} />
 
       {geo === "US" && (
         <aside className="flab-conflict" role="note">
@@ -374,7 +383,7 @@ export default function ForecastLabView() {
                 )}
               </dl>
             ) : (
-              <p className="card__sub">Click a TWh pin, a peak GW card, a bottleneck bar, or a sourced chip. Source names open sourceUrl.</p>
+              <p className="card__sub">Click a TWh pin, a peak GW card, a bottleneck bar, or an inventory chip. Source names open sourceUrl.</p>
             )}
           </section>
         </aside>
@@ -385,14 +394,15 @@ export default function ForecastLabView() {
         <p>
           It will not default to the Analysis CAGR toy (8 / 20 / 34). It will not plot announcement MW on the TWh
           axis. It will not invent LBNL yearly intermediates for 2017 or 2019 through 2022. It will not silently
-          average IEA and LBNL US history. It will not invent bottleneck midpoints or restudy months. Peak GW cards
-          stay off the electricity chart.
+          average IEA and LBNL US history.           It will not invent bottleneck midpoints or restudy months. It will not sum OEM backlogs or merge firm with
+          SRA. It will not invent hyperscaler GT ownership. Peak GW cards stay off the electricity chart.
         </p>
         <p>
           Data credits: IEA Key Questions on Energy and AI (Tables A.1 / A.4 and §1.3), IEA battery-storage commentary,
           LBNL 2024 and 2025 data-center electricity series, EPRI Powering Intelligence peak cases and EPRI / Utility
           Dive gas-turbine waits, DOE July 2025 midpoint incremental GW, Southern Nuclear Vogtle CODs. The default
-          bottleneck strip is sourced pins only. Wood Mackenzie transformer weeks are omitted from this strip.
+          bottleneck strip is sourced pins only. Inventory is a thin sourced layer under it: GEV, Siemens Energy, MHI,
+          Vistra 10-K, and ERCOT / IEA queue snapshots. Wood Mackenzie transformer weeks are omitted from this strip.
         </p>
       </section>
 
@@ -404,6 +414,134 @@ export default function ForecastLabView() {
         . {FORECAST_TWH.length} sourced TWh rows, embedded exactly.
       </footer>
     </div>
+  );
+}
+
+function InventoryLayer({
+  selectedId,
+  onSelect,
+}: {
+  selectedId: string | null;
+  onSelect: (p: InventoryPin) => void;
+}) {
+  const backlog = INVENTORY_PINS.filter((p) => p.column === "backlog");
+  const delivered = INVENTORY_PINS.filter((p) => p.column === "delivered");
+  const queue = INVENTORY_PINS.filter((p) => p.column === "queue");
+  const heroes = queue.filter((p) => p.weight === "hero");
+  const muted = queue.filter((p) => p.weight !== "hero");
+
+  return (
+    <section className="flab-inv" aria-labelledby="flab-inv-title">
+      <div className="flab-inv__head">
+        <div>
+          <h2 id="flab-inv-title" className="flab-h2">
+            Inventory (thin)
+          </h2>
+          <p className="flab-bn__lead">
+            Metal vs queue. Secondary to the lead-time strip. Firm and SRA stay separate. OEM books are not summed.
+          </p>
+        </div>
+        <span className="flab-tag flab-tag--sourced">sourced · not announcement MW</span>
+      </div>
+      <p className="flab-inv-callout">{INVENTORY_CALLOUT}</p>
+      <div className="flab-inv-grid">
+        <div className="flab-inv-col">
+          <h3 className="flab-inv-col__h">Backlog</h3>
+          <p className="flab-inv-col__sub">OEM books. Firm is binding. SRA is hope. Not one industry total.</p>
+          <div className="flab-inv-chips">
+            {backlog.map((p) => (
+              <InventoryChip key={p.id} pin={p} selected={selectedId === p.id} onSelect={onSelect} />
+            ))}
+          </div>
+          <p className="flab-inv-note">{GEV_LABELED_SUM}</p>
+        </div>
+        <div className="flab-inv-col">
+          <h3 className="flab-inv-col__h">Delivered</h3>
+          <p className="flab-inv-col__sub">Named operating metal. Not a hyperscaler ownership map.</p>
+          <div className="flab-inv-chips">
+            {delivered.map((p) => (
+              <InventoryChip key={p.id} pin={p} selected={selectedId === p.id} onSelect={onSelect} />
+            ))}
+          </div>
+          <p className="flab-inv-gap">{INVENTORY_GAP}</p>
+        </div>
+        <div className="flab-inv-col">
+          <h3 className="flab-inv-col__h">Queue vs exists</h3>
+          <p className="flab-inv-col__sub">Energized and capacity are the hero. Queue snapshots stay muted and un-averaged.</p>
+          <div className="flab-inv-heroes">
+            {heroes.map((p) => (
+              <a
+                key={p.id}
+                className={`flab-inv-hero${selectedId === p.id ? " is-on" : ""}`}
+                href={p.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => onSelect(p)}
+              >
+                <span className="flab-inv-hero__v">
+                  {p.value}
+                  <small> {p.unit}</small>
+                </span>
+                <span className="flab-inv-hero__l">{p.label}</span>
+                <span className="flab-inv-hero__s">
+                  {p.source} · {p.year} · {p.geography}
+                </span>
+              </a>
+            ))}
+          </div>
+          <div className="flab-inv-chips">
+            {muted.map((p) => (
+              <InventoryChip key={p.id} pin={p} selected={selectedId === p.id} onSelect={onSelect} />
+            ))}
+          </div>
+          <a className="flab-inv-extra" href={ERCOT_FACT_SHEET_URL} target="_blank" rel="noopener noreferrer">
+            ERCOT Fact Sheet (2022 file, not a 2026 number)
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function InventoryChip({
+  pin,
+  selected,
+  onSelect,
+}: {
+  pin: InventoryPin;
+  selected: boolean;
+  onSelect: (p: InventoryPin) => void;
+}) {
+  return (
+    <a
+      className={`flab-inv-chip flab-inv-chip--${pin.kind}${pin.weight === "muted" || pin.kind === "sra" || pin.kind === "queue" ? " flab-inv-chip--soft" : ""}${selected ? " is-on" : ""}`}
+      href={pin.sourceUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => onSelect(pin)}
+    >
+      <span className="flab-inv-chip__k">
+        {pin.id === "gev-slots-2031"
+          ? "Secondary"
+          : pin.kind === "sra"
+            ? "SRA"
+            : pin.kind === "firm"
+              ? "Firm"
+              : pin.kind === "queue"
+                ? "Queue"
+                : pin.kind === "frame"
+                  ? "Frame"
+                  : "Sourced"}
+      </span>
+      <span className="flab-inv-chip__v">
+        {pin.value} {pin.unit}
+      </span>
+      <span className="flab-inv-chip__l">{pin.label}</span>
+      <span className="flab-inv-chip__s">
+        {pin.source}
+        {pin.year ? ` · ${pin.year}` : ""} · {pin.geography}
+      </span>
+    </a>
   );
 }
 

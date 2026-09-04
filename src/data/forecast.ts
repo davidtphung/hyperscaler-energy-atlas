@@ -74,6 +74,26 @@ export interface BottleneckChip {
   numberKind: "sourced";
 }
 
+export type InventoryColumn = "backlog" | "delivered" | "queue";
+export type InventoryKind = "firm" | "sra" | "frame" | "operating" | "owner" | "queue" | "exists" | "hero" | "gap";
+export type InventoryWeight = "hero" | "normal" | "muted";
+
+export interface InventoryPin {
+  id: string;
+  column: InventoryColumn;
+  kind: InventoryKind;
+  weight: InventoryWeight;
+  label: string;
+  value: string;
+  unit: string;
+  source: string;
+  sourceUrl: string;
+  year: string;
+  geography: string;
+  notes: string;
+  numberKind: "sourced";
+}
+
 export interface InspectablePin {
   id: string;
   title: string;
@@ -386,6 +406,251 @@ export const ERCOT_QUEUE_NOTE =
 export const GT_FAST_PATH_CALLOUT =
   "Large GT is not the fast path. Solar plus BESS scaffolding is often faster.";
 
+const GEV_Q2_2026 =
+  "https://www.gevernova.com/sites/default/files/gev_webcast_pressrelease_07222026.pdf";
+const SIEMENS_Q3_FY26 =
+  "https://assets.siemens-energy.com/dam/3e846440-66dd-4a56-be75-b49d004e6741/2026-08-05_Q3_Analyst_presentation-pdf_Original%20file.pdf";
+const MHI_FY26_1Q =
+  "https://www.mhi.com/finance/library/result/pdf/fy20261q/presentation.pdf";
+const GEV_HA_FLEET =
+  "https://www.gevernova.com/news/press-releases/ge-vernova-ha-gas-turbine-fleet-surpasses-4-million";
+const VISTRA_10K =
+  "https://www.sec.gov/Archives/edgar/data/1692819/000169281926000006/vistra-20251231.htm";
+const ERCOT_SENATE_2026 =
+  "https://www.ercot.com/files/docs/2026/07/29/ERCOT-Senate-July-29-Panel-1-Assessing-The-Grid.pdf";
+const ERCOT_JULY_2026 =
+  "https://www.ercot.com/files/docs/2026/08/17/ERCOT-Monthly-Operational-Overview-July-2026.pdf";
+const ERCOT_FACT_SHEET =
+  "https://www.ercot.com/files/docs/2022/02/08/ERCOT_Fact_Sheet.pdf";
+
+export const INVENTORY_CALLOUT =
+  "Queue is a wish list. Reality is what is on and spinning.";
+
+export const INVENTORY_GAP =
+  "No hyperscaler in-service large GT ownership table this pass. Do not invent owners.";
+
+export const GEV_LABELED_SUM =
+  "GEV 53 GW firm + 63 GW SRA = 116 GW labeled sum of those two books only. Not an industry total. Not a single backlog bar.";
+
+export const INVENTORY_PINS: InventoryPin[] = [
+  {
+    id: "gev-firm-q2-2026",
+    column: "backlog",
+    kind: "firm",
+    weight: "normal",
+    label: "GEV firm",
+    value: "53",
+    unit: "GW firm",
+    source: "GE Vernova",
+    sourceUrl: GEV_Q2_2026,
+    year: "2026 Q2",
+    geography: "GEV book",
+    notes: "Binding delivery book. Separate from GEV SRA. Not summed with Siemens or MHI.",
+    numberKind: "sourced",
+  },
+  {
+    id: "gev-sra-q2-2026",
+    column: "backlog",
+    kind: "sra",
+    weight: "muted",
+    label: "GEV SRA",
+    value: "63",
+    unit: "GW SRA",
+    source: "GE Vernova",
+    sourceUrl: GEV_Q2_2026,
+    year: "2026 Q2",
+    geography: "GEV book",
+    notes: "Soft reservation / hope. Separate from GEV firm. Not a binding delivery book.",
+    numberKind: "sourced",
+  },
+  {
+    id: "siemens-firm-q3-fy26",
+    column: "backlog",
+    kind: "firm",
+    weight: "normal",
+    label: "Siemens firm",
+    value: "69",
+    unit: "GW firm",
+    source: "Siemens Energy",
+    sourceUrl: SIEMENS_Q3_FY26,
+    year: "2026 Q3 FY26",
+    geography: "Siemens Energy book",
+    notes: "Binding delivery book. Separate from Siemens SRA. Not summed with GEV or MHI.",
+    numberKind: "sourced",
+  },
+  {
+    id: "siemens-sra-q3-fy26",
+    column: "backlog",
+    kind: "sra",
+    weight: "muted",
+    label: "Siemens SRA",
+    value: "26",
+    unit: "GW SRA",
+    source: "Siemens Energy",
+    sourceUrl: SIEMENS_Q3_FY26,
+    year: "2026 Q3 FY26",
+    geography: "Siemens Energy book",
+    notes: "Soft reservation / hope. Separate from Siemens firm.",
+    numberKind: "sourced",
+  },
+  {
+    id: "mhi-large-frame",
+    column: "backlog",
+    kind: "frame",
+    weight: "normal",
+    label: "MHI large-frame",
+    value: "35",
+    unit: "GW",
+    source: "MHI",
+    sourceUrl: MHI_FY26_1Q,
+    year: "2026 1Q FY",
+    geography: "MHI large-frame book",
+    notes: "Large-frame only. Not an all-frame MHI total. Not summed with GEV or Siemens. No firm/SRA split in this pin.",
+    numberKind: "sourced",
+  },
+  {
+    id: "gev-slots-2031",
+    column: "backlog",
+    kind: "frame",
+    weight: "muted",
+    label: "GEV slots into 2031",
+    value: "into 2031",
+    unit: "slots",
+    source: "Utility Dive",
+    sourceUrl: UTILITY_DIVE_GT,
+    year: "2026",
+    geography: "GEV book",
+    notes: "Secondary chip. Utility Dive quoting the call. Not a GW figure. Not a firm or SRA bar.",
+    numberKind: "sourced",
+  },
+  {
+    id: "gev-ha-fleet",
+    column: "delivered",
+    kind: "operating",
+    weight: "normal",
+    label: "GEV HA fleet operating",
+    value: "128 units / ~74",
+    unit: "GW",
+    source: "GE Vernova",
+    sourceUrl: GEV_HA_FLEET,
+    year: "",
+    geography: "world",
+    notes: "Named operating HA fleet. 128 units, about 74 GW. Not an ownership map. Year not stated on the pin list.",
+    numberKind: "sourced",
+  },
+  {
+    id: "vistra-gas-net",
+    column: "delivered",
+    kind: "owner",
+    weight: "normal",
+    label: "Vistra gas net",
+    value: "26,989",
+    unit: "MW",
+    source: "Vistra 10-K",
+    sourceUrl: VISTRA_10K,
+    year: "2025",
+    geography: "US",
+    notes: "Owner example from Vistra 10-K. Gas net, not HA-only. Not a hyperscaler ownership table.",
+    numberKind: "sourced",
+  },
+  {
+    id: "ercot-energized-peak",
+    column: "queue",
+    kind: "hero",
+    weight: "hero",
+    label: "Energized large-load peak",
+    value: "~4.4",
+    unit: "GW",
+    source: "ERCOT",
+    sourceUrl: ERCOT_JULY_2026,
+    year: "2026 Jul",
+    geography: "ERCOT",
+    notes: "4,370 MW observed large-load peak in Jul 2026, of 9,456 MW Approval to Energize. Reality, not the queue.",
+    numberKind: "sourced",
+  },
+  {
+    id: "ercot-summer-capacity",
+    column: "queue",
+    kind: "hero",
+    weight: "hero",
+    label: "Summer expected capacity",
+    value: "~105",
+    unit: "GW",
+    source: "ERCOT",
+    sourceUrl: ERCOT_SENATE_2026,
+    year: "2026 Summer",
+    geography: "ERCOT",
+    notes: "104,850+ MW Summer 2026 expected capacity. Exists / expected capacity, not queue.",
+    numberKind: "sourced",
+  },
+  {
+    id: "ercot-record-peak",
+    column: "queue",
+    kind: "exists",
+    weight: "muted",
+    label: "Record peak",
+    value: "91,134",
+    unit: "MW",
+    source: "ERCOT",
+    sourceUrl: ERCOT_JULY_2026,
+    year: "2026 Jul",
+    geography: "ERCOT",
+    notes: "Record peak 91,134 MW in Jul 2026. System peak, not large-load queue.",
+    numberKind: "sourced",
+  },
+  {
+    id: "ercot-ate",
+    column: "queue",
+    kind: "exists",
+    weight: "muted",
+    label: "Approval to Energize",
+    value: "9,456",
+    unit: "MW",
+    source: "ERCOT",
+    sourceUrl: ERCOT_JULY_2026,
+    year: "2026 Jul",
+    geography: "ERCOT",
+    notes: "9,456 MW Approval to Energize. The observed energized large-load peak is 4,370 MW of this.",
+    numberKind: "sourced",
+  },
+  {
+    id: "iea-ercot-queue-jan-2026",
+    column: "queue",
+    kind: "queue",
+    weight: "muted",
+    label: "IEA queue snapshot",
+    value: ">230",
+    unit: "GW",
+    source: "IEA",
+    sourceUrl: IEA_AI_PDF,
+    year: "2026 Jan",
+    geography: "ERCOT",
+    notes: "IEA >230 GW Jan 2026 queue snapshot. Not averaged with the Jun 2026 ERCOT ~474 GW snapshot.",
+    numberKind: "sourced",
+  },
+  {
+    id: "ercot-queue-jun-2026",
+    column: "queue",
+    kind: "queue",
+    weight: "muted",
+    label: "ERCOT queue snapshot",
+    value: "~474",
+    unit: "GW",
+    source: "ERCOT",
+    sourceUrl: ERCOT_SENATE_2026,
+    year: "2026 Jun",
+    geography: "ERCOT",
+    notes: "ERCOT ~474 GW Jun 2026 queue snapshot. Wish list. Not averaged with IEA >230 GW Jan 2026. Not a hero number.",
+    numberKind: "sourced",
+  },
+];
+
+if (INVENTORY_PINS.some((p) => p.numberKind !== "sourced")) {
+  throw new Error("Inventory pins must be sourced");
+}
+
+export const ERCOT_FACT_SHEET_URL = ERCOT_FACT_SHEET;
+
 export const PEAK_GW_CARDS: ForecastPeakCard[] = [
   {
     id: "epri-2030-low",
@@ -606,5 +871,22 @@ export function pinFromBottleneckChip(c: BottleneckChip): InspectablePin {
     sourceUrl: c.sourceUrl,
     notes: c.notes,
     numberKind: c.numberKind,
+  };
+}
+
+export function pinFromInventory(p: InventoryPin): InspectablePin {
+  return {
+    id: p.id,
+    title: p.label,
+    value: p.value,
+    unit: p.unit,
+    year: p.year || "not stated",
+    geography: p.geography,
+    status: "sourced",
+    scenario: p.kind,
+    source: p.source,
+    sourceUrl: p.sourceUrl,
+    notes: p.notes,
+    numberKind: p.numberKind,
   };
 }
