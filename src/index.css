@@ -876,7 +876,7 @@ a { color: inherit; }
   background: var(--ink-800);
   flex: 0 1 auto;
   min-width: 0;
-  overflow-x: auto;
+  overflow: visible;
   scrollbar-width: none;
 }
 .nav-tabs::-webkit-scrollbar { display: none; }
