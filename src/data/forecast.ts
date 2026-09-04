@@ -2,7 +2,7 @@ import rawCsv from "./forecast-electricity.csv?raw";
 
 // Forecast Lab pins. Every TWh row is parsed from the embedded CSV with no
 // invented intermediates. Peak GW cards are listed separately and never share
-// the TWh axis. Bottleneck ranges are Energy Desk estimates, not measurements.
+// the TWh axis. Bottleneck pins are sourced ranges and durations only.
 
 export type ForecastGeo = "world" | "US";
 export type ForecastStatus = "historical" | "estimate" | "scenario";
@@ -38,17 +38,40 @@ export interface ForecastPeakCard {
   numberKind: NumberKind;
 }
 
-export interface BottleneckRange {
+export type BottleneckUnit = "years" | "months" | "days";
+export type BottleneckKind = "range" | "open" | "duration";
+
+/** Sourced bottleneck pin. Display-scale days are derived, never a midpoint. */
+export interface BottleneckPin {
   id: string;
   label: string;
   short: string;
-  lowMonths: number;
-  highMonths: number;
-  highOpen: boolean;
-  provenance: "desk-estimate";
-  provenanceLabel: string;
-  numberKind: NumberKind;
+  kind: BottleneckKind;
+  valueLow: number;
+  valueHigh: number | null;
+  unit: BottleneckUnit;
+  approx: boolean;
+  openHigh: boolean;
+  displayLabel: string;
+  source: string;
+  sourceUrl: string;
+  year: string;
+  geography: string;
   notes: string;
+  numberKind: "sourced";
+}
+
+export interface BottleneckChip {
+  id: string;
+  label: string;
+  value: string;
+  unit: string;
+  source: string;
+  sourceUrl: string;
+  year: string;
+  geography: string;
+  notes: string;
+  numberKind: "sourced";
 }
 
 export interface InspectablePin {
@@ -150,56 +173,218 @@ if (LBNL_US_YEARS.includes(2017) || [2019, 2020, 2021, 2022].some((y) => LBNL_US
   throw new Error("Do not invent LBNL 2017 or 2019-2022 yearly intermediates");
 }
 
-export const BOTTLENECKS: BottleneckRange[] = [
+const IEA_AI_PDF =
+  "https://iea.blob.core.windows.net/assets/3179f7f8-01f6-4dd6-bffa-c9f7b73f1dc9/KeyQuestionsonEnergyandAI.pdf";
+const UTILITY_DIVE_GT =
+  "https://www.utilitydive.com/news/5-year-waits-and-rising-costs-how-demand-is-redefining-the-gas-turbine-mar/813385/";
+const IEA_BESS =
+  "https://www.iea.org/commentaries/battery-storage-is-scaling-up-and-taking-on-a-larger-system-role";
+const VOGTLE_URL = "https://www.southernnuclear.com/our-plants/plant-vogtle.html";
+
+/** Calendar conversion for strip scale only. Not a sourced midpoint. */
+export function bottleneckToDays(value: number, unit: BottleneckUnit): number {
+  if (unit === "years") return value * 365;
+  if (unit === "months") return (value * 365) / 12;
+  return value;
+}
+
+export const BOTTLENECK_SCALE_DAYS = 10 * 365;
+
+export const BOTTLENECKS: BottleneckPin[] = [
   {
     id: "xfmr",
     label: "Large power transformers",
-    short: "XFMR lead time",
-    lowMonths: 18,
-    highMonths: 36,
-    highOpen: false,
-    provenance: "desk-estimate",
-    provenanceLabel: "desk estimate, not a measurement",
-    numberKind: "assumed",
-    notes: "Typical lead. Energy Desk range. Not a measurement.",
+    short: "XFMR",
+    kind: "range",
+    valueLow: 2,
+    valueHigh: 3,
+    unit: "years",
+    approx: false,
+    openHigh: false,
+    displayLabel: "2 to 3 years",
+    source: "IEA",
+    sourceUrl: IEA_AI_PDF,
+    year: "2026",
+    geography: "world",
+    notes: "Transformers average 2 to 3 years. Key Questions on Energy and AI §1.3.",
+    numberKind: "sourced",
   },
   {
     id: "interconnect",
-    label: "Interconnect / restudy queues",
-    short: "Interconnect restudy",
-    lowMonths: 24,
-    highMonths: 84,
-    highOpen: false,
-    provenance: "desk-estimate",
-    provenanceLabel: "desk estimate, not a measurement",
-    numberKind: "assumed",
-    notes: "Common for large loads. Energy Desk range. Not a measurement.",
+    label: "Grid connection wait",
+    short: "Interconnect",
+    kind: "range",
+    valueLow: 5,
+    valueHigh: 10,
+    unit: "years",
+    approx: false,
+    openHigh: false,
+    displayLabel: "5 to 10 years",
+    source: "IEA",
+    sourceUrl: IEA_AI_PDF,
+    year: "2026",
+    geography: "many jurisdictions",
+    notes: "Grid connection waits 5 to 10 years in many jurisdictions. Key Questions on Energy and AI §1.3. Not a restudy-months figure.",
+    numberKind: "sourced",
   },
   {
-    id: "btm",
-    label: "BTM gas / solar + BESS COD",
-    short: "BTM COD",
-    lowMonths: 12,
-    highMonths: 36,
-    highOpen: false,
-    provenance: "desk-estimate",
-    provenanceLabel: "desk estimate, not a measurement",
-    numberKind: "assumed",
-    notes: "Behind-the-meter gas or solar plus battery commercial operation. Energy Desk range. Not a measurement.",
+    id: "gt-large",
+    label: "BTM large gas turbine",
+    short: "Large GT",
+    kind: "open",
+    valueLow: 5,
+    valueHigh: null,
+    unit: "years",
+    approx: false,
+    openHigh: true,
+    displayLabel: ">5 years",
+    source: "EPRI / Utility Dive",
+    sourceUrl: UTILITY_DIVE_GT,
+    year: "2026",
+    geography: "US",
+    notes: "Noble via EPRI: large GT order to delivery greater than 5 years. No sourced high. Not a midpoint.",
+    numberKind: "sourced",
+  },
+  {
+    id: "gt-small",
+    label: "BTM small gas turbine",
+    short: "Small GT",
+    kind: "range",
+    valueLow: 18,
+    valueHigh: 36,
+    unit: "months",
+    approx: false,
+    openHigh: false,
+    displayLabel: "18 to 36 months",
+    source: "EPRI / Utility Dive",
+    sourceUrl: UTILITY_DIVE_GT,
+    year: "2026",
+    geography: "US",
+    notes: "Noble via EPRI: small GT order to delivery 18 to 36 months. Separate from large GT.",
+    numberKind: "sourced",
+  },
+  {
+    id: "solar-build",
+    label: "BTM solar construction",
+    short: "Solar build",
+    kind: "duration",
+    valueLow: 220,
+    valueHigh: null,
+    unit: "days",
+    approx: true,
+    openHigh: false,
+    displayLabel: "~220 days",
+    source: "IEA",
+    sourceUrl: IEA_BESS,
+    year: "",
+    geography: "world",
+    notes: "IEA: solar median construction about 220 days. Duration, not a low-high range. Year not stated on the pin list.",
+    numberKind: "sourced",
+  },
+  {
+    id: "bess-build",
+    label: "BTM BESS construction",
+    short: "BESS build",
+    kind: "duration",
+    valueLow: 275,
+    valueHigh: null,
+    unit: "days",
+    approx: true,
+    openHigh: false,
+    displayLabel: "~275 days",
+    source: "IEA",
+    sourceUrl: IEA_BESS,
+    year: "",
+    geography: "world",
+    notes: "IEA: BESS median construction about 275 days. Duration, not a low-high range. Year not stated on the pin list.",
+    numberKind: "sourced",
+  },
+  {
+    id: "solar-bess-ttm",
+    label: "BTM solar + BESS time to market",
+    short: "Solar+BESS TTM",
+    kind: "range",
+    valueLow: 2,
+    valueHigh: 2.5,
+    unit: "years",
+    approx: true,
+    openHigh: false,
+    displayLabel: "~2 to 2.5 years",
+    source: "IEA",
+    sourceUrl: IEA_BESS,
+    year: "",
+    geography: "US / EU / JP",
+    notes: "IEA: US, EU, and Japan time-to-market often about 2 to 2.5 years. Not merged with the 220-day or 275-day construction medians.",
+    numberKind: "sourced",
   },
   {
     id: "nuclear",
-    label: "New nuclear COD",
+    label: "New nuclear construction",
     short: "Nuclear",
-    lowMonths: 96,
-    highMonths: 180,
-    highOpen: true,
-    provenance: "desk-estimate",
-    provenanceLabel: "desk estimate, not a measurement",
-    numberKind: "assumed",
-    notes: "8 to 15+ years to commercial operation. Energy Desk range. Not a measurement.",
+    kind: "open",
+    valueLow: 6,
+    valueHigh: null,
+    unit: "years",
+    approx: false,
+    openHigh: true,
+    displayLabel: ">6 years",
+    source: "IEA",
+    sourceUrl: IEA_AI_PDF,
+    year: "2026",
+    geography: "world",
+    notes: "IEA: construction greater than 6 years. No sourced high. Vogtle CODs are chips, not a duration bar.",
+    numberKind: "sourced",
   },
 ];
+
+if (BOTTLENECKS.some((b) => b.numberKind !== "sourced")) {
+  throw new Error("Default bottleneck strip may not carry assumed desk estimates");
+}
+
+export const BOTTLENECK_CHIPS: BottleneckChip[] = [
+  {
+    id: "iea-gt-5y",
+    label: "IEA GT deliveries",
+    value: "~5",
+    unit: "years",
+    source: "IEA",
+    sourceUrl: IEA_AI_PDF,
+    year: "2026",
+    geography: "world",
+    notes: "IEA: gas turbine deliveries about 5 years. Point figure, not a range. Not averaged with the EPRI >5 year large-GT pin.",
+    numberKind: "sourced",
+  },
+  {
+    id: "vogtle-3",
+    label: "Vogtle Unit 3 COD",
+    value: "31 Jul 2023",
+    unit: "COD date",
+    source: "Southern Nuclear",
+    sourceUrl: VOGTLE_URL,
+    year: "2023",
+    geography: "US",
+    notes: "Plant Vogtle Unit 3 commercial operation 31 Jul 2023. Date chip, not a lead-time bar.",
+    numberKind: "sourced",
+  },
+  {
+    id: "vogtle-4",
+    label: "Vogtle Unit 4 COD",
+    value: "29 Apr 2024",
+    unit: "COD date",
+    source: "Southern Nuclear",
+    sourceUrl: VOGTLE_URL,
+    year: "2024",
+    geography: "US",
+    notes: "Plant Vogtle Unit 4 commercial operation 29 Apr 2024. Date chip, not a lead-time bar.",
+    numberKind: "sourced",
+  },
+];
+
+export const ERCOT_QUEUE_NOTE =
+  "ERCOT large-load queue grew from about 63 GW in Dec 2024 to 230+ GW in Jan 2026. Queue size, not months to interconnection agreement. Not plotted as a lead-time bar.";
+
+export const GT_FAST_PATH_CALLOUT =
+  "Large GT is not the fast path. Solar plus BESS scaffolding is often faster.";
 
 export const PEAK_GW_CARDS: ForecastPeakCard[] = [
   {
@@ -384,20 +569,36 @@ export function pinFromPeak(p: ForecastPeakCard): InspectablePin {
   };
 }
 
-export function pinFromBottleneck(b: BottleneckRange): InspectablePin {
-  const high = b.highOpen ? `${b.highMonths / 12}+ years` : `${b.highMonths} months`;
+export function pinFromBottleneck(b: BottleneckPin): InspectablePin {
   return {
     id: b.id,
     title: b.label,
-    value: `${b.lowMonths} to ${b.highMonths}${b.highOpen ? "+" : ""}`,
-    unit: "months (desk range)",
-    year: "range",
-    geography: "desk",
-    status: b.provenance,
-    scenario: "desk",
-    source: "Energy Desk",
-    sourceUrl: "",
-    notes: `${b.provenanceLabel}. ${b.notes} Low ${b.lowMonths} months. High ${high}.`,
+    value: b.displayLabel,
+    unit: b.unit,
+    year: b.year || "not stated",
+    geography: b.geography,
+    status: "sourced",
+    scenario: b.kind,
+    source: b.source,
+    sourceUrl: b.sourceUrl,
+    notes: b.notes,
     numberKind: b.numberKind,
+  };
+}
+
+export function pinFromBottleneckChip(c: BottleneckChip): InspectablePin {
+  return {
+    id: c.id,
+    title: c.label,
+    value: c.value,
+    unit: c.unit,
+    year: c.year || "not stated",
+    geography: c.geography,
+    status: "sourced",
+    scenario: "chip",
+    source: c.source,
+    sourceUrl: c.sourceUrl,
+    notes: c.notes,
+    numberKind: c.numberKind,
   };
 }

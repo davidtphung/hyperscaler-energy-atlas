@@ -17,7 +17,7 @@ Built by [David T Phung](https://x.com/davidtphung).
 - **Filter** by buyer, technology, status, and category, with live counts.
 - **Search** projects, buyers, and places.
 - **Select** any site for a detail panel with capacity, status, counterparty, announcement date, and a link to the primary source.
-- **Forecast Lab** (`/forecast`) is the sourced electricity product: bottleneck schedule first, IEA and LBNL TWh history as separate series, bull/base/bear pins with sourceUrl on every point, and atlas announcement GW in the sidebar only. The Analysis CAGR cone remains a labeled model toy.
+- **Forecast Lab** (`/forecast`) is the sourced electricity product: sourced bottleneck schedule first (IEA / EPRI / Vogtle pins; large GT, small GT, and solar+BESS kept split), IEA and LBNL TWh history as separate series, bull/base/bear pins with sourceUrl on every point, and atlas announcement GW in the sidebar only. The Analysis CAGR cone remains a labeled model toy.
 
 ## Data
 

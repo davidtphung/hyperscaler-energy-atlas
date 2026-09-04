@@ -2,19 +2,27 @@ import { useMemo, useState } from "react";
 import { COMMITMENTS } from "../data/commitments";
 import {
   BOTTLENECKS,
+  BOTTLENECK_CHIPS,
+  BOTTLENECK_SCALE_DAYS,
   CONFLICT_CALLOUT,
+  ERCOT_QUEUE_NOTE,
   FAN_CASE_META,
   FORECAST_TWH,
+  GT_FAST_PATH_CALLOUT,
   PEAK_GW_CARDS,
   SOURCE_SERIES_COLOR,
+  bottleneckToDays,
   fanAnchor,
   historyPoints,
   ieaUsBase2030,
   lastHistoryOrEstimate,
   pinFromBottleneck,
+  pinFromBottleneckChip,
   pinFromPeak,
   pinFromTwh,
   scenarioPoints,
+  type BottleneckChip,
+  type BottleneckPin,
   type FanCase,
   type ForecastGeo,
   type ForecastTwhPoint,
@@ -73,12 +81,18 @@ export default function ForecastLabView() {
               Bottleneck schedule
             </h2>
             <p className="flab-bn__lead">
-              Main chart. Horizontal lead-time strip. Every number below is assumed: desk estimate, not a measurement.
+              Main chart. Sourced lead-time strip. Original units stay on the label. Scale days are a display conversion,
+              not a midpoint.
             </p>
           </div>
-          <span className="flab-tag flab-tag--assumed">assumed · desk estimate</span>
+          <span className="flab-tag flab-tag--sourced">sourced · IEA / EPRI</span>
         </div>
-        <BottleneckStrip selectedId={selected?.id ?? null} onSelect={(b) => setSelected(pinFromBottleneck(b))} />
+        <p className="flab-bn-callout">{GT_FAST_PATH_CALLOUT}</p>
+        <BottleneckStrip
+          selectedId={selected?.id ?? null}
+          onSelectPin={(b) => setSelected(pinFromBottleneck(b))}
+          onSelectChip={(c) => setSelected(pinFromBottleneckChip(c))}
+        />
       </section>
 
       {geo === "US" && (
@@ -360,7 +374,7 @@ export default function ForecastLabView() {
                 )}
               </dl>
             ) : (
-              <p className="card__sub">Click a TWh pin, a peak GW card, or a bottleneck bar. Inspector shows unit, year, geography, status, and sourceUrl.</p>
+              <p className="card__sub">Click a TWh pin, a peak GW card, a bottleneck bar, or a sourced chip. Source names open sourceUrl.</p>
             )}
           </section>
         </aside>
@@ -371,13 +385,14 @@ export default function ForecastLabView() {
         <p>
           It will not default to the Analysis CAGR toy (8 / 20 / 34). It will not plot announcement MW on the TWh
           axis. It will not invent LBNL yearly intermediates for 2017 or 2019 through 2022. It will not silently
-          average IEA and LBNL US history. Peak GW cards stay off the electricity chart.
+          average IEA and LBNL US history. It will not invent bottleneck midpoints or restudy months. Peak GW cards
+          stay off the electricity chart.
         </p>
         <p>
-          Data credits: IEA Key Questions on Energy and AI (Tables A.1 / A.4), LBNL 2024 and 2025 data-center
-          electricity series, EPRI Powering Intelligence peak cases, DOE July 2025 midpoint incremental GW. Bottleneck
-          months are Energy Desk ranges. Sourced transformer week ranges remain on the Economics page and are not mixed
-          into this strip.
+          Data credits: IEA Key Questions on Energy and AI (Tables A.1 / A.4 and §1.3), IEA battery-storage commentary,
+          LBNL 2024 and 2025 data-center electricity series, EPRI Powering Intelligence peak cases and EPRI / Utility
+          Dive gas-turbine waits, DOE July 2025 midpoint incremental GW, Southern Nuclear Vogtle CODs. The default
+          bottleneck strip is sourced pins only. Wood Mackenzie transformer weeks are omitted from this strip.
         </p>
       </section>
 
@@ -392,58 +407,126 @@ export default function ForecastLabView() {
   );
 }
 
+function barGeometry(b: BottleneckPin): { left: number; width: number; plusAt: number | null } {
+  const scale = BOTTLENECK_SCALE_DAYS;
+  if (b.kind === "duration") {
+    const widthDays = bottleneckToDays(b.valueLow, b.unit);
+    return { left: 0, width: (widthDays / scale) * 100, plusAt: null };
+  }
+  const lowDays = bottleneckToDays(b.valueLow, b.unit);
+  if (b.kind === "open" || b.openHigh || b.valueHigh == null) {
+    return {
+      left: (lowDays / scale) * 100,
+      width: ((scale - lowDays) / scale) * 100,
+      plusAt: (lowDays / scale) * 100,
+    };
+  }
+  const highDays = bottleneckToDays(b.valueHigh, b.unit);
+  return {
+    left: (lowDays / scale) * 100,
+    width: ((highDays - lowDays) / scale) * 100,
+    plusAt: null,
+  };
+}
+
 function BottleneckStrip({
   selectedId,
-  onSelect,
+  onSelectPin,
+  onSelectChip,
 }: {
   selectedId: string | null;
-  onSelect: (b: (typeof BOTTLENECKS)[number]) => void;
+  onSelectPin: (b: BottleneckPin) => void;
+  onSelectChip: (c: BottleneckChip) => void;
 }) {
-  const monthsMax = 192;
   const ticks = [
-    { m: 0, l: "0" },
-    { m: 12, l: "1y" },
-    { m: 24, l: "2y" },
-    { m: 36, l: "3y" },
-    { m: 84, l: "7y" },
-    { m: 96, l: "8y" },
-    { m: 180, l: "15y" },
+    { d: 0, l: "0" },
+    { d: 365, l: "1y" },
+    { d: 365 * 2, l: "2y" },
+    { d: 365 * 3, l: "3y" },
+    { d: 365 * 5, l: "5y" },
+    { d: 365 * 6, l: "6y" },
+    { d: 365 * 10, l: "10y" },
   ];
+  const ieaGt = BOTTLENECK_CHIPS.find((c) => c.id === "iea-gt-5y")!;
+  const vogtle = BOTTLENECK_CHIPS.filter((c) => c.id.startsWith("vogtle-"));
 
   return (
     <div className="flab-strip">
       <div className="flab-strip__axis" aria-hidden="true">
         {ticks.map((t) => (
-          <span key={t.m} className="flab-strip__tick" style={{ left: `${(t.m / monthsMax) * 100}%` }}>
+          <span key={t.l} className="flab-strip__tick" style={{ left: `${(t.d / BOTTLENECK_SCALE_DAYS) * 100}%` }}>
             {t.l}
           </span>
         ))}
       </div>
       {BOTTLENECKS.map((b) => {
-        const left = (b.lowMonths / monthsMax) * 100;
-        const width = ((b.highMonths - b.lowMonths) / monthsMax) * 100;
-        const range = b.highOpen
-          ? `${b.lowMonths / 12} to ${b.highMonths / 12}+ years`
-          : `${b.lowMonths} to ${b.highMonths} months`;
+        const geo = barGeometry(b);
         return (
-          <button
-            key={b.id}
-            className={`flab-strip__row${selectedId === b.id ? " is-on" : ""}`}
-            onClick={() => onSelect(b)}
-          >
-            <span className="flab-strip__lab">
-              <b>{b.short}</b>
-              <em>assumed</em>
-            </span>
-            <span className="flab-strip__track">
-              <span className="flab-strip__bar" style={{ left: `${left}%`, width: `${Math.max(width, 1.4)}%` }} />
-              {b.highOpen && <span className="flab-strip__plus" style={{ left: `${(b.highMonths / monthsMax) * 100}%` }} />}
-            </span>
-            <span className="flab-strip__val">
-              {range}
-              <small>desk estimate, not a measurement</small>
-            </span>
-          </button>
+          <div key={b.id}>
+            <div className={`flab-strip__row${selectedId === b.id ? " is-on" : ""}`}>
+              <button className="flab-strip__lab" type="button" onClick={() => onSelectPin(b)}>
+                <b>{b.short}</b>
+                <em>sourced</em>
+              </button>
+              <button
+                className="flab-strip__track-btn"
+                type="button"
+                onClick={() => onSelectPin(b)}
+                aria-label={`${b.label} ${b.displayLabel} ${b.source}`}
+              >
+                <span className="flab-strip__track">
+                  <span
+                    className={`flab-strip__bar${b.openHigh ? " flab-strip__bar--open" : ""}`}
+                    style={{ left: `${geo.left}%`, width: `${Math.max(geo.width, 1.1)}%` }}
+                  />
+                  {geo.plusAt != null && <span className="flab-strip__plus" style={{ left: `${geo.plusAt}%` }} />}
+                </span>
+              </button>
+              <span className="flab-strip__val">
+                {b.displayLabel}
+                <a
+                  className="flab-strip__src"
+                  href={b.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => onSelectPin(b)}
+                >
+                  {b.source}
+                  {b.year ? ` ${b.year}` : ""}
+                </a>
+              </span>
+            </div>
+            {b.id === "interconnect" && <p className="flab-strip__note">{ERCOT_QUEUE_NOTE}</p>}
+            {b.id === "gt-large" && (
+              <div className="flab-strip__chips">
+                <a
+                  className={`flab-bn-chip${selectedId === ieaGt.id ? " is-on" : ""}`}
+                  href={ieaGt.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => onSelectChip(ieaGt)}
+                >
+                  {ieaGt.label}: {ieaGt.value} {ieaGt.unit} · {ieaGt.source}
+                </a>
+              </div>
+            )}
+            {b.id === "nuclear" && (
+              <div className="flab-strip__chips">
+                {vogtle.map((c) => (
+                  <a
+                    key={c.id}
+                    className={`flab-bn-chip${selectedId === c.id ? " is-on" : ""}`}
+                    href={c.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => onSelectChip(c)}
+                  >
+                    {c.label}: {c.value} · {c.source}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
         );
       })}
     </div>

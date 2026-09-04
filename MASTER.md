@@ -25,7 +25,7 @@ HYPERGRID is a single static single-page application that unifies several source
 | **Data Centers** | Searchable, sortable global directory of 260 facilities across 46 countries (93 in China). Map views Global / China / US, click a dot for a facility info card, top-countries breakdown, click-to-sort columns (MW top and least, undisclosed last). |
 | **Economics** | 25 real estate transactions (M&A, take-privates, sale-leasebacks, land) on a deal map with sortable table, a price-per-square-foot scatter, construction cost benchmarks (USD millions per MW by market), and a long-lead equipment chart (transformers 128 to 210 weeks, generators, switchgear, chillers, UPS). |
 | **History** | 28 source-backed milestones from ENIAC (1945) through carrier hotels, colocation, cloud and hyperscale, edge, and the AI factory era, grouped on an editorial timeline by era. |
-| **Forecast Lab** | First-class `/forecast` (also `/forecast-lab`) product. Bottleneck schedule is the main chart (desk estimate ranges, not measurements). History is annual DC electricity TWh with IEA and LBNL US as separate series. Sourced bull/base/bear fan from IEA/LBNL pins. Peak GW cards (EPRI, DOE) off the TWh axis. Atlas announcement GW in the sidebar only. |
+| **Forecast Lab** | First-class `/forecast` (also `/forecast-lab`) product. Bottleneck schedule is the main chart (sourced IEA / EPRI / Southern Nuclear pins; large GT, small GT, and solar+BESS kept split). History is annual DC electricity TWh with IEA and LBNL US as separate series. Sourced bull/base/bear fan from IEA/LBNL pins. Peak GW cards (EPRI, DOE) off the TWh axis. Atlas announcement GW in the sidebar only. |
 | **Contested** | Investigative tracker of 23 data center projects that were blocked, stalled, denied, withdrawn, put under moratorium, or litigated. Severity scored 1 to 5, US and world maps, contestation themes. |
 | **Policy** | 41 for / against / mixed AI data center policy actions (FERC RM26-4, White House ratepayer pledge, Texas SB6, Ireland CRU and LEAP, Virginia bills) with a stance map, balance bar, and level filters. |
 | **Analysis** | Energy source portfolio (donut, firm vs speculative, evidence strength, before and after the AI boom era comparison), a live Great Britain national grid generation feed, and a CAGR model toy (8 / 20 / 34) of committed capacity to 2031, labeled "model toy, not sourced forecast". |
@@ -108,7 +108,7 @@ DNS: GoDaddy CNAME `hypergrid` to `davidtphung.github.io` (GitHub Pages, not the
 ## 9. Changelog
 
 ### v1.3 — 2026-09-04
-- Added first-class **Forecast Lab** at `/forecast` and `/forecast-lab`: bottleneck schedule (Energy Desk ranges), sourced IEA/LBNL TWh history and bull/base/bear pins, EPRI/DOE peak GW cards, atlas announcement GW sidebar.
+- Added first-class **Forecast Lab** at `/forecast` and `/forecast-lab`: sourced bottleneck schedule (IEA XFMR 2 to 3 years, interconnect 5 to 10 years, EPRI large GT >5 years and small GT 18 to 36 months, IEA solar ~220 days / BESS ~275 days / TTM ~2 to 2.5 years, IEA nuclear >6 years plus Vogtle COD chips), sourced IEA/LBNL TWh history and bull/base/bear pins, EPRI/DOE peak GW cards, atlas announcement GW sidebar.
 - Analysis CAGR (8 / 20 / 34) remains, labeled as a model toy, not a sourced forecast.
 
 ### v1.2 — 2026-06-29
