@@ -66,7 +66,7 @@ export interface InspectablePin {
   numberKind: NumberKind;
 }
 
-export const FORECAST_CSV_ROW_COUNT = 20;
+export const FORECAST_CSV_ROW_COUNT = 21;
 
 const EXPECTED_STATUSES = new Set<ForecastStatus>(["historical", "estimate", "scenario"]);
 

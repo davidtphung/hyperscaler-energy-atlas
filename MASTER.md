@@ -43,7 +43,7 @@ HYPERGRID is a single static single-page application that unifies several source
 | Real estate deals | `src/data/realestate.ts` | 25 |
 | Construction (materials + cost) | `src/data/construction.ts` | 20 (13 materials, 7 benchmarks) |
 | History milestones | `src/data/history.ts` | 28 |
-| Forecast Lab TWh pins | `src/data/forecast-electricity.csv` | 20 sourced rows (IEA + LBNL, no invented intermediates) |
+| Forecast Lab TWh pins | `src/data/forecast-electricity.csv` | 21 sourced rows (IEA + LBNL, no invented intermediates) |
 | Contested projects | `src/data/contested.ts` | 23 |
 | Policy actions | `src/data/policy.ts` | 41 |
 
