@@ -1,5 +1,15 @@
-import type { Commitment, FinanceConfidence, FinanceKind, FinanceMetric, FinanceStamp } from "../types";
+import type {
+  Commitment,
+  DataCenter,
+  FinanceConfidence,
+  FinanceKind,
+  FinanceMetric,
+  FinanceStamp,
+  RealEstateDeal,
+  Status,
+} from "../types";
 import { FINANCE } from "../data/finance";
+import { STATUS } from "./theme";
 
 export function metricsByKind(kind: FinanceKind, rows: FinanceMetric[] = FINANCE): FinanceMetric[] {
   return rows.filter((r) => r.kind === kind);
@@ -146,18 +156,96 @@ export function stackScenarios(rows: FinanceMetric[] = FINANCE): StackScenario[]
   ];
 }
 
+export interface CommitmentStatusRow {
+  status: Status;
+  count: number;
+  mw: number;
+}
+
 export interface CommitmentBridge {
   count: number;
   energyCount: number;
   datacenterCount: number;
+  withCapacityCount: number;
+  /** Sum of headline capacityMW. Announcement / commitment GW, not energized. */
+  committedMW: number;
+  operationalCount: number;
+  /** Headline capacityMW on rows with status operational. Not metered draw. */
+  operationalMW: number;
+  byStatus: CommitmentStatusRow[];
 }
 
-/** Record counts only. No announcement GW, no energized MW. */
+/** Computed from `commitments.ts`. Labels operational GW separately from committed GW. */
 export function commitmentBridge(list: Commitment[]): CommitmentBridge {
+  const byStatusMap = new Map<Status, { count: number; mw: number }>();
+  let withCapacityCount = 0;
+  let committedMW = 0;
+  let energyCount = 0;
+  let datacenterCount = 0;
+  let operationalCount = 0;
+  let operationalMW = 0;
+
+  for (const c of list) {
+    if (c.category === "energy") energyCount += 1;
+    if (c.category === "datacenter") datacenterCount += 1;
+    const mw = c.capacityMW ?? 0;
+    if (c.capacityMW != null) withCapacityCount += 1;
+    committedMW += mw;
+    if (c.status === "operational") {
+      operationalCount += 1;
+      operationalMW += mw;
+    }
+    const row = byStatusMap.get(c.status) ?? { count: 0, mw: 0 };
+    row.count += 1;
+    row.mw += mw;
+    byStatusMap.set(c.status, row);
+  }
+
+  const byStatus = [...byStatusMap.entries()]
+    .sort((a, b) => STATUS[a[0]].rank - STATUS[b[0]].rank)
+    .map(([status, row]) => ({ status, count: row.count, mw: row.mw }));
+
   return {
     count: list.length,
-    energyCount: list.filter((c) => c.category === "energy").length,
-    datacenterCount: list.filter((c) => c.category === "datacenter").length,
+    energyCount,
+    datacenterCount,
+    withCapacityCount,
+    committedMW,
+    operationalCount,
+    operationalMW,
+    byStatus,
+  };
+}
+
+export interface DirectoryBridge {
+  campusCount: number;
+  disclosedCount: number;
+  /** Sum of disclosed/estimated campus capacityMW. Headline size, not energized draw. */
+  disclosedMW: number;
+}
+
+/** Computed from `datacenters.ts`. Campus headline size is not metered load. */
+export function directoryBridge(list: DataCenter[]): DirectoryBridge {
+  let disclosedCount = 0;
+  let disclosedMW = 0;
+  for (const d of list) {
+    if (d.capacityMW == null) continue;
+    disclosedCount += 1;
+    disclosedMW += d.capacityMW;
+  }
+  return { campusCount: list.length, disclosedCount, disclosedMW };
+}
+
+export interface EconomicsPointer {
+  dealCount: number;
+  dealValueUSD: number;
+}
+
+/** Real-estate deals only. Construction benchmarks stay on Economics. */
+export function economicsPointer(list: RealEstateDeal[]): EconomicsPointer {
+  return {
+    dealCount: list.length,
+    dealValueUSD: list.reduce((acc, d) => acc + (d.priceUSD ?? 0), 0),
   };
 }
 
@@ -169,19 +257,41 @@ export function moneyUnitLabel(m: FinanceMetric): string {
   }
   if (m.unit === "pct") return m.kind === "leverage" ? "percent leverage" : "percent";
   if (m.unit === "ratio") return "ratio";
-  if (m.unit === "GW") return "GW (excluded from this pane)";
+  if (m.unit === "GW") return "GW (claim row; not plotted on USD axes)";
   return "text";
 }
 
-export const UNIT_KEY: { unit: string; onPane: "yes" | "no"; where: string }[] = [
+export type UnitKeySlot = "yes" | "no" | "bridge";
+
+export const UNIT_KEY: { unit: string; onPane: UnitKeySlot; where: string }[] = [
   { unit: "USD credit / capex / market stock", onPane: "yes", where: "This pane. Labeled Cited or Sample." },
   { unit: "USD implied revenue / run-rate", onPane: "yes", where: "Waterfall only. Claim or sample, never COD." },
-  { unit: "Announcement / commitment GW", onPane: "no", where: "Atlas. Not plotted here." },
+  {
+    unit: "Announcement / commitment GW",
+    onPane: "bridge",
+    where: "Atlas bridge, from commitments.ts. Never on a USD axis.",
+  },
+  {
+    unit: "Operational (status) GW",
+    onPane: "bridge",
+    where: "Atlas bridge. Headline MW on operational rows. Not metered draw.",
+  },
+  {
+    unit: "Campus directory GW",
+    onPane: "bridge",
+    where: "Directory bridge, from datacenters.ts. Headline campus size, not energized.",
+  },
   { unit: "Contracted IT MW", onPane: "no", where: "Not tracked in HYPERGRID." },
-  { unit: "Energized / metered MW", onPane: "no", where: "Not tracked. Forecast Lab does not invent it." },
+  { unit: "Energized / metered MW", onPane: "no", where: "Not tracked. Operational status is not a meter reading." },
   { unit: "Firm OEM slots vs SRA", onPane: "no", where: "Not tracked on this pane." },
   { unit: "Physical COD", onPane: "no", where: "Not implied when a bond or credit clears." },
 ];
+
+export function unitKeyLabel(slot: UnitKeySlot): string {
+  if (slot === "yes") return "On pane";
+  if (slot === "bridge") return "Bridge";
+  return "Excluded";
+}
 
 const SOURCE_LABEL: Record<string, string> = {
   "https://tomtunguz.com/the-4-trillion-dollar-ai-data-center-debt-wave/": "Tomasz Tunguz, Concrete, Silicon, & Leverage",

@@ -12,9 +12,11 @@ import type { FinanceMetric, FinanceMetricDraft } from "../types";
 //
 // Do not treat claims as hard fact. Do not invent prints or curve points.
 //
-// Energy GUY unit gate: GW rows hydrate to shownOn "excluded" and never
-// render on the Finance pane. Money rows stamp as cited (source) or sample
-// (scenario arithmetic). Credit clearing is not physical COD.
+// Energy GUY unit gate: Tunguz / Columbia GW claim rows hydrate to shownOn
+// "excluded" and never plot on USD charts. The Atlas / directory bridge
+// computes commitment GW, operational (status) GW, and campus headline GW
+// from typed data files and labels each family separately. Credit clearing
+// is not physical COD.
 
 const SAMPLE_IDS = new Set([
   "stack-debt-70",

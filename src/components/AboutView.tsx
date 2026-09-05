@@ -44,9 +44,11 @@ export default function AboutView({ total, totalGW }: Props) {
           <h2>Finance layer</h2>
           <p>
             The Finance tab is a credit pane, not a physics pane. Every money figure is stamped
-            Cited or Sample and wears primary / secondary / claim confidence. Announcement GW,
-            contracted IT MW, energized MW, OEM slots, and physical COD are excluded; Forecast Lab
-            is a short cross-link only. A cleared bond is not steel online.
+            Cited or Sample and wears primary / secondary / claim confidence. A labeled Atlas /
+            directory bridge shows commitment counts, committed GW, operational (status) GW, and
+            campus headline GW as separate families. None of those sit on a USD axis. Energized
+            or metered MW is not tracked. Forecast Lab is a short cross-link only. A cleared
+            bond is not steel online. Economics stays real estate and construction.
           </p>
 
           <h2>Confidence and firmness</h2>

@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { COMMITMENTS } from "../data/commitments";
+import { DATACENTERS } from "../data/datacenters";
 import { POLICY } from "../data/policy";
+import { REAL_ESTATE } from "../data/realestate";
 import type { FinanceMetric } from "../types";
 import {
   FINANCE_CONFIDENCE,
@@ -8,21 +10,33 @@ import {
   UNIT_KEY,
   commitmentBridge,
   creditCompareRows,
+  directoryBridge,
+  economicsPointer,
   financeSources,
   moneyUnitLabel,
   requireMetric,
   stackScenarios,
+  unitKeyLabel,
   waterfallSteps,
 } from "../lib/finance";
-import { formatUSDLarge } from "../lib/format";
+import { formatGW, formatUSD, formatUSDLarge } from "../lib/format";
+import { STATUS } from "../lib/theme";
 
 interface Props {
   onGoPolicy?: () => void;
   onGoEconomics?: () => void;
   onGoForecast?: () => void;
+  onGoAtlas?: () => void;
+  onGoDatacenters?: () => void;
 }
 
-export default function FinanceView({ onGoPolicy, onGoEconomics, onGoForecast }: Props) {
+export default function FinanceView({
+  onGoPolicy,
+  onGoEconomics,
+  onGoForecast,
+  onGoAtlas,
+  onGoDatacenters,
+}: Props) {
   const envelope = requireMetric("envelope-5t");
   const debt35 = requireMetric("stack-debt-70");
   const debt4 = requireMetric("stack-debt-4t");
@@ -50,6 +64,8 @@ export default function FinanceView({ onGoPolicy, onGoEconomics, onGoForecast }:
   const credit = useMemo(() => creditCompareRows(), []);
   const sources = useMemo(() => financeSources(), []);
   const bridge = useMemo(() => commitmentBridge(COMMITMENTS), []);
+  const directory = useMemo(() => directoryBridge(DATACENTERS), []);
+  const econ = useMemo(() => economicsPointer(REAL_ESTATE), []);
   const taxPolicies = useMemo(() => POLICY.filter((p) => p.category === "tax-incentive"), []);
 
   return (
@@ -58,9 +74,10 @@ export default function FinanceView({ onGoPolicy, onGoEconomics, onGoForecast }:
         <p className="overview__eyebrow">Finance</p>
         <h1 className="page__title">Capital for the AI buildout</h1>
         <p className="page__lead">
-          Credit only: cash, equity, debt, bonds, and munis. This pane does not mix announcement GW,
-          contracted IT MW, energized MW, OEM slots, or physical COD. Every money figure is stamped
-          Cited or Sample and wears primary / claim confidence.
+          Credit only: cash, equity, debt, bonds, and munis. Every money figure is stamped Cited or
+          Sample and wears primary / claim confidence. Atlas and directory GW appear only in a
+          labeled bridge: committed GW, operational (status) GW, and campus headline GW stay on
+          separate families. None of those sit on a USD axis. Energized or metered MW is not tracked.
         </p>
       </header>
 
@@ -73,6 +90,7 @@ export default function FinanceView({ onGoPolicy, onGoEconomics, onGoForecast }:
       <section className="card card--full fin-section" aria-label="Unit key">
         <h2 className="card__title">Unit key (Energy GUY gate)</h2>
         <p className="card__sub">
+          Credit families sit on this pane. Hypergrid GW families sit only in the labeled bridge.
           These families are never plotted on one axis. Physics falsifiers live on Analysis /
           Forecast Lab, not here.
         </p>
@@ -89,7 +107,7 @@ export default function FinanceView({ onGoPolicy, onGoEconomics, onGoForecast }:
                   <span className="dc-fac">{u.unit}</span>
                   <span>
                     <span className="fin-badge" data-on={u.onPane}>
-                      {u.onPane === "yes" ? "On pane" : "Excluded"}
+                      {unitKeyLabel(u.onPane)}
                     </span>
                   </span>
                   <span className="fin-cell-note">{u.where}</span>
@@ -395,32 +413,127 @@ export default function FinanceView({ onGoPolicy, onGoEconomics, onGoForecast }:
         </p>
       </section>
 
-      <section className="card card--full fin-section" aria-label="Atlas cross-link">
-        <h2 className="card__title">Atlas cross-link</h2>
+      <section className="card card--full fin-section" aria-label="Hypergrid bridge">
+        <h2 className="card__title">Hypergrid bridge</h2>
         <p className="card__sub">
-          Record counts only. No announcement GW, contracted IT MW, energized MW, OEM slots, or COD
-          on this pane.
+          Computed from <code>commitments.ts</code> and <code>datacenters.ts</code>. Each unit
+          family is labeled. None of these GW sit on a USD axis. Operational GW is headline
+          capacity on rows with status operational, not metered draw. Campus GW is disclosed
+          campus size, not energized load.
         </p>
+
         <div className="fin-bridge-stats">
           <div className="fin-bridge-card">
+            <span className="fin-badge" data-on="bridge">Count</span>
             <span className="dc-stat__v">{bridge.count}</span>
             <span className="dc-stat__l">Sourced commitment records</span>
-            <p>Count of rows in <code>commitments.ts</code>. Not a capacity total.</p>
+            <p>
+              {bridge.energyCount} energy, {bridge.datacenterCount} datacenter. {bridge.withCapacityCount}{" "}
+              disclose a headline MW figure.
+            </p>
           </div>
           <div className="fin-bridge-card">
-            <span className="dc-stat__v">{bridge.energyCount}</span>
-            <span className="dc-stat__l">Energy-category records</span>
-            <p>Count only. Announcement GW for those rows lives on Atlas / Forecast Lab.</p>
+            <span className="fin-badge" data-on="bridge">Commitment GW</span>
+            <span className="dc-stat__v">
+              {formatGW(bridge.committedMW)}
+              <small> GW</small>
+            </span>
+            <span className="dc-stat__l">Committed / announcement GW</span>
+            <p>Sum of headline <code>capacityMW</code>. Not COD and not a meter reading.</p>
           </div>
           <div className="fin-bridge-card">
-            <span className="dc-stat__v">{bridge.datacenterCount}</span>
-            <span className="dc-stat__l">Data-center-category records</span>
-            <p>Count only. Campus announcement GW is not summed here.</p>
+            <span className="fin-badge" data-on="bridge">Operational GW</span>
+            <span className="dc-stat__v">
+              {formatGW(bridge.operationalMW)}
+              <small> GW</small>
+            </span>
+            <span className="dc-stat__l">Operational (status) GW</span>
+            <p>
+              Headline MW on {bridge.operationalCount} operational rows. Status is not energized
+              or metered MW.
+            </p>
+          </div>
+          <div className="fin-bridge-card">
+            <span className="fin-badge" data-on="bridge">Campus GW</span>
+            <span className="dc-stat__v">
+              {formatGW(directory.disclosedMW)}
+              <small> GW</small>
+            </span>
+            <span className="dc-stat__l">Directory campus headline</span>
+            <p>
+              {directory.campusCount} campuses; {directory.disclosedCount} with disclosed or
+              estimated capacity. Headline campus size is not energized draw.
+            </p>
           </div>
         </div>
+
+        <div className="dc-table-wrap fin-table" style={{ marginTop: 18 }}>
+          <div className="dc-row fin-status-row fin-status-row--head" role="row">
+            <span className="dc-th" style={{ cursor: "default" }}>Commitment status</span>
+            <span className="dc-th dc-num" style={{ cursor: "default" }}>Records</span>
+            <span className="dc-th dc-num" style={{ cursor: "default" }}>Headline GW</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Unit family</span>
+          </div>
+          <ul className="dc-table" role="list">
+            {bridge.byStatus.map((row) => (
+              <li key={row.status} className="dc-li">
+                <div className="dc-row fin-status-row">
+                  <span className="dc-fac">{STATUS[row.status].label}</span>
+                  <span className="dc-num dc-mw">{row.count}</span>
+                  <span className="dc-num dc-mw">{formatGW(row.mw)}</span>
+                  <span className="fin-cell-note">
+                    {row.status === "operational"
+                      ? "Operational (status) GW. Headline MW, not metered."
+                      : "Announcement / commitment GW."}
+                  </span>
+                </div>
+              </li>
+            ))}
+            <li className="dc-li">
+              <div className="dc-row fin-status-row fin-status-row--total">
+                <span className="dc-fac">All commitments</span>
+                <span className="dc-num dc-mw">{bridge.count}</span>
+                <span className="dc-num dc-mw">{formatGW(bridge.committedMW)}</span>
+                <span className="fin-cell-note">Committed GW total. Includes the operational subset.</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <aside className="fin-caveat" role="note">
+          <strong>Economics stays Economics.</strong> That tab is real estate and construction
+          only: {econ.dealCount} tracked real estate deals totaling {formatUSD(econ.dealValueUSD)}.
+          Construction lead times and cost benchmarks are a separate dataset on the same tab.
+          Finance does not absorb those deals.
+          {onGoEconomics && (
+            <>
+              {" "}
+              <button type="button" className="fin-textbtn" onClick={onGoEconomics}>
+                Open Economics
+              </button>
+            </>
+          )}
+        </aside>
+
         <p className="card__foot">
-          Physics falsifiers (interconnection, capacity factor, heat rate, energized vs announced)
-          stay off this pane.
+          Physics falsifiers (interconnection, capacity factor, heat rate, energized versus
+          announced) stay off the credit charts.
+          {onGoAtlas && (
+            <>
+              {" "}
+              <button type="button" className="fin-textbtn" onClick={onGoAtlas}>
+                Open Atlas
+              </button>
+            </>
+          )}
+          {onGoDatacenters && (
+            <>
+              {" "}
+              <button type="button" className="fin-textbtn" onClick={onGoDatacenters}>
+                Open Data Centers
+              </button>
+            </>
+          )}
           {onGoForecast && (
             <>
               {" "}

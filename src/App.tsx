@@ -276,6 +276,8 @@ export default function App() {
                 onGoPolicy={() => onPageChange("policy")}
                 onGoEconomics={() => onPageChange("economics")}
                 onGoForecast={() => onPageChange("portfolio")}
+                onGoAtlas={() => onPageChange("atlas")}
+                onGoDatacenters={() => onPageChange("datacenters")}
               />
             )}
             {page === "history" && <HistoryView />}

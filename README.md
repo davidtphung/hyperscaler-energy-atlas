@@ -15,7 +15,7 @@ Built by [David T Phung](https://x.com/davidtphung).
 - **Filter** by buyer, technology, status, and category, with live counts.
 - **Search** projects, buyers, and places.
 - **Select** any site for a detail panel with capacity, status, counterparty, announcement date, and a link to the primary source.
-- **Finance** the AI data-center stack: cash and equity versus debt, a claimed ~$5T capex envelope and ~$4T debt wave (Tunguz), a debt-service-to-revenue waterfall, credit-market context against SIFMA / Fed stocks, and the municipal channel. Every money figure is stamped Cited or Sample plus primary / claim confidence. Announcement GW, contracted IT MW, energized MW, OEM slots, and physical COD stay off this pane (Forecast Lab is a cross-link only). A cleared bond is not steel online.
+- **Finance** the AI data-center stack: cash and equity versus debt, a claimed ~$5T capex envelope and ~$4T debt wave (Tunguz), a debt-service-to-revenue waterfall, credit-market context against SIFMA / Fed stocks, and the municipal channel. Every money figure is stamped Cited or Sample plus primary / claim confidence. A labeled Hypergrid bridge shows commitment counts, committed GW, operational (status) GW, and campus headline GW as separate families, never on a USD axis. Energized or metered MW is not tracked. Economics stays real estate and construction. A cleared bond is not steel online.
 
 ## Data
 
