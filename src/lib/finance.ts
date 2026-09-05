@@ -195,15 +195,30 @@ export function commitmentBridge(list: Commitment[]): CommitmentBridge {
   };
 }
 
+const SOURCE_LABEL: Record<string, string> = {
+  "https://tomtunguz.com/the-4-trillion-dollar-ai-data-center-debt-wave/": "Tomasz Tunguz, Concrete, Silicon, & Leverage",
+  "https://x.com/ttunguz/status/2095915990106427550": "Tomasz Tunguz on X",
+  "https://business.columbia.edu/sites/default/files-efs/imce-uploads/svannieuwerburgh/papers/FinancingAIBuildout_03192026.pdf":
+    "Van Nieuwerburgh, Financing the AI Buildout (Columbia)",
+  "https://www.sifma.org/research/statistics/us-corporate-bonds-statistics": "SIFMA, US corporate bonds outstanding",
+  "https://www.sifma.org/research/statistics/research-quarterly-fixed-income-outstanding":
+    "SIFMA Research Quarterly, fixed income outstanding",
+  "https://www.federalreserve.gov/RELEASES/z1/current/html/F3_4_s.htm": "Federal Reserve Z.1, municipal securities",
+  "https://www.federalreserve.gov/releases/CP/": "Federal Reserve, commercial paper outstanding",
+  "https://www.businesswire.com/news/home/20260422301495/en/Gartner-Forecasts-Worldwide-IT-Spending-to-Grow-13.5-in-2026-Totaling-%246.31-Trillion":
+    "Gartner worldwide IT spending forecast",
+  "https://www.irs.gov/publications/p4078": "IRS Publication 4078 (tax-exempt private use)",
+};
+
 export function financeSources(rows: FinanceMetric[] = FINANCE): { name: string; url: string; count: number; primary: number }[] {
-  const map = new Map<string, { url: string; count: number; primary: number }>();
+  const map = new Map<string, { name: string; count: number; primary: number }>();
   for (const r of rows) {
-    const e = map.get(r.sourceName) ?? { url: r.sourceUrl, count: 0, primary: 0 };
+    const e = map.get(r.sourceUrl) ?? { name: SOURCE_LABEL[r.sourceUrl] ?? r.sourceName, count: 0, primary: 0 };
     e.count += 1;
     if (r.confidence === "primary") e.primary += 1;
-    map.set(r.sourceName, e);
+    map.set(r.sourceUrl, e);
   }
   return [...map.entries()]
-    .map(([name, e]) => ({ name, ...e }))
+    .map(([url, e]) => ({ url, ...e }))
     .sort((a, b) => b.count - a.count);
 }

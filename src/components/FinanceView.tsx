@@ -516,13 +516,11 @@ function Conf({ m }: { m: FinanceMetric }) {
 }
 
 function Cite({ m }: { m: FinanceMetric }) {
+  const title = `${m.sourceName} · ${m.asOf} · ${FINANCE_CONFIDENCE[m.confidence].label}`;
   return (
-    <a className="fin-cite" href={m.sourceUrl} target="_blank" rel="noopener noreferrer">
+    <a className="fin-cite" href={m.sourceUrl} target="_blank" rel="noopener noreferrer" title={title}>
       {m.display}
-      <span className="fin-cite__meta">
-        {" "}
-        · {m.sourceName} · {m.asOf} · {FINANCE_CONFIDENCE[m.confidence].label}
-      </span>
+      <Conf m={m} />
     </a>
   );
 }
