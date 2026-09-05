@@ -15,7 +15,7 @@ Built by [David T Phung](https://x.com/davidtphung).
 - **Filter** by buyer, technology, status, and category, with live counts.
 - **Search** projects, buyers, and places.
 - **Select** any site for a detail panel with capacity, status, counterparty, announcement date, and a link to the primary source.
-- **Finance** the AI data-center stack: cash and equity versus debt, a claimed ~$5T capex envelope and ~$4T debt wave (Tunguz, labeled as claims), a debt-service-to-revenue waterfall with checked arithmetic, credit-market context against SIFMA / Fed stocks, and the municipal channel next to the atlas commitments. Every figure carries source, as-of, and primary / secondary / claim confidence.
+- **Finance** the AI data-center stack: cash and equity versus debt, a claimed ~$5T capex envelope and ~$4T debt wave (Tunguz), a debt-service-to-revenue waterfall, credit-market context against SIFMA / Fed stocks, and the municipal channel. Every money figure is stamped Cited or Sample plus primary / claim confidence. Announcement GW, contracted IT MW, energized MW, OEM slots, and physical COD stay off this pane (Forecast Lab is a cross-link only). A cleared bond is not steel online.
 
 ## Data
 

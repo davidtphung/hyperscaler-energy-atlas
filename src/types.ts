@@ -259,6 +259,12 @@ export type FinanceKind =
   | "muni"
   | "context";
 
+/** cited = sourced print or analyst cite; sample = scenario arithmetic on cites. */
+export type FinanceStamp = "cited" | "sample";
+
+/** finance = USD/credit pane. excluded = physics units, never rendered here. */
+export type FinancePane = "finance" | "excluded";
+
 export interface FinanceMetric {
   id: string;
   kind: FinanceKind;
@@ -275,7 +281,13 @@ export interface FinanceMetric {
   sourceUrl: string;
   confidence: FinanceConfidence;
   notes: string;
+  /** Set by hydrateFinance. cited vs sample for the Energy GUY money gate. */
+  stamp: FinanceStamp;
+  /** Set by hydrateFinance. GW rows are excluded from the Finance pane. */
+  shownOn: FinancePane;
 }
+
+export type FinanceMetricDraft = Omit<FinanceMetric, "stamp" | "shownOn">;
 
 /** A commitment with derived, render-ready fields attached. */
 export interface PreparedCommitment extends Commitment {

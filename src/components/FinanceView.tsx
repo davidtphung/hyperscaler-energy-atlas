@@ -1,26 +1,28 @@
 import { useMemo } from "react";
 import { COMMITMENTS } from "../data/commitments";
-import { DATACENTERS } from "../data/datacenters";
 import { POLICY } from "../data/policy";
 import type { FinanceMetric } from "../types";
 import {
   FINANCE_CONFIDENCE,
+  FINANCE_STAMP,
+  UNIT_KEY,
   commitmentBridge,
   creditCompareRows,
   financeSources,
+  moneyUnitLabel,
   requireMetric,
   stackScenarios,
   waterfallSteps,
 } from "../lib/finance";
-import { STATUS, buyerAccent } from "../lib/theme";
-import { formatGW, formatUSDLarge } from "../lib/format";
+import { formatUSDLarge } from "../lib/format";
 
 interface Props {
   onGoPolicy?: () => void;
   onGoEconomics?: () => void;
+  onGoForecast?: () => void;
 }
 
-export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
+export default function FinanceView({ onGoPolicy, onGoEconomics, onGoForecast }: Props) {
   const envelope = requireMetric("envelope-5t");
   const debt35 = requireMetric("stack-debt-70");
   const debt4 = requireMetric("stack-debt-4t");
@@ -33,8 +35,6 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
   const corpLev = requireMetric("lev-corporate-typical");
   const msSplit = requireMetric("lev-ms-split");
   const columbiaEnv = requireMetric("envelope-columbia-us");
-  const columbiaGw = requireMetric("envelope-columbia-base-gw");
-  const usGw = requireMetric("envelope-us-gw-tunguz");
   const gartnerSw = requireMetric("run-gartner-software");
   const gartnerIt = requireMetric("run-gartner-it-2026");
   const gartner9 = requireMetric("run-gartner-9t");
@@ -52,29 +52,72 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
   const bridge = useMemo(() => commitmentBridge(COMMITMENTS), []);
   const taxPolicies = useMemo(() => POLICY.filter((p) => p.category === "tax-incentive"), []);
 
-  const maxBuyerMW = Math.max(1, ...bridge.byBuyer.map((b) => b.mw));
-  const disclosedGW = formatGW(bridge.mw);
-  const dcCount = DATACENTERS.length;
-
   return (
     <div className="page page--finance">
       <header className="page__head">
         <p className="overview__eyebrow">Finance</p>
         <h1 className="page__title">Capital for the AI buildout</h1>
         <p className="page__lead">
-          Cash, equity, debt, bonds, and munis sitting next to the public energy and data-center
-          commitments already mapped in this atlas. Figures are labeled by source, as-of date, and
-          confidence. Analyst claims stay claims.
+          Credit only: cash, equity, debt, bonds, and munis. This pane does not mix announcement GW,
+          contracted IT MW, energized MW, OEM slots, or physical COD. Every money figure is stamped
+          Cited or Sample and wears primary / claim confidence.
         </p>
       </header>
 
       <aside className="fin-disclaimer" role="note">
-        Educational scale, not investment advice. Nothing here is a recommendation to buy, sell, or
-        underwrite a security. Markets clear through spreads. Announcement gigawatts are not
-        energized megawatts, and a multi-year debt <em>flow</em> is not an outstanding <em>stock</em>.
+        <strong>Credit is not COD.</strong> A cleared bond, loan, or SPV is a paper event. It does
+        not mean steel is up, IT load is contracted, or megawatts are metered. Educational scale,
+        not investment advice.
       </aside>
 
-      <div className="fin-legend" aria-label="Confidence key">
+      <section className="card card--full fin-section" aria-label="Unit key">
+        <h2 className="card__title">Unit key (Energy GUY gate)</h2>
+        <p className="card__sub">
+          These families are never plotted on one axis. Physics falsifiers live on Analysis /
+          Forecast Lab, not here.
+        </p>
+        <div className="dc-table-wrap fin-table">
+          <div className="dc-row fin-unit-row fin-unit-row--head" role="row">
+            <span className="dc-th" style={{ cursor: "default" }}>Unit family</span>
+            <span className="dc-th" style={{ cursor: "default" }}>On this pane</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Where it belongs</span>
+          </div>
+          <ul className="dc-table" role="list">
+            {UNIT_KEY.map((u) => (
+              <li key={u.unit} className="dc-li">
+                <div className="dc-row fin-unit-row">
+                  <span className="dc-fac">{u.unit}</span>
+                  <span>
+                    <span className="fin-badge" data-on={u.onPane}>
+                      {u.onPane === "yes" ? "On pane" : "Excluded"}
+                    </span>
+                  </span>
+                  <span className="fin-cell-note">{u.where}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        {onGoForecast && (
+          <p className="card__foot">
+            Short cross-link only:{" "}
+            <button type="button" className="fin-textbtn" onClick={onGoForecast}>
+              Open Forecast Lab on Analysis
+            </button>
+            . That tab models committed announcement GW. It does not invent energized or metered MW.
+          </p>
+        )}
+      </section>
+
+      <div className="fin-legend" aria-label="Money stamps and confidence">
+        {(Object.keys(FINANCE_STAMP) as Array<keyof typeof FINANCE_STAMP>).map((k) => (
+          <span key={k} className="fin-legend__item">
+            <span className="fin-badge" data-stamp={k}>
+              {FINANCE_STAMP[k].label}
+            </span>
+            <span className="fin-legend__blurb">{FINANCE_STAMP[k].blurb}</span>
+          </span>
+        ))}
         {(Object.keys(FINANCE_CONFIDENCE) as Array<keyof typeof FINANCE_CONFIDENCE>).map((k) => (
           <span key={k} className="fin-legend__item">
             <span className="fin-badge" data-c={k}>
@@ -86,56 +129,53 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
       </div>
 
       <div className="dc-stats">
-        <Stat v={envelope.display} l="Capex envelope to ~2030" c={envelope} />
-        <Stat v={debt35.display} l="Debt at 70% of $5T" c={debt35} />
-        <Stat v={debt4.display} l="Tunguz headline debt" c={debt4} />
-        <Stat v={revenue.display} l="Implied AI revenue" c={revenue} />
-        <Stat v={runToday.display} l="Today's AI run-rate band" c={runToday} />
-        <Stat v={`${disclosedGW} GW`} l="Mapped announcement GW" note="Atlas commitments, not finance" />
+        <Stat v={envelope.display} l="Capex envelope, USD credit" c={envelope} />
+        <Stat v={debt35.display} l="Sample debt at 70%, USD" c={debt35} />
+        <Stat v={debt4.display} l="Cited headline debt, USD" c={debt4} />
+        <Stat v={revenue.display} l="Sample implied AI revenue, USD" c={revenue} />
+        <Stat v={runToday.display} l="Cited AI run-rate band, USD" c={runToday} />
+        <Stat v={String(bridge.count)} l="Atlas records (count only)" note="Not GW. Not COD." />
       </div>
 
-      {/* 1. Capital stack */}
       <section className="card card--full fin-section" aria-label="Capital stack">
         <h2 className="card__title">Capital stack</h2>
-        <p className="card__sub">
-          Equity versus debt on a claimed global AI data-center envelope, then the gap between a
-          70% mid-case and Tunguz's $4T headline.
+        <p className="card__sub">USD credit only. Equity versus debt on a cited envelope. Not physical capacity.</p>
+        <p className="fin-copy">
+          Tunguz, citing J.P. Morgan Asset Management, Western Asset, and PIMCO, puts a global
+          capex envelope near <Cite m={envelope} />. Data-center buildings are usually levered.
+          Tunguz cites facility leverage of <Cite m={tunguzLev} /> (Columbia / CREFC), versus about{" "}
+          <Cite m={corpLev} /> on a typical corporate balance sheet. Columbia's opened paper writes{" "}
+          <Cite m={columbiaLev} /> on the physical facility and power, because sponsor equity often
+          buys IT kit while project debt buys the building. None of those percents are megawatts.
         </p>
         <p className="fin-copy">
-          Over the next five years Tunguz, citing J.P. Morgan Asset Management, Western Asset, and
-          PIMCO, puts the global buildout near <Cite m={envelope} />. Data centers are financed like
-          real estate: some cash and equity, mostly debt. Tunguz cites facility leverage of{" "}
-          <Cite m={tunguzLev} /> (Columbia / CREFC), versus about <Cite m={corpLev} /> on a typical
-          corporate balance sheet. Columbia's own paper, which we opened, writes{" "}
-          <Cite m={columbiaLev} /> on the physical facility and power, because hyperscaler equity
-          often buys the IT kit while project debt buys the building.
-        </p>
-        <p className="fin-copy">
-          Synthetic JV SPVs can go further. The Meta / Blue Owl Hyperion vehicle (Beignet) is{" "}
-          <Cite m={beignet} />. That deal already lives on the Economics tab as a development JV.
+          Synthetic JV SPVs can go further. The Meta / Blue Owl Hyperion vehicle (Beignet) issued{" "}
+          <Cite m={beignet} />. That is a credit structure. It is not Hyperion commercial operation.
+          The JV also lives on the Economics tab as a development deal.
         </p>
 
         <div className="dc-table-wrap fin-table">
           <div className="dc-row fin-stack-row fin-stack-row--head" role="row">
             <span className="dc-th" style={{ cursor: "default" }}>Scenario</span>
             <span className="dc-th" style={{ cursor: "default" }}>Leverage</span>
-            <span className="dc-th dc-num" style={{ cursor: "default" }}>Debt</span>
-            <span className="dc-th dc-num" style={{ cursor: "default" }}>Equity</span>
-            <span className="dc-th" style={{ cursor: "default" }}>Why this number</span>
+            <span className="dc-th dc-num" style={{ cursor: "default" }}>Debt (USD)</span>
+            <span className="dc-th dc-num" style={{ cursor: "default" }}>Equity (USD)</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Stamp</span>
           </div>
           <ul className="dc-table" role="list">
             {stacks.map((s) => (
               <li key={s.id} className="dc-li">
                 <div className="dc-row fin-stack-row">
-                  <span className="dc-fac">{s.label}</span>
+                  <span className="dc-cell-main">
+                    <span className="dc-fac">{s.label}</span>
+                    <span className="dc-op">{s.note}</span>
+                  </span>
                   <span className="dc-mw">{s.leveragePct}</span>
-                  <span className="dc-num dc-mw">
-                    {s.debt.display} <Conf m={s.debt} />
+                  <span className="dc-num dc-mw">{s.debt.display}</span>
+                  <span className="dc-num dc-mw">{s.equity.display}</span>
+                  <span className="fin-stamps">
+                    <MoneyMarks m={s.debt} />
                   </span>
-                  <span className="dc-num dc-mw">
-                    {s.equity.display} <Conf m={s.equity} />
-                  </span>
-                  <span className="fin-cell-note">{s.note}</span>
                 </div>
               </li>
             ))}
@@ -151,6 +191,7 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
               <div key={s.id} className="fin-stackvis">
                 <div className="fin-stackvis__lab">
                   {s.label}: {s.debt.display} debt / {s.equity.display} equity
+                  <span className="fin-stackvis__unit"> USD credit</span>
                 </div>
                 <div className="fin-stackvis__bar">
                   <span className="fin-stackvis__debt" style={{ width: `${(debt / total) * 100}%` }} />
@@ -160,34 +201,29 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
             );
           })}
           <div className="fin-stackvis__key">
-            <span><i className="fin-swatch" style={{ background: "var(--signal)" }} /> Debt</span>
-            <span><i className="fin-swatch" style={{ background: "#7fc4ec" }} /> Equity / cash</span>
+            <span><i className="fin-swatch" style={{ background: "var(--signal)" }} /> Debt (USD)</span>
+            <span><i className="fin-swatch" style={{ background: "#7fc4ec" }} /> Equity / cash (USD)</span>
           </div>
         </div>
 
         <div className="fin-callout">
           <h3 className="fin-callout__h">Why $3.5T and $4T both appear</h3>
           <p>
-            $3.5T is 70% of the $5T envelope, the midpoint of Tunguz's 65% to 75% facility band.
-            $4T is his headline comparison number. That is 80% of $5T, which sits inside Columbia's
-            70% to 80% facility range and closer to a book that includes 90% SPVs like Beignet. The
-            $0.5T gap is a higher assumed leverage on the same claimed envelope, not a second
-            independent forecast. Both rows inherit claim confidence because the $5T input is a
-            house-research cite we cannot open.
+            $3.5T is a Sample: 70% of the Cited $5T envelope. $4T is Tunguz's Cited headline (80% of
+            the same envelope). The $0.5T gap is a higher leverage assumption, not a second
+            independent forecast, and not a COD schedule.
           </p>
         </div>
 
         <p className="fin-copy">
-          A different academic envelope: Columbia scales a 200 GW US planned increment at about
-          $8.2B per 200 MW campus (building, power, and chips) and gets <Cite m={columbiaEnv} />{" "}
-          through 2032. That is US-only and includes IT equipment. Do not add it to the $5T global
-          figure. Columbia's installed-plus-construction tally is <Cite m={columbiaGw} />, against
-          Tunguz's <Cite m={usGw} />. Those GW rows stay off the dollar charts.
+          Columbia publishes a separate US dollar envelope of <Cite m={columbiaEnv} /> that includes
+          IT kit. It is not added to the $5T global claim. The paper's capacity scaling is a physics
+          input and is not shown on this pane.
         </p>
         <p className="card__foot">
-          Morgan Stanley, as restated by Columbia, sees an all-in 2025 to 2028 mix near{" "}
-          <Cite m={msSplit} /> because IT kit is mostly equity-funded. Facility debt can still sit
-          at 70% to 90% on the building.{" "}
+          Morgan Stanley, as restated by Columbia, sees an all-in mix near <Cite m={msSplit} />{" "}
+          because IT kit is mostly equity-funded. Facility debt can still sit at 70% to 90% on the
+          building. That is capital structure, not energized load.{" "}
           {onGoEconomics && (
             <button type="button" className="fin-textbtn" onClick={onGoEconomics}>
               Open the Hyperion JV on Economics
@@ -196,25 +232,24 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
         </p>
       </section>
 
-      {/* 2. Waterfall */}
       <section className="card card--full fin-section" aria-label="Debt service waterfall">
         <h2 className="card__title">Debt service to revenue</h2>
         <p className="card__sub">
-          Tunguz fn6, with arithmetic checked. Every step names its assumption.
+          USD P&amp;L sample on a Cited $4T debt claim. Tunguz fn6, arithmetic checked. Not a
+          generation or COD model.
         </p>
         <p className="fin-copy">
           If $4T of project debt must be serviced at 6.5% to 7.5%, the interest bill is $260B to
-          $300B a year. A 3× investment-grade coverage ratio lifts that to about $800B to $900B of
-          operating profit. At 60% to 70% gross margin, the implied AI revenue is $1.2T to $1.5T.
-          That is a teaching waterfall, not a rating-agency model.
+          $300B a year. A 3× coverage ratio lifts that to about $800B to $900B of operating profit.
+          At 60% to 70% gross margin, implied AI revenue is $1.2T to $1.5T. Teaching waterfall only.
         </p>
 
         <div className="dc-table-wrap fin-table">
           <div className="dc-row fin-wf-row fin-wf-row--head" role="row">
             <span className="dc-th" style={{ cursor: "default" }}>Step</span>
             <span className="dc-th dc-num" style={{ cursor: "default" }}>Figure</span>
-            <span className="dc-th" style={{ cursor: "default" }}>Assumption / check</span>
-            <span className="dc-th" style={{ cursor: "default" }}>Source</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Unit</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Stamp</span>
           </div>
           <ul className="dc-table" role="list">
             {steps.map((s, i) => (
@@ -223,12 +258,16 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
                   <span className="dc-cell-main">
                     <span className="fin-stepn">{i + 1}</span>
                     <span className="dc-fac">{s.title}</span>
+                    <span className="dc-op">{s.assumption}</span>
                   </span>
                   <span className="dc-num">
-                    <span className="fin-fig">{s.display}</span> <Conf m={s.row} />
+                    <span className="fin-fig">{s.display}</span>
                   </span>
-                  <span className="fin-cell-note">{s.assumption}</span>
-                  <SourceLink m={s.row} />
+                  <span className="fin-cell-note">{moneyUnitLabel(s.row)}</span>
+                  <span className="fin-stamps">
+                    <MoneyMarks m={s.row} />
+                    <SourceLink m={s.row} />
+                  </span>
                 </div>
               </li>
             ))}
@@ -237,43 +276,39 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
 
         <div className="fin-run">
           <div>
-            <h3 className="sources-h">Today versus the implied 2030 run-rate</h3>
+            <h3 className="sources-h">Today versus the implied run-rate (USD)</h3>
             <p className="fin-copy">
-              Tunguz puts today's annualized AI revenue, across clouds and labs, at{" "}
-              <Cite m={runToday} />. Reaching the midpoint of the implied band (~$1.35T) from the
-              midpoint of that run-rate (~$150B) in five years is <Cite m={cagr} /> CAGR. We
-              recompute 9<sup>0.2</sup> − 1 ≈ 55.2%. His companion cloud-growth print is{" "}
-              <Cite m={cloudGrowth} />. Cloud growth is not AI-revenue growth.
+              Tunguz puts today's annualized AI revenue at <Cite m={runToday} />. Reaching the
+              midpoint of the implied band (~$1.35T) from ~$150B in five years is{" "}
+              <Cite m={cagr} /> CAGR (9<sup>0.2</sup> − 1 ≈ 55.2%). Companion cloud growth:{" "}
+              <Cite m={cloudGrowth} />. Cloud growth is not AI-revenue growth and not load growth.
             </p>
           </div>
           <div>
-            <h3 className="sources-h">Gartner context (primary)</h3>
+            <h3 className="sources-h">Gartner context (USD, cited primary)</h3>
             <p className="fin-copy">
               Worldwide software spending is <Cite m={gartnerSw} />. Worldwide IT is{" "}
               <Cite m={gartnerIt} />. Tunguz writes that IT compounds toward <Cite m={gartner9} />.
-              We could not find a free Gartner table that prints $9T for 2030, so that rung stays a
-              claim. The point of the comparison: $1.2T to $1.5T of AI revenue would rival the entire
-              2026 software category.
+              No free Gartner table prints $9T for 2030, so that rung stays a claim. Scale context
+              only: not a data-center MW forecast.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 3. Credit market context */}
       <section className="card card--full fin-section" aria-label="Credit market context">
         <h2 className="card__title">Credit market context</h2>
         <p className="card__sub">
-          Tunguz compares $4T of AI debt to the world's primary credit stocks. Bars are US dollars.
-          GW and TWh never appear here.
+          USD outstanding stocks versus a Cited multi-year AI debt flow. No GW, TWh, or Bcf on
+          this chart.
         </p>
 
         <aside className="fin-caveat" role="note">
           <strong>Systems caveat.</strong> {flowStock.notes} Commercial paper is short-term working
-          capital, typically under 270 days. Putting it on the same chart as 20-year project debt is
-          a size metaphor, not a substitution.
+          capital, typically under 270 days. Size metaphor only.
         </aside>
 
-        <div className="fin-creditbars" aria-label="Credit stocks versus claimed AI debt">
+        <div className="fin-creditbars" aria-label="Credit stocks versus claimed AI debt, USD">
           {credit.map((r) => {
             const max = Math.max(1, ...credit.map((x) => x.stock.value ?? 0));
             const pct = Math.max(2, ((r.stock.value ?? 0) / max) * 100);
@@ -292,6 +327,7 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
                 </span>
                 <span className="fin-creditbars__val">
                   {r.stock.value != null ? formatUSDLarge(r.stock.value) : r.stock.display}
+                  <small> USD</small>
                 </span>
               </div>
             );
@@ -300,11 +336,11 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
 
         <div className="dc-table-wrap fin-table" style={{ marginTop: 16 }}>
           <div className="dc-row fin-mkt-row fin-mkt-row--head" role="row">
-            <span className="dc-th" style={{ cursor: "default" }}>Market</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Market (USD)</span>
             <span className="dc-th dc-num" style={{ cursor: "default" }}>Outstanding / claim</span>
             <span className="dc-th" style={{ cursor: "default" }}>As of</span>
             <span className="dc-th" style={{ cursor: "default" }}>$4T versus</span>
-            <span className="dc-th" style={{ cursor: "default" }}>Confidence</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Stamp</span>
           </div>
           <ul className="dc-table" role="list">
             {credit.map((r) => (
@@ -317,41 +353,37 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
                   <span className="dc-num dc-mw">{r.stock.display}</span>
                   <span className="dc-mw">{r.stock.asOf}</span>
                   <span className="fin-cell-note">{r.versus}</span>
-                  <span><Conf m={r.stock} /></span>
+                  <span className="fin-stamps"><MoneyMarks m={r.stock} /></span>
                 </div>
               </li>
             ))}
           </ul>
         </div>
         <p className="card__foot">
-          $4T / $11.7T = 34.2%, which matches Tunguz's "34% expansion" once the SIFMA 1Q26 corporate
-          stock is the denominator. The percentage is arithmetic on a claimed numerator.
+          $4T / $11.7T = 34.2% on the SIFMA 1Q26 corporate stock. Arithmetic on a Cited claim
+          numerator over a Cited primary denominator. Not a crowding forecast and not COD.
         </p>
       </section>
 
-      {/* 4. Municipal channel */}
       <section className="card card--full fin-section" aria-label="Public and municipal channel">
         <h2 className="card__title">Public and municipal channel</h2>
-        <p className="card__sub">
-          Munis already finance American roads, water, airports, and many power plants. They are not
-          a blank check for a private AI campus.
-        </p>
+        <p className="card__sub">USD municipal market and tax rules. Not a campus MW tally.</p>
         <p className="fin-copy">
           The US municipal market is about <Cite m={muniFed} />. Tunguz asks whether towns chasing
-          growth will use that market to fund some data-center infrastructure the way they have
-          funded power plants. Possible, with limits.
+          growth will use that market for some data-center infrastructure, as they have for power
+          plants. Possible, with limits. A tax-exempt issue is still credit, not energized load.
         </p>
         <p className="fin-copy">
           Tax-exempt governmental bonds generally fail the private-use tests if more than{" "}
           <Cite m={privateUse} />. A privately owned hall of GPUs almost never qualifies. Public
-          wires, substations, water, and roads owned by a government or public-power utility can
-          still take tax-exempt debt when ownership and output tests hold. Realistic tools around
-          the campus itself are <Cite m={muniTools} />.
+          wires, water, and roads owned by a government or public-power utility can still take
+          tax-exempt debt when ownership and output tests hold. Realistic tools around the campus
+          itself are <Cite m={muniTools} />.
         </p>
         <p className="fin-copy">
-          HYPERGRID already tracks the tax-incentive fight on the Policy tab
-          ({taxPolicies.length} tax-incentive records, including Georgia's sales-tax exemption).
-          Abatements and PILOTs change the local cash flow even when they are not bond proceeds.
+          HYPERGRID tracks the tax-incentive fight on the Policy tab ({taxPolicies.length}{" "}
+          tax-incentive records). Abatements and PILOTs change local cash flow even when they are
+          not bond proceeds.
           {onGoPolicy && (
             <>
               {" "}
@@ -363,101 +395,48 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
         </p>
       </section>
 
-      {/* 5. Bridge to commitments */}
-      <section className="card card--full fin-section" aria-label="Bridge to Hypergrid commitments">
-        <h2 className="card__title">Bridge to Hypergrid commitments</h2>
+      <section className="card card--full fin-section" aria-label="Atlas cross-link">
+        <h2 className="card__title">Atlas cross-link</h2>
         <p className="card__sub">
-          The atlas maps public announcements. Those electrical megawatts are not a capital-markets
-          ledger, and they are not energized load.
+          Record counts only. No announcement GW, contracted IT MW, energized MW, OEM slots, or COD
+          on this pane.
         </p>
-
         <div className="fin-bridge-stats">
           <div className="fin-bridge-card">
             <span className="dc-stat__v">{bridge.count}</span>
-            <span className="dc-stat__l">Sourced commitments</span>
-            <p>Energy and data-center rows in <code>commitments.ts</code>.</p>
+            <span className="dc-stat__l">Sourced commitment records</span>
+            <p>Count of rows in <code>commitments.ts</code>. Not a capacity total.</p>
           </div>
           <div className="fin-bridge-card">
-            <span className="dc-stat__v">{disclosedGW}<small> GW</small></span>
-            <span className="dc-stat__l">Announcement capacity</span>
-            <p>
-              Sum of disclosed MW only ({bridge.disclosed} rows). {bridge.undisclosed} rows have no
-              capacity. Headline program size, not nameplate and not energized.
-            </p>
+            <span className="dc-stat__v">{bridge.energyCount}</span>
+            <span className="dc-stat__l">Energy-category records</span>
+            <p>Count only. Announcement GW for those rows lives on Atlas / Forecast Lab.</p>
           </div>
           <div className="fin-bridge-card">
-            <span className="dc-stat__v">{formatGW(bridge.energyMW)}<small> GW</small></span>
-            <span className="dc-stat__l">Energy-supply announcements</span>
-            <p>
-              {bridge.energyCount} energy rows. Still announcements and PPAs, not a generation
-              ledger. Forecast Lab models committed GW; it does not invent energized totals.
-            </p>
-          </div>
-          <div className="fin-bridge-card">
-            <span className="dc-stat__v">{formatGW(bridge.datacenterMW)}<small> GW</small></span>
-            <span className="dc-stat__l">Data-center campus announcements</span>
-            <p>
-              {bridge.datacenterCount} campus rows. Separate from the {dcCount} facilities in the
-              Data Centers directory, which is a curated subset and not an energized-MW census.
-            </p>
-          </div>
-        </div>
-
-        <div className="econ-grid" style={{ marginTop: 14 }}>
-          <div>
-            <h3 className="sources-h">Announcement GW by buyer</h3>
-            <p className="card__sub" style={{ marginBottom: 12 }}>
-              Electrical megawatts only. Not dollars, not TWh, not Bcf.
-            </p>
-            <div className="bench">
-              {bridge.byBuyer.slice(0, 10).map((b) => (
-                <div className="bench__row" key={b.buyer}>
-                  <span className="bench__name">{b.buyer}</span>
-                  <span className="bench__track">
-                    <span
-                      className="bench__fill"
-                      style={{
-                        width: `${(b.mw / maxBuyerMW) * 100}%`,
-                        background: buyerAccent(b.buyer),
-                      }}
-                    />
-                  </span>
-                  <span className="bench__val">{formatGW(b.mw)} GW</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h3 className="sources-h">By firmness (status)</h3>
-            <p className="card__sub" style={{ marginBottom: 12 }}>
-              Operational is still an announcement-era capacity figure unless the source said otherwise.
-            </p>
-            <div className="bench">
-              {bridge.byStatus.map((s) => (
-                <div className="bench__row" key={s.status}>
-                  <span className="bench__name">{STATUS[s.status].label}</span>
-                  <span className="bench__track">
-                    <span className="bench__fill" style={{ width: `${(s.mw / Math.max(1, bridge.mw)) * 100}%` }} />
-                  </span>
-                  <span className="bench__val">{s.count} · {formatGW(s.mw)} GW</span>
-                </div>
-              ))}
-            </div>
+            <span className="dc-stat__v">{bridge.datacenterCount}</span>
+            <span className="dc-stat__l">Data-center-category records</span>
+            <p>Count only. Campus announcement GW is not summed here.</p>
           </div>
         </div>
         <p className="card__foot">
-          Unit hygiene: these cards stay in counts and electrical GW. The dollar charts above never
-          share an axis with them. Converting GW to TWh needs a capacity factor; converting to Bcf
-          of gas needs a heat rate. This page does not invent those factors.
+          Physics falsifiers (interconnection, capacity factor, heat rate, energized vs announced)
+          stay off this pane.
+          {onGoForecast && (
+            <>
+              {" "}
+              <button type="button" className="fin-textbtn" onClick={onGoForecast}>
+                Open Forecast Lab
+              </button>
+            </>
+          )}
         </p>
       </section>
 
-      {/* 6. Sources */}
       <section className="fin-section" aria-label="Finance sources">
         <h2 className="sources-h">Sources on this page</h2>
         <ul className="source-list">
           {sources.map((s) => (
-            <li key={s.name} className="source-row">
+            <li key={s.url} className="source-row">
               <a className="source-row__link" href={s.url} target="_blank" rel="noopener noreferrer">
                 {s.name}
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -480,7 +459,7 @@ export default function FinanceView({ onGoPolicy, onGoEconomics }: Props) {
           <a href={thread.sourceUrl} target="_blank" rel="noopener noreferrer">
             {thread.sourceName}
           </a>
-          . About / Sources lists the commitment-level primary sources.
+          . About / Sources lists commitment-level primary sources.
         </p>
       </section>
     </div>
@@ -502,25 +481,30 @@ function Stat({
     <div className="dc-stat">
       <span className="dc-stat__v">{v}</span>
       <span className="dc-stat__l">{l}</span>
-      {c ? <Conf m={c} /> : note ? <span className="fin-stat-note">{note}</span> : null}
+      {c ? <MoneyMarks m={c} /> : note ? <span className="fin-stat-note">{note}</span> : null}
     </div>
   );
 }
 
-function Conf({ m }: { m: FinanceMetric }) {
+function MoneyMarks({ m }: { m: FinanceMetric }) {
   return (
-    <span className="fin-badge" data-c={m.confidence} title={`${m.sourceName} · as of ${m.asOf}`}>
-      {FINANCE_CONFIDENCE[m.confidence].label}
+    <span className="fin-stamps">
+      <span className="fin-badge" data-stamp={m.stamp} title={FINANCE_STAMP[m.stamp].blurb}>
+        {FINANCE_STAMP[m.stamp].label}
+      </span>
+      <span className="fin-badge" data-c={m.confidence} title={`${m.sourceName} · as of ${m.asOf}`}>
+        {FINANCE_CONFIDENCE[m.confidence].label}
+      </span>
     </span>
   );
 }
 
 function Cite({ m }: { m: FinanceMetric }) {
-  const title = `${m.sourceName} · ${m.asOf} · ${FINANCE_CONFIDENCE[m.confidence].label}`;
+  const title = `${moneyUnitLabel(m)} · ${FINANCE_STAMP[m.stamp].label} · ${m.sourceName} · ${m.asOf} · ${FINANCE_CONFIDENCE[m.confidence].label}`;
   return (
     <a className="fin-cite" href={m.sourceUrl} target="_blank" rel="noopener noreferrer" title={title}>
       {m.display}
-      <Conf m={m} />
+      <MoneyMarks m={m} />
     </a>
   );
 }
@@ -532,4 +516,3 @@ function SourceLink({ m }: { m: FinanceMetric }) {
     </a>
   );
 }
-

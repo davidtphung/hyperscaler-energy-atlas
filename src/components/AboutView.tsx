@@ -43,12 +43,10 @@ export default function AboutView({ total, totalGW }: Props) {
 
           <h2>Finance layer</h2>
           <p>
-            The Finance tab is a capital-allocation layer, not a market call. Capex envelopes and
-            implied revenue come from analyst essays (chiefly Tunguz, citing J.P. Morgan AM, Western
-            Asset, and PIMCO) and stay labeled as claims. Market stocks that we could open (SIFMA
-            corporates, Fed munis and commercial paper, Gartner press tables, Columbia on leverage
-            and the Beignet SPV) are labeled primary. Arithmetic we recomputed is noted. Dollar
-            charts never share an axis with announcement gigawatts.
+            The Finance tab is a credit pane, not a physics pane. Every money figure is stamped
+            Cited or Sample and wears primary / secondary / claim confidence. Announcement GW,
+            contracted IT MW, energized MW, OEM slots, and physical COD are excluded; Forecast Lab
+            is a short cross-link only. A cleared bond is not steel online.
           </p>
 
           <h2>Confidence and firmness</h2>

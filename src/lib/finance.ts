@@ -1,6 +1,5 @@
-import type { Commitment, FinanceConfidence, FinanceKind, FinanceMetric, Status } from "../types";
+import type { Commitment, FinanceConfidence, FinanceKind, FinanceMetric, FinanceStamp } from "../types";
 import { FINANCE } from "../data/finance";
-import { sumMW } from "./select";
 
 export function metricsByKind(kind: FinanceKind, rows: FinanceMetric[] = FINANCE): FinanceMetric[] {
   return rows.filter((r) => r.kind === kind);
@@ -15,6 +14,17 @@ export function requireMetric(id: string, rows: FinanceMetric[] = FINANCE): Fina
   if (!row) throw new Error(`Missing finance metric: ${id}`);
   return row;
 }
+
+export const FINANCE_STAMP: Record<FinanceStamp, { label: string; blurb: string }> = {
+  cited: {
+    label: "Cited",
+    blurb: "A sourced print or an analyst cite. Still wears primary / secondary / claim.",
+  },
+  sample: {
+    label: "Sample",
+    blurb: "Scenario arithmetic on cited inputs (for example 70% × $5T). Not a market print.",
+  },
+};
 
 export const FINANCE_CONFIDENCE: Record<FinanceConfidence, { label: string; blurb: string; color: string }> = {
   primary: {
@@ -138,62 +148,40 @@ export function stackScenarios(rows: FinanceMetric[] = FINANCE): StackScenario[]
 
 export interface CommitmentBridge {
   count: number;
-  disclosed: number;
-  undisclosed: number;
-  mw: number;
-  energyMW: number;
-  datacenterMW: number;
   energyCount: number;
   datacenterCount: number;
-  byBuyer: { buyer: string; count: number; mw: number }[];
-  byStatus: { status: Status; count: number; mw: number }[];
 }
 
+/** Record counts only. No announcement GW, no energized MW. */
 export function commitmentBridge(list: Commitment[]): CommitmentBridge {
-  const disclosed = list.filter((c) => c.capacityMW != null).length;
-  const byBuyerMap = new Map<string, { count: number; mw: number }>();
-  const byStatusMap = new Map<Status, { count: number; mw: number }>();
-  let energyMW = 0;
-  let datacenterMW = 0;
-  let energyCount = 0;
-  let datacenterCount = 0;
-  for (const c of list) {
-    const mw = c.capacityMW ?? 0;
-    const b = byBuyerMap.get(c.buyer) ?? { count: 0, mw: 0 };
-    b.count += 1;
-    b.mw += mw;
-    byBuyerMap.set(c.buyer, b);
-    const s = byStatusMap.get(c.status) ?? { count: 0, mw: 0 };
-    s.count += 1;
-    s.mw += mw;
-    byStatusMap.set(c.status, s);
-    if (c.category === "energy") {
-      energyCount += 1;
-      energyMW += mw;
-    } else {
-      datacenterCount += 1;
-      datacenterMW += mw;
-    }
-  }
-  const byBuyer = [...byBuyerMap.entries()]
-    .map(([buyer, v]) => ({ buyer, ...v }))
-    .sort((a, b) => b.mw - a.mw || b.count - a.count);
-  const byStatus = [...byStatusMap.entries()]
-    .map(([status, v]) => ({ status, ...v }))
-    .sort((a, b) => b.mw - a.mw);
   return {
     count: list.length,
-    disclosed,
-    undisclosed: list.length - disclosed,
-    mw: sumMW(list),
-    energyMW,
-    datacenterMW,
-    energyCount,
-    datacenterCount,
-    byBuyer,
-    byStatus,
+    energyCount: list.filter((c) => c.category === "energy").length,
+    datacenterCount: list.filter((c) => c.category === "datacenter").length,
   };
 }
+
+export function moneyUnitLabel(m: FinanceMetric): string {
+  if (m.unit === "USD") {
+    if (m.kind === "runrate" || m.id === "wf-revenue") return "USD revenue";
+    if (m.kind === "waterfall") return "USD credit / P&L sample";
+    return "USD credit";
+  }
+  if (m.unit === "pct") return m.kind === "leverage" ? "percent leverage" : "percent";
+  if (m.unit === "ratio") return "ratio";
+  if (m.unit === "GW") return "GW (excluded from this pane)";
+  return "text";
+}
+
+export const UNIT_KEY: { unit: string; onPane: "yes" | "no"; where: string }[] = [
+  { unit: "USD credit / capex / market stock", onPane: "yes", where: "This pane. Labeled Cited or Sample." },
+  { unit: "USD implied revenue / run-rate", onPane: "yes", where: "Waterfall only. Claim or sample, never COD." },
+  { unit: "Announcement / commitment GW", onPane: "no", where: "Atlas. Not plotted here." },
+  { unit: "Contracted IT MW", onPane: "no", where: "Not tracked in HYPERGRID." },
+  { unit: "Energized / metered MW", onPane: "no", where: "Not tracked. Forecast Lab does not invent it." },
+  { unit: "Firm OEM slots vs SRA", onPane: "no", where: "Not tracked on this pane." },
+  { unit: "Physical COD", onPane: "no", where: "Not implied when a bond or credit clears." },
+];
 
 const SOURCE_LABEL: Record<string, string> = {
   "https://tomtunguz.com/the-4-trillion-dollar-ai-data-center-debt-wave/": "Tomasz Tunguz, Concrete, Silicon, & Leverage",

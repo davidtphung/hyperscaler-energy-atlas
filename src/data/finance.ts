@@ -1,4 +1,4 @@
-import type { FinanceMetric } from "../types";
+import type { FinanceMetric, FinanceMetricDraft } from "../types";
 
 // HYPERGRID finance layer: sourced capital-allocation figures for the AI
 // data-center buildout. Every row carries a source URL, as-of date, and a
@@ -11,8 +11,30 @@ import type { FinanceMetric } from "../types";
 // Thread: https://x.com/ttunguz/status/2095915990106427550
 //
 // Do not treat claims as hard fact. Do not invent prints or curve points.
+//
+// Energy GUY unit gate: GW rows hydrate to shownOn "excluded" and never
+// render on the Finance pane. Money rows stamp as cited (source) or sample
+// (scenario arithmetic). Credit clearing is not physical COD.
 
-export const FINANCE: FinanceMetric[] = [
+const SAMPLE_IDS = new Set([
+  "stack-debt-70",
+  "stack-equity-30",
+  "stack-equity-20",
+  "wf-interest",
+  "wf-op-profit",
+  "wf-revenue",
+  "run-cagr",
+]);
+
+function hydrateFinance(rows: FinanceMetricDraft[]): FinanceMetric[] {
+  return rows.map((r) => ({
+    ...r,
+    stamp: SAMPLE_IDS.has(r.id) ? "sample" : "cited",
+    shownOn: r.unit === "GW" ? "excluded" : "finance",
+  }));
+}
+
+const RAW: FinanceMetricDraft[] = [
   // ---- Capex envelope ----
   {
     id: "envelope-5t",
@@ -625,3 +647,5 @@ export const FINANCE: FinanceMetric[] = [
     notes: "Short-form companion to the essay. Figures in the essay are the ones checked here.",
   },
 ];
+
+export const FINANCE: FinanceMetric[] = hydrateFinance(RAW);

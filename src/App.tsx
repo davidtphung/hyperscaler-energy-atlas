@@ -275,6 +275,7 @@ export default function App() {
               <FinanceView
                 onGoPolicy={() => onPageChange("policy")}
                 onGoEconomics={() => onPageChange("economics")}
+                onGoForecast={() => onPageChange("portfolio")}
               />
             )}
             {page === "history" && <HistoryView />}
