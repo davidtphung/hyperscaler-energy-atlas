@@ -41,6 +41,19 @@ export default function AboutView({ total, totalGW }: Props) {
             ))}
           </ul>
 
+          <h2>Finance layer</h2>
+          <p>
+            The Finance tab is a credit pane, not a physics pane. Every money figure is stamped
+            Cited or Sample and wears primary / secondary / claim confidence. Mid-2026 IR
+            primaries (Microsoft AI ARR $37B, Azure FY revenue, Amazon AI and chips, Google Cloud,
+            Oracle IaaS / RPO) sit beside Tunguz and JPM claims. A labeled Atlas /
+            directory bridge shows commitment counts, committed GW (announcement-electrical
+            capacityMW only; untagged rows default), status-operational GW, and campus headline
+            GW as separate families. None of those sit on a USD axis. Energized
+            or metered MW is not tracked. Forecast Lab is a short cross-link only. A cleared
+            bond is not steel online. Economics stays real estate and construction.
+          </p>
+
           <h2>Confidence and firmness</h2>
           <p>
             Confidence reflects how well the reported figures are sourced, from high (company release or filing with a
@@ -63,8 +76,10 @@ export default function AboutView({ total, totalGW }: Props) {
           <ul className="schema-list">
             {[
               "buyer", "counterparty", "project", "category", "techType (energy source)",
-              "capacityMW", "status", "era", "confidence", "date", "city / state / country",
+              "capacityMW", "numberKind (optional; default announcement-electrical)",
+              "status", "era", "confidence", "date", "city / state / country",
               "lat / lng", "summary", "sourceName", "sourceUrl",
+              "FinanceMetric: kind, display, asOf, confidence (primary | secondary | claim)",
             ].map((f) => (
               <li key={f}><code>{f}</code></li>
             ))}

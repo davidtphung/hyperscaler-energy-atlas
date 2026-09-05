@@ -17,13 +17,14 @@ HYPERGRID is a single static single-page application that unifies several source
 
 ---
 
-## 2. Views (9 tabs)
+## 2. Views (10 tabs)
 
 | Tab | What it does |
 |---|---|
 | **Atlas** | Interactive map plus timeline of 104 hyperscaler energy and datacenter commitments. Speed-mode playback pill (Live / 1mo/s / 6mo/s / 1yr/s), cumulative buildout reveal, filters (buyer, era, technology, status, category), search, detail panel with stats and ledger. Map views: United States, China, Global. |
 | **Data Centers** | Searchable, sortable global directory of 260 facilities across 46 countries (93 in China). Map views Global / China / US, click a dot for a facility info card, top-countries breakdown, click-to-sort columns (MW top and least, undisclosed last). |
 | **Economics** | 25 real estate transactions (M&A, take-privates, sale-leasebacks, land) on a deal map with sortable table, a price-per-square-foot scatter, construction cost benchmarks (USD millions per MW by market), and a long-lead equipment chart (transformers 128 to 210 weeks, generators, switchgear, chillers, UPS). |
+| **Finance** | Credit pane for the AI data-center buildout: Tunguz ~$5T / ~$4T beside JPM claims $5.5T / $4.1T, mid-2026 IR primaries (MSFT AI ARR $37B, Azure FY >$100B, AMZN AI and chips each >$25B, GOOGL Cloud $24.8B / $514B backlog, ORCL IaaS $18.1B / RPO $638B), SIFMA $11.7T / $4.5T / $1.4T, labeled FSB vs PIMCO private credit, Beignet / Sopaipilla / CoreWeave $8.5B. Every USD figure is Cited or Sample. A labeled Hypergrid bridge shows committed GW, status-operational GW, and campus headline GW as separate families. Economics stays real estate and construction. |
 | **History** | 28 source-backed milestones from ENIAC (1945) through carrier hotels, colocation, cloud and hyperscale, edge, and the AI factory era, grouped on an editorial timeline by era. |
 | **Contested** | Investigative tracker of 23 data center projects that were blocked, stalled, denied, withdrawn, put under moratorium, or litigated. Severity scored 1 to 5, US and world maps, contestation themes. |
 | **Policy** | 41 for / against / mixed AI data center policy actions (FERC RM26-4, White House ratepayer pledge, Texas SB6, Ireland CRU and LEAP, Virginia bills) with a stance map, balance bar, and level filters. |
@@ -44,6 +45,7 @@ HYPERGRID is a single static single-page application that unifies several source
 | History milestones | `src/data/history.ts` | 28 |
 | Contested projects | `src/data/contested.ts` | 23 |
 | Policy actions | `src/data/policy.ts` | 41 |
+| Finance metrics | `src/data/finance.ts` | typed capital-market rows (primary / secondary / claim) |
 
 Coverage spans 1945 to 2031 (forecast). Every record carries `sourceUrl` and `confidence`.
 
@@ -58,6 +60,7 @@ Coverage spans 1945 to 2031 (forecast). Every record carries `sourceUrl` and `co
 - **HistoryMilestone** — year, era, title, description, type, source.
 - **ContestedProject** — project, company, location, status, contestation types, opposition actors, government body, capex, severity, source.
 - **PolicyRecord** — title, jurisdiction, level, stance (for/against/mixed), category, date, source.
+- **FinanceMetric** — kind, metric, value range, unit, display, as-of, source, confidence (`primary` / `secondary` / `claim`), notes.
 
 ---
 
@@ -104,6 +107,9 @@ DNS: GoDaddy CNAME `hypergrid` to `davidtphung.github.io` (GitHub Pages, not the
 ---
 
 ## 9. Changelog
+
+### v1.3 — 2026-09-05
+- Added **Finance** view: sourced capital stack, debt-service waterfall, credit-market context, municipal channel. Money figures stamp Cited or Sample. Mid-2026 IR primaries (MSFT $37B AI ARR, not the superseded ~$13B fragment), SIFMA $11.7T / $4.5T / $1.4T, JPM $5.5T / $4.1T claim rows, labeled FSB vs PIMCO private credit, Beignet / CoreWeave examples. A labeled Hypergrid bridge keeps committed GW (announcement-electrical `numberKind` only; untagged rows default), status-operational GW, and campus headline GW on separate families; energized MW and COD stay off the credit charts.
 
 ### v1.2 — 2026-06-29
 - Added **Economics** view: 25 real estate deals, deal map, $/sqft scatter, construction cost benchmarks, long-lead equipment lead-time chart.

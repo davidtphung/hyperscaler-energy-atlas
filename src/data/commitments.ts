@@ -2,7 +2,10 @@ import type { Commitment } from "../types";
 
 // HYPERGRID dataset: publicly announced energy and datacenter commitments tied
 // to the hyperscalers and frontier AI compute buyers. Figures are electrical
-// megawatts. Each row carries a primary source.
+// megawatts (announcement / commitment). Each row carries a primary source.
+// Optional numberKind tags what capacityMW measures. Absent numberKind defaults
+// to announcement-electrical. Contracted-IT and other non-power kinds must not
+// be invented here and are excluded from Finance Committed GW when present.
 //
 // Compiled and cross-checked across company press releases, Reuters, AP, CNBC,
 // World Nuclear News, DOE, and utility investor-relations pages through a

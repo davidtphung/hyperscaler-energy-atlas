@@ -31,6 +31,17 @@ export type Status =
 
 export type Confidence = "high" | "medium" | "low";
 
+/**
+ * What `capacityMW` measures on a commitment row.
+ * Legacy rows omit this field; Finance treats missing as announcement-electrical
+ * and never folds contracted-IT / non-power kinds into Committed GW.
+ */
+export type NumberKind =
+  | "announcement-electrical"
+  | "contracted-it"
+  | "energized"
+  | "oem-slot";
+
 export interface Commitment {
   id: string;
   /** The hyperscaler or AI compute buyer. */
@@ -40,8 +51,16 @@ export interface Commitment {
   project: string;
   techType: TechType;
   category: Category;
-  /** Electrical megawatts committed. null when genuinely unknown. */
+  /**
+   * Headline megawatts. Meaning is `numberKind` (default announcement-electrical).
+   * null when genuinely unknown. Do not invent a kind to force a sum.
+   */
   capacityMW: number | null;
+  /**
+   * Unit family for capacityMW. Optional. Absent rows default to
+   * announcement-electrical so existing sourced data stays valid.
+   */
+  numberKind?: NumberKind;
   city: string;
   state: string;
   country: string;
@@ -242,6 +261,53 @@ export interface HistoryMilestone {
   sourceUrl: string;
   confidence: Confidence;
 }
+
+// ---- AI data-center finance layer ----
+
+/** Provenance for capital-market figures. Distinct from Commitment.confidence. */
+export type FinanceConfidence = "primary" | "secondary" | "claim";
+
+export type FinanceKind =
+  | "envelope"
+  | "leverage"
+  | "stack"
+  | "waterfall"
+  | "runrate"
+  | "market"
+  | "compare"
+  | "muni"
+  | "spv"
+  | "context";
+
+/** cited = sourced print or analyst cite; sample = scenario arithmetic on cites. */
+export type FinanceStamp = "cited" | "sample";
+
+/** finance = USD/credit pane. excluded = physics units, never rendered here. */
+export type FinancePane = "finance" | "excluded";
+
+export interface FinanceMetric {
+  id: string;
+  kind: FinanceKind;
+  metric: string;
+  /** Point or midpoint in `unit`. null when the row is qualitative. */
+  value: number | null;
+  valueLow: number | null;
+  valueHigh: number | null;
+  unit: "USD" | "pct" | "ratio" | "GW" | "text";
+  /** Ready-to-render figure, including ranges. */
+  display: string;
+  asOf: string;
+  sourceName: string;
+  sourceUrl: string;
+  confidence: FinanceConfidence;
+  notes: string;
+  /** Set by hydrateFinance. cited vs sample for the Energy GUY money gate. */
+  stamp: FinanceStamp;
+  /** Set by hydrateFinance. GW rows are excluded from the Finance pane. */
+  shownOn: FinancePane;
+}
+
+export type FinanceMetricDraft = Omit<FinanceMetric, "stamp" | "shownOn">;
 
 /** A commitment with derived, render-ready fields attached. */
 export interface PreparedCommitment extends Commitment {
