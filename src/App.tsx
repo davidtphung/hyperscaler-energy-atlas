@@ -18,6 +18,7 @@ import ContestedView from "./components/ContestedView";
 import PolicyView from "./components/PolicyView";
 import ForecastView from "./components/ForecastView";
 import EconomicsView from "./components/EconomicsView";
+import FinanceView from "./components/FinanceView";
 import HistoryView from "./components/HistoryView";
 import DonateView from "./components/DonateView";
 
@@ -270,6 +271,12 @@ export default function App() {
           <div className="page-wrap" key={page}>
             {page === "datacenters" && <DataCentersView />}
             {page === "economics" && <EconomicsView />}
+            {page === "finance" && (
+              <FinanceView
+                onGoPolicy={() => onPageChange("policy")}
+                onGoEconomics={() => onPageChange("economics")}
+              />
+            )}
             {page === "history" && <HistoryView />}
             {page === "contested" && <ContestedView />}
             {page === "policy" && <PolicyView />}

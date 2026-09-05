@@ -15,6 +15,7 @@ Built by [David T Phung](https://x.com/davidtphung).
 - **Filter** by buyer, technology, status, and category, with live counts.
 - **Search** projects, buyers, and places.
 - **Select** any site for a detail panel with capacity, status, counterparty, announcement date, and a link to the primary source.
+- **Finance** the AI data-center stack: cash and equity versus debt, a claimed ~$5T capex envelope and ~$4T debt wave (Tunguz, labeled as claims), a debt-service-to-revenue waterfall with checked arithmetic, credit-market context against SIFMA / Fed stocks, and the municipal channel next to the atlas commitments. Every figure carries source, as-of, and primary / secondary / claim confidence.
 
 ## Data
 
@@ -33,9 +34,10 @@ A single-page app, no backend, deployable as static files.
 
 ```
 src/
-  data/commitments.ts   the dataset (single source of truth)
+  data/commitments.ts   energy and datacenter commitments (atlas source of truth)
+  data/finance.ts        typed capital-market metrics (source, as-of, confidence)
   lib/                   geo, scales, formatting, selectors, theme tokens, hooks
-  components/            TopBar, FilterRail, MapCanvas, Timeline, DetailPanel
+  components/            TopBar, FilterRail, MapCanvas, Timeline, DetailPanel, FinanceView
   App.tsx                orchestrator: state, playback, responsive shell
   index.css             design system + responsive + reduced-motion
 ```

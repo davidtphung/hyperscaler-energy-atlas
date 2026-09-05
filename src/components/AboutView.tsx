@@ -41,6 +41,16 @@ export default function AboutView({ total, totalGW }: Props) {
             ))}
           </ul>
 
+          <h2>Finance layer</h2>
+          <p>
+            The Finance tab is a capital-allocation layer, not a market call. Capex envelopes and
+            implied revenue come from analyst essays (chiefly Tunguz, citing J.P. Morgan AM, Western
+            Asset, and PIMCO) and stay labeled as claims. Market stocks that we could open (SIFMA
+            corporates, Fed munis and commercial paper, Gartner press tables, Columbia on leverage
+            and the Beignet SPV) are labeled primary. Arithmetic we recomputed is noted. Dollar
+            charts never share an axis with announcement gigawatts.
+          </p>
+
           <h2>Confidence and firmness</h2>
           <p>
             Confidence reflects how well the reported figures are sourced, from high (company release or filing with a
@@ -65,6 +75,7 @@ export default function AboutView({ total, totalGW }: Props) {
               "buyer", "counterparty", "project", "category", "techType (energy source)",
               "capacityMW", "status", "era", "confidence", "date", "city / state / country",
               "lat / lng", "summary", "sourceName", "sourceUrl",
+              "FinanceMetric: kind, display, asOf, confidence (primary | secondary | claim)",
             ].map((f) => (
               <li key={f}><code>{f}</code></li>
             ))}

@@ -243,6 +243,40 @@ export interface HistoryMilestone {
   confidence: Confidence;
 }
 
+// ---- AI data-center finance layer ----
+
+/** Provenance for capital-market figures. Distinct from Commitment.confidence. */
+export type FinanceConfidence = "primary" | "secondary" | "claim";
+
+export type FinanceKind =
+  | "envelope"
+  | "leverage"
+  | "stack"
+  | "waterfall"
+  | "runrate"
+  | "market"
+  | "compare"
+  | "muni"
+  | "context";
+
+export interface FinanceMetric {
+  id: string;
+  kind: FinanceKind;
+  metric: string;
+  /** Point or midpoint in `unit`. null when the row is qualitative. */
+  value: number | null;
+  valueLow: number | null;
+  valueHigh: number | null;
+  unit: "USD" | "pct" | "ratio" | "GW" | "text";
+  /** Ready-to-render figure, including ranges. */
+  display: string;
+  asOf: string;
+  sourceName: string;
+  sourceUrl: string;
+  confidence: FinanceConfidence;
+  notes: string;
+}
+
 /** A commitment with derived, render-ready fields attached. */
 export interface PreparedCommitment extends Commitment {
   /** Parsed timestamp (ms) of the commitment date. */

@@ -51,6 +51,13 @@ export function formatUSD(v: number | null): string {
   return `$${Math.round(v)}`;
 }
 
+/** USD with a trillions rung for credit-market scale: 5e12 -> "$5T". */
+export function formatUSDLarge(v: number | null): string {
+  if (v == null) return "n/a";
+  if (v >= 1e12) return `$${trim(v / 1e12, 2)}T`;
+  return formatUSD(v);
+}
+
 export function formatSqft(v: number | null): string {
   if (v == null) return "n/a";
   if (v >= 1e6) return `${trim(v / 1e6, 1)}M sqft`;
