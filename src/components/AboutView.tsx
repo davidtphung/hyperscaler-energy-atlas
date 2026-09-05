@@ -45,8 +45,9 @@ export default function AboutView({ total, totalGW }: Props) {
           <p>
             The Finance tab is a credit pane, not a physics pane. Every money figure is stamped
             Cited or Sample and wears primary / secondary / claim confidence. A labeled Atlas /
-            directory bridge shows commitment counts, committed GW, operational (status) GW, and
-            campus headline GW as separate families. None of those sit on a USD axis. Energized
+            directory bridge shows commitment counts, committed GW (announcement-electrical
+            capacityMW only; untagged rows default), status-operational GW, and campus headline
+            GW as separate families. None of those sit on a USD axis. Energized
             or metered MW is not tracked. Forecast Lab is a short cross-link only. A cleared
             bond is not steel online. Economics stays real estate and construction.
           </p>
@@ -73,7 +74,8 @@ export default function AboutView({ total, totalGW }: Props) {
           <ul className="schema-list">
             {[
               "buyer", "counterparty", "project", "category", "techType (energy source)",
-              "capacityMW", "status", "era", "confidence", "date", "city / state / country",
+              "capacityMW", "numberKind (optional; default announcement-electrical)",
+              "status", "era", "confidence", "date", "city / state / country",
               "lat / lng", "summary", "sourceName", "sourceUrl",
               "FinanceMetric: kind, display, asOf, confidence (primary | secondary | claim)",
             ].map((f) => (

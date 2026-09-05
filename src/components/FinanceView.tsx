@@ -76,8 +76,9 @@ export default function FinanceView({
         <p className="page__lead">
           Credit only: cash, equity, debt, bonds, and munis. Every money figure is stamped Cited or
           Sample and wears primary / claim confidence. Atlas and directory GW appear only in a
-          labeled bridge: committed GW, operational (status) GW, and campus headline GW stay on
-          separate families. None of those sit on a USD axis. Energized or metered MW is not tracked.
+          labeled bridge: committed GW (announcement-electrical only), status-operational GW, and
+          campus headline GW stay on separate families. None of those sit on a USD axis. Energized
+          or metered MW is not tracked.
         </p>
       </header>
 
@@ -417,9 +418,11 @@ export default function FinanceView({
         <h2 className="card__title">Hypergrid bridge</h2>
         <p className="card__sub">
           Computed from <code>commitments.ts</code> and <code>datacenters.ts</code>. Each unit
-          family is labeled. None of these GW sit on a USD axis. Operational GW is headline
-          capacity on rows with status operational, not metered draw. Campus GW is disclosed
-          campus size, not energized load.
+          family is labeled. None of these GW sit on a USD axis. Committed GW sums only
+          announcement-electrical <code>capacityMW</code> (legacy rows with no{" "}
+          <code>numberKind</code> default to that). Contracted-IT and other non-power kinds are
+          excluded. Status-operational GW is headline capacity on those rows with status
+          operational, not metered draw. Campus GW is disclosed campus size, not energized load.
         </p>
 
         <div className="fin-bridge-stats">
@@ -439,15 +442,21 @@ export default function FinanceView({
               <small> GW</small>
             </span>
             <span className="dc-stat__l">Committed / announcement GW</span>
-            <p>Sum of headline <code>capacityMW</code>. Not COD and not a meter reading.</p>
+            <p>
+              Sum of announcement-electrical <code>capacityMW</code> only. Not COD and not a
+              meter reading.
+              {bridge.excludedKindCount > 0
+                ? ` ${bridge.excludedKindCount} non-power row${bridge.excludedKindCount === 1 ? "" : "s"} excluded from this sum.`
+                : " No contracted-IT rows are tagged in the current file."}
+            </p>
           </div>
           <div className="fin-bridge-card">
-            <span className="fin-badge" data-on="bridge">Operational GW</span>
+            <span className="fin-badge" data-on="bridge">Status-operational GW</span>
             <span className="dc-stat__v">
               {formatGW(bridge.operationalMW)}
               <small> GW</small>
             </span>
-            <span className="dc-stat__l">Operational (status) GW</span>
+            <span className="dc-stat__l">Status-operational GW</span>
             <p>
               Headline MW on {bridge.operationalCount} operational rows. Status is not energized
               or metered MW.
@@ -483,8 +492,8 @@ export default function FinanceView({
                   <span className="dc-num dc-mw">{formatGW(row.mw)}</span>
                   <span className="fin-cell-note">
                     {row.status === "operational"
-                      ? "Operational (status) GW. Headline MW, not metered."
-                      : "Announcement / commitment GW."}
+                      ? "Status-operational GW. Announcement-electrical MW, not metered."
+                      : "Announcement-electrical GW. Contracted-IT excluded."}
                   </span>
                 </div>
               </li>
@@ -494,7 +503,9 @@ export default function FinanceView({
                 <span className="dc-fac">All commitments</span>
                 <span className="dc-num dc-mw">{bridge.count}</span>
                 <span className="dc-num dc-mw">{formatGW(bridge.committedMW)}</span>
-                <span className="fin-cell-note">Committed GW total. Includes the operational subset.</span>
+                <span className="fin-cell-note">
+                  Announcement-electrical GW only. Includes the status-operational subset.
+                </span>
               </div>
             </li>
           </ul>

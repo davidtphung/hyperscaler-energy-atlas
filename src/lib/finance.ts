@@ -5,11 +5,31 @@ import type {
   FinanceKind,
   FinanceMetric,
   FinanceStamp,
+  NumberKind,
   RealEstateDeal,
   Status,
 } from "../types";
 import { FINANCE } from "../data/finance";
 import { STATUS } from "./theme";
+
+/** Legacy rows have no numberKind. Treat them as announcement / commitment electrical MW. */
+export const DEFAULT_NUMBER_KIND: NumberKind = "announcement-electrical";
+
+/** Kinds that must never enter Committed GW or status-operational GW. */
+export const NON_POWER_NUMBER_KINDS: ReadonlySet<NumberKind> = new Set([
+  "contracted-it",
+  "energized",
+  "oem-slot",
+]);
+
+export function commitmentNumberKind(c: Pick<Commitment, "numberKind">): NumberKind {
+  return c.numberKind ?? DEFAULT_NUMBER_KIND;
+}
+
+/** True only for announcement / commitment electrical MW (or the legacy default). */
+export function isAnnouncementElectrical(c: Pick<Commitment, "numberKind">): boolean {
+  return commitmentNumberKind(c) === "announcement-electrical";
+}
 
 export function metricsByKind(kind: FinanceKind, rows: FinanceMetric[] = FINANCE): FinanceMetric[] {
   return rows.filter((r) => r.kind === kind);
@@ -167,15 +187,25 @@ export interface CommitmentBridge {
   energyCount: number;
   datacenterCount: number;
   withCapacityCount: number;
-  /** Sum of headline capacityMW. Announcement / commitment GW, not energized. */
+  /**
+   * Sum of announcement-electrical capacityMW only.
+   * Contracted-IT / energized / OEM-slot kinds are excluded. Missing numberKind
+   * defaults to announcement-electrical. Not energized draw.
+   */
   committedMW: number;
   operationalCount: number;
-  /** Headline capacityMW on rows with status operational. Not metered draw. */
+  /** Announcement-electrical MW on rows with status operational. Not metered. */
   operationalMW: number;
+  /** Rows whose numberKind is contracted-it, energized, or oem-slot. */
+  excludedKindCount: number;
+  excludedKindMW: number;
   byStatus: CommitmentStatusRow[];
 }
 
-/** Computed from `commitments.ts`. Labels operational GW separately from committed GW. */
+/**
+ * Computed from `commitments.ts`. Does not blindly sum every capacityMW.
+ * Committed GW and status-operational GW use announcement-electrical rows only.
+ */
 export function commitmentBridge(list: Commitment[]): CommitmentBridge {
   const byStatusMap = new Map<Status, { count: number; mw: number }>();
   let withCapacityCount = 0;
@@ -184,20 +214,30 @@ export function commitmentBridge(list: Commitment[]): CommitmentBridge {
   let datacenterCount = 0;
   let operationalCount = 0;
   let operationalMW = 0;
+  let excludedKindCount = 0;
+  let excludedKindMW = 0;
 
   for (const c of list) {
     if (c.category === "energy") energyCount += 1;
     if (c.category === "datacenter") datacenterCount += 1;
     const mw = c.capacityMW ?? 0;
     if (c.capacityMW != null) withCapacityCount += 1;
-    committedMW += mw;
-    if (c.status === "operational") {
-      operationalCount += 1;
-      operationalMW += mw;
+
+    const power = isAnnouncementElectrical(c);
+    if (!power) {
+      excludedKindCount += 1;
+      excludedKindMW += mw;
+    } else {
+      committedMW += mw;
+      if (c.status === "operational") {
+        operationalCount += 1;
+        operationalMW += mw;
+      }
     }
+
     const row = byStatusMap.get(c.status) ?? { count: 0, mw: 0 };
     row.count += 1;
-    row.mw += mw;
+    if (power) row.mw += mw;
     byStatusMap.set(c.status, row);
   }
 
@@ -213,6 +253,8 @@ export function commitmentBridge(list: Commitment[]): CommitmentBridge {
     committedMW,
     operationalCount,
     operationalMW,
+    excludedKindCount,
+    excludedKindMW,
     byStatus,
   };
 }
@@ -269,19 +311,23 @@ export const UNIT_KEY: { unit: string; onPane: UnitKeySlot; where: string }[] = 
   {
     unit: "Announcement / commitment GW",
     onPane: "bridge",
-    where: "Atlas bridge, from commitments.ts. Never on a USD axis.",
+    where: "Atlas bridge. Announcement-electrical capacityMW only (legacy default). Never on a USD axis.",
   },
   {
-    unit: "Operational (status) GW",
+    unit: "Status-operational GW",
     onPane: "bridge",
-    where: "Atlas bridge. Headline MW on operational rows. Not metered draw.",
+    where: "Atlas bridge. Announcement-electrical MW on operational rows. Not metered draw.",
   },
   {
     unit: "Campus directory GW",
     onPane: "bridge",
     where: "Directory bridge, from datacenters.ts. Headline campus size, not energized.",
   },
-  { unit: "Contracted IT MW", onPane: "no", where: "Not tracked in HYPERGRID." },
+  {
+    unit: "Contracted IT MW",
+    onPane: "no",
+    where: "Excluded from Committed GW when numberKind is contracted-it. Untagged rows default to announcement-electrical.",
+  },
   { unit: "Energized / metered MW", onPane: "no", where: "Not tracked. Operational status is not a meter reading." },
   { unit: "Firm OEM slots vs SRA", onPane: "no", where: "Not tracked on this pane." },
   { unit: "Physical COD", onPane: "no", where: "Not implied when a bond or credit clears." },

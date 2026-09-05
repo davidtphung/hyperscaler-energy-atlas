@@ -31,6 +31,17 @@ export type Status =
 
 export type Confidence = "high" | "medium" | "low";
 
+/**
+ * What `capacityMW` measures on a commitment row.
+ * Legacy rows omit this field; Finance treats missing as announcement-electrical
+ * and never folds contracted-IT / non-power kinds into Committed GW.
+ */
+export type NumberKind =
+  | "announcement-electrical"
+  | "contracted-it"
+  | "energized"
+  | "oem-slot";
+
 export interface Commitment {
   id: string;
   /** The hyperscaler or AI compute buyer. */
@@ -40,8 +51,16 @@ export interface Commitment {
   project: string;
   techType: TechType;
   category: Category;
-  /** Electrical megawatts committed. null when genuinely unknown. */
+  /**
+   * Headline megawatts. Meaning is `numberKind` (default announcement-electrical).
+   * null when genuinely unknown. Do not invent a kind to force a sum.
+   */
   capacityMW: number | null;
+  /**
+   * Unit family for capacityMW. Optional. Absent rows default to
+   * announcement-electrical so existing sourced data stays valid.
+   */
+  numberKind?: NumberKind;
   city: string;
   state: string;
   country: string;
