@@ -44,7 +44,9 @@ export default function AboutView({ total, totalGW }: Props) {
           <h2>Finance layer</h2>
           <p>
             The Finance tab is a credit pane, not a physics pane. Every money figure is stamped
-            Cited or Sample and wears primary / secondary / claim confidence. A labeled Atlas /
+            Cited or Sample and wears primary / secondary / claim confidence. Mid-2026 IR
+            primaries (Microsoft AI ARR $37B, Azure FY revenue, Amazon AI and chips, Google Cloud,
+            Oracle IaaS / RPO) sit beside Tunguz and JPM claims. A labeled Atlas /
             directory bridge shows commitment counts, committed GW (announcement-electrical
             capacityMW only; untagged rows default), status-operational GW, and campus headline
             GW as separate families. None of those sit on a USD axis. Energized

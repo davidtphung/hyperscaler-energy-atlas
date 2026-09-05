@@ -276,6 +276,7 @@ export type FinanceKind =
   | "market"
   | "compare"
   | "muni"
+  | "spv"
   | "context";
 
 /** cited = sourced print or analyst cite; sample = scenario arithmetic on cites. */

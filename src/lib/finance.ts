@@ -59,7 +59,7 @@ export const FINANCE_STAMP: Record<FinanceStamp, { label: string; blurb: string 
 export const FINANCE_CONFIDENCE: Record<FinanceConfidence, { label: string; blurb: string; color: string }> = {
   primary: {
     label: "Primary / verified",
-    blurb: "Filings, Fed / Treasury / SIFMA prints, Gartner press tables, or a Columbia paper we opened.",
+    blurb: "Filings, Fed / Treasury / SIFMA prints, IR earnings, Gartner press tables, FSB, or a Columbia paper we opened.",
     color: "#c8f135",
   },
   secondary: {
@@ -104,46 +104,97 @@ export interface CreditCompareRow {
   stock: FinanceMetric;
   versus: string;
   note: string;
+  /** False for scale rows that would dwarf the bar chart (e.g. $50.5T FI). */
+  inBars?: boolean;
 }
 
 export function creditCompareRows(rows: FinanceMetric[] = FINANCE): CreditCompareRow[] {
   return [
     {
       id: "ai-debt",
-      market: "Claimed AI data-center debt (multi-year flow)",
+      market: "Claimed AI data-center debt (Tunguz, multi-year flow)",
       stock: requireMetric("stack-debt-4t", rows),
       versus: "Reference bar",
       note: "Issuance over several years, not a stock already outstanding.",
     },
     {
+      id: "jpm-debt",
+      market: "Claimed AI-related debt financing (JPM / Fortune)",
+      stock: requireMetric("stack-debt-jpm-4_1t", rows),
+      versus: requireMetric("cmp-jpm-corp-35", rows).display,
+      note: requireMetric("cmp-jpm-corp-35", rows).notes,
+    },
+    {
       id: "corps",
-      market: "US corporate bonds outstanding",
+      market: "US corporate bonds outstanding (SIFMA)",
       stock: requireMetric("mkt-us-corp", rows),
       versus: requireMetric("cmp-corp-34", rows).display,
       note: requireMetric("cmp-corp-34", rows).notes,
     },
     {
       id: "munis",
-      market: "US municipal securities outstanding",
-      stock: requireMetric("mkt-us-muni-fed", rows),
+      market: "US municipal bonds outstanding (SIFMA)",
+      stock: requireMetric("mkt-us-muni-sifma", rows),
       versus: requireMetric("cmp-muni-91", rows).display,
       note: requireMetric("cmp-muni-91", rows).notes,
     },
     {
-      id: "pcred",
-      market: "Global private credit AUM",
-      stock: requireMetric("mkt-private-credit", rows),
-      versus: "Larger than most private-credit tallies",
-      note: requireMetric("mkt-private-credit", rows).notes,
-    },
-    {
       id: "cp",
-      market: "US commercial paper outstanding",
+      market: "US commercial paper outstanding (SIFMA)",
       stock: requireMetric("mkt-us-cp", rows),
       versus: requireMetric("cmp-cp-triple", rows).display,
       note: requireMetric("cmp-cp-triple", rows).notes,
     },
+    {
+      id: "pcred-fsb",
+      market: "Global private credit assets (FSB, end-2024)",
+      stock: requireMetric("mkt-private-credit-fsb", rows),
+      versus: "Official-sector band. Not the PIMCO triangulation.",
+      note: requireMetric("mkt-private-credit-fsb", rows).notes,
+    },
+    {
+      id: "pcred-pimco",
+      market: "Global private credit AUM (PIMCO triangulation)",
+      stock: requireMetric("mkt-private-credit", rows),
+      versus: "Secondary. Preqin raw NOT FOUND free.",
+      note: requireMetric("mkt-private-credit", rows).notes,
+    },
+    {
+      id: "fi-total",
+      market: "US fixed income outstanding, all sectors (SIFMA)",
+      stock: requireMetric("mkt-us-fi-total", rows),
+      versus: "Scale only. Dwarfs the other stocks.",
+      note: requireMetric("mkt-us-fi-total", rows).notes,
+      inBars: false,
+    },
   ];
+}
+
+export const PRIMARY_RUNRATE_IDS = [
+  "run-msft-ai-arr",
+  "run-msft-azure-fy26",
+  "run-amzn-ai",
+  "run-amzn-chips",
+  "run-googl-cloud",
+  "run-googl-backlog",
+  "run-orcl-iaas",
+  "run-orcl-rpo",
+] as const;
+
+export const SPV_IDS = ["spv-beignet", "spv-sopaipilla", "spv-coreweave"] as const;
+
+export const JPM_OBLIGATION_IDS = ["jpm-leases-14t", "jpm-leases-offbs", "jpm-purchases-15t"] as const;
+
+export function primaryRunRateRows(rows: FinanceMetric[] = FINANCE): FinanceMetric[] {
+  return PRIMARY_RUNRATE_IDS.map((id) => requireMetric(id, rows));
+}
+
+export function spvRows(rows: FinanceMetric[] = FINANCE): FinanceMetric[] {
+  return SPV_IDS.map((id) => requireMetric(id, rows));
+}
+
+export function jpmObligationRows(rows: FinanceMetric[] = FINANCE): FinanceMetric[] {
+  return JPM_OBLIGATION_IDS.map((id) => requireMetric(id, rows));
 }
 
 export interface StackScenario {
@@ -345,6 +396,7 @@ const SOURCE_LABEL: Record<string, string> = {
   "https://business.columbia.edu/sites/default/files-efs/imce-uploads/svannieuwerburgh/papers/FinancingAIBuildout_03192026.pdf":
     "Van Nieuwerburgh, Financing the AI Buildout (Columbia)",
   "https://www.sifma.org/research/statistics/us-corporate-bonds-statistics": "SIFMA, US corporate bonds outstanding",
+  "https://www.sifma.org/research/statistics/us-municipal-bonds-statistics": "SIFMA, US municipal bonds outstanding",
   "https://www.sifma.org/research/statistics/research-quarterly-fixed-income-outstanding":
     "SIFMA Research Quarterly, fixed income outstanding",
   "https://www.federalreserve.gov/RELEASES/z1/current/html/F3_4_s.htm": "Federal Reserve Z.1, municipal securities",
@@ -352,6 +404,32 @@ const SOURCE_LABEL: Record<string, string> = {
   "https://www.businesswire.com/news/home/20260422301495/en/Gartner-Forecasts-Worldwide-IT-Spending-to-Grow-13.5-in-2026-Totaling-%246.31-Trillion":
     "Gartner worldwide IT spending forecast",
   "https://www.irs.gov/publications/p4078": "IRS Publication 4078 (tax-exempt private use)",
+  "https://news.microsoft.com/source/2026/04/29/microsoft-cloud-and-ai-strength-fuels-third-quarter-results/":
+    "Microsoft FY26 Q3 earnings (AI ARR $37B)",
+  "https://news.microsoft.com/source/2026/07/29/microsoft-cloud-and-ai-strength-fuels-fourth-quarter-results-4/":
+    "Microsoft FY26 Q4 earnings (Azure FY revenue >$100B)",
+  "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Second-Quarter-Results/":
+    "Amazon.com Q2 2026 results",
+  "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000066/googexhibit991q22026.htm":
+    "Alphabet Q2 2026 Exhibit 99.1",
+  "https://abc.xyz/investor/events/event-details/2026/2026-Q2-Earnings-Call-2026-GgTAq7Is0z/default.aspx":
+    "Alphabet Q2 2026 earnings call (Cloud backlog)",
+  "https://investor.oracle.com/investor-news/news-details/2026/Oracle-Announces-Record-Q4-and-FY-2026-Results-Driven-by-Cloud-Infrastructure--Cloud-Applications/default.aspx":
+    "Oracle FY26 Q4 / FY 2026 results",
+  "https://am.jpmorgan.com/gb/en/asset-management/adv/insights/market-insights/market-updates/on-the-minds-of-investors/hyperscaler-debt-issuance-ai-buildout/":
+    "J.P. Morgan Asset Management, hyperscaler debt and the AI buildout",
+  "https://fortune.com/2026/06/25/what-bubble-jpmorgan-5-5-trillion-ai-capex-explosion-profitable-for-now/":
+    "Fortune summary of JPM Global Research midyear outlook",
+  "https://www.fsb.org/2026/05/fsb-warns-on-private-credit-vulnerabilities/":
+    "Financial Stability Board, private credit vulnerabilities",
+  "https://www.pimco.com/nl/en/insights/how-large-is-private-credits-total-addressable-market-really":
+    "PIMCO, private credit TAM / AUM triangulation",
+  "https://evidinvest.com/blog/hyperscaler-shadow-debt-spv-map-2026-08-22":
+    "EvidInvest, hyperscaler shadow-debt SPV map",
+  "https://www.businesswire.com/news/home/20260330529766/en/CoreWeave-Closes-Landmark-%248.5-Billion-Financing-Facility-Achieving-First-Investment-Grade-Rated-GPU-backed-Financing":
+    "CoreWeave, $8.5B IG DDTL 4.0 (BusinessWire)",
+  "https://www.datacenterdynamics.com/en/news/jpmorgan-global-data-center-and-ai-infra-spend-to-hit-5-trillion-demand-for-compute-remains-astronomical/":
+    "Data Center Dynamics citing JPMorgan 122 GW / ~$5T",
 };
 
 export function financeSources(rows: FinanceMetric[] = FINANCE): { name: string; url: string; count: number; primary: number }[] {

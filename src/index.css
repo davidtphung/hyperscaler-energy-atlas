@@ -1286,6 +1286,7 @@ a { color: inherit; }
 .fin-wf-row { grid-template-columns: 1.6fr 120px 130px 1.4fr; }
 .fin-mkt-row { grid-template-columns: 2fr 130px 90px 1.2fr 140px; }
 .fin-unit-row { grid-template-columns: 1.6fr 100px 2fr; }
+.fin-run-row, .fin-spv-row, .fin-jpm-row { grid-template-columns: 2fr 160px 90px 1.4fr; }
 .fin-wf-row .dc-cell-main { flex-direction: column; align-items: flex-start; gap: 2px; }
 .fin-cell-note { font-size: 12px; color: var(--text-3); line-height: 1.45; }
 .fin-fig { font-family: var(--font-mono); font-size: 13px; color: var(--text); font-variant-numeric: tabular-nums; }
@@ -1387,6 +1388,8 @@ a { color: inherit; }
   .fin-wf-row > :nth-child(3) { display: none; }
   .fin-mkt-row { grid-template-columns: 1.5fr 90px 1fr; }
   .fin-mkt-row > :nth-child(3), .fin-mkt-row > :nth-child(4) { display: none; }
+  .fin-run-row, .fin-spv-row, .fin-jpm-row { grid-template-columns: 1.4fr 110px 1fr; }
+  .fin-run-row > :nth-child(3), .fin-spv-row > :nth-child(3), .fin-jpm-row > :nth-child(3) { display: none; }
   .fin-unit-row { grid-template-columns: 1.4fr 1fr; }
   .fin-unit-row > :nth-child(3) { display: none; }
   .fin-status-row { grid-template-columns: 1.2fr 56px 72px; }

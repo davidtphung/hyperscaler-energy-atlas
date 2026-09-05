@@ -13,8 +13,11 @@ import {
   directoryBridge,
   economicsPointer,
   financeSources,
+  jpmObligationRows,
   moneyUnitLabel,
+  primaryRunRateRows,
   requireMetric,
+  spvRows,
   stackScenarios,
   unitKeyLabel,
   waterfallSteps,
@@ -38,10 +41,13 @@ export default function FinanceView({
   onGoDatacenters,
 }: Props) {
   const envelope = requireMetric("envelope-5t");
+  const envelopeJpm = requireMetric("envelope-jpm-5_5t");
   const debt35 = requireMetric("stack-debt-70");
   const debt4 = requireMetric("stack-debt-4t");
-  const revenue = requireMetric("wf-revenue");
+  const debtJpm = requireMetric("stack-debt-jpm-4_1t");
   const runToday = requireMetric("run-today");
+  const msftAi = requireMetric("run-msft-ai-arr");
+  const azureFy = requireMetric("run-msft-azure-fy26");
   const cagr = requireMetric("run-cagr");
   const columbiaLev = requireMetric("lev-columbia-facility");
   const tunguzLev = requireMetric("lev-tunguz-facility");
@@ -52,16 +58,23 @@ export default function FinanceView({
   const gartnerSw = requireMetric("run-gartner-software");
   const gartnerIt = requireMetric("run-gartner-it-2026");
   const gartner9 = requireMetric("run-gartner-9t");
+  const muniSifma = requireMetric("mkt-us-muni-sifma");
   const muniFed = requireMetric("mkt-us-muni-fed");
   const privateUse = requireMetric("muni-private-use");
   const muniTools = requireMetric("muni-tools");
   const flowStock = requireMetric("ctx-flow-stock");
   const cloudGrowth = requireMetric("run-cloud-growth");
   const thread = requireMetric("ctx-x-thread");
+  const usGwClaim = requireMetric("envelope-us-gw-tunguz");
+  const dcdGw = requireMetric("envelope-dcd-jpm-122gw");
 
   const stacks = useMemo(() => stackScenarios(), []);
   const steps = useMemo(() => waterfallSteps(), []);
   const credit = useMemo(() => creditCompareRows(), []);
+  const creditBars = useMemo(() => credit.filter((r) => r.inBars !== false), [credit]);
+  const runRates = useMemo(() => primaryRunRateRows(), []);
+  const spvs = useMemo(() => spvRows(), []);
+  const jpmObs = useMemo(() => jpmObligationRows(), []);
   const sources = useMemo(() => financeSources(), []);
   const bridge = useMemo(() => commitmentBridge(COMMITMENTS), []);
   const directory = useMemo(() => directoryBridge(DATACENTERS), []);
@@ -148,11 +161,11 @@ export default function FinanceView({
       </div>
 
       <div className="dc-stats">
-        <Stat v={envelope.display} l="Capex envelope, USD credit" c={envelope} />
-        <Stat v={debt35.display} l="Sample debt at 70%, USD" c={debt35} />
-        <Stat v={debt4.display} l="Cited headline debt, USD" c={debt4} />
-        <Stat v={revenue.display} l="Sample implied AI revenue, USD" c={revenue} />
-        <Stat v={runToday.display} l="Cited AI run-rate band, USD" c={runToday} />
+        <Stat v={envelope.display} l="Tunguz capex envelope, USD credit" c={envelope} />
+        <Stat v={envelopeJpm.display} l="JPM AI investment through 2030, USD" c={envelopeJpm} />
+        <Stat v={debt4.display} l="Tunguz headline debt, USD" c={debt4} />
+        <Stat v={debtJpm.display} l="JPM / Fortune debt financing, USD" c={debtJpm} />
+        <Stat v={msftAi.display} l="Microsoft AI ARR (primary, Apr 2026)" c={msftAi} />
         <Stat v={String(bridge.count)} l="Atlas records (count only)" note="Not GW. Not COD." />
       </div>
 
@@ -161,11 +174,15 @@ export default function FinanceView({
         <p className="card__sub">USD credit only. Equity versus debt on a cited envelope. Not physical capacity.</p>
         <p className="fin-copy">
           Tunguz, citing J.P. Morgan Asset Management, Western Asset, and PIMCO, puts a global
-          capex envelope near <Cite m={envelope} />. Data-center buildings are usually levered.
-          Tunguz cites facility leverage of <Cite m={tunguzLev} /> (Columbia / CREFC), versus about{" "}
-          <Cite m={corpLev} /> on a typical corporate balance sheet. Columbia's opened paper writes{" "}
-          <Cite m={columbiaLev} /> on the physical facility and power, because sponsor equity often
-          buys IT kit while project debt buys the building. None of those percents are megawatts.
+          capex envelope near <Cite m={envelope} />. JPM AM (opened 20 Aug 2026) and Fortune's
+          mid-2026 restatement of JPM Global Research put cumulative AI-related investment at{" "}
+          <Cite m={envelopeJpm} /> through 2030, with debt financing of <Cite m={debtJpm} />.
+          Both envelopes are house research. They sit beside Tunguz, not added to him. Data-center
+          buildings are usually levered. Tunguz cites facility leverage of <Cite m={tunguzLev} />{" "}
+          (Columbia / CREFC), versus about <Cite m={corpLev} /> on a typical corporate balance
+          sheet. Columbia's opened paper writes <Cite m={columbiaLev} /> on the physical facility
+          and power, because sponsor equity often buys IT kit while project debt buys the building.
+          None of those percents are megawatts.
         </p>
         <p className="fin-copy">
           Synthetic JV SPVs can go further. The Meta / Blue Owl Hyperion vehicle (Beignet) issued{" "}
@@ -226,13 +243,50 @@ export default function FinanceView({
         </div>
 
         <div className="fin-callout">
-          <h3 className="fin-callout__h">Why $3.5T and $4T both appear</h3>
+          <h3 className="fin-callout__h">Why $3.5T, $4T, and $4.1T all appear</h3>
           <p>
-            $3.5T is a Sample: 70% of the Cited $5T envelope. $4T is Tunguz's Cited headline (80% of
-            the same envelope). The $0.5T gap is a higher leverage assumption, not a second
-            independent forecast, and not a COD schedule.
+            {debt35.display} is a Sample: 70% of the Cited {envelope.display} envelope. {debt4.display}{" "}
+            is Tunguz's Cited headline (80% of the same envelope). {debtJpm.display} is Fortune's
+            restatement of JPM Global Research, not a second Tunguz arithmetic and not a SIFMA
+            stock. We do not invent a JPM equity/debt split from those two claims. None of these
+            are a COD schedule.
           </p>
         </div>
+
+        <div className="dc-table-wrap fin-table" style={{ marginTop: 16 }}>
+          <div className="dc-row fin-jpm-row fin-jpm-row--head" role="row">
+            <span className="dc-th" style={{ cursor: "default" }}>JPM AM disclosed obligations (claim)</span>
+            <span className="dc-th dc-num" style={{ cursor: "default" }}>Figure</span>
+            <span className="dc-th" style={{ cursor: "default" }}>As of</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Stamp</span>
+          </div>
+          <ul className="dc-table" role="list">
+            {jpmObs.map((m) => (
+              <li key={m.id} className="dc-li">
+                <div className="dc-row fin-jpm-row">
+                  <span className="dc-cell-main">
+                    <span className="dc-fac">{m.metric}</span>
+                    <span className="dc-op">{m.notes}</span>
+                  </span>
+                  <span className="dc-num dc-mw">{m.display}</span>
+                  <span className="dc-mw">{m.asOf}</span>
+                  <span className="fin-stamps">
+                    <MoneyMarks m={m} />
+                    <SourceLink m={m} />
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <aside className="fin-caveat" role="note">
+          <strong>US 25 GW to 70 GW stays a claim.</strong> {usGwClaim.notes} Optional secondary:{" "}
+          <a href={dcdGw.sourceUrl} target="_blank" rel="noopener noreferrer">
+            {dcdGw.display}
+          </a>{" "}
+          via DCD. Different metric. Electrical GW never plot on a USD axis.
+        </aside>
 
         <p className="fin-copy">
           Columbia publishes a separate US dollar envelope of <Cite m={columbiaEnv} /> that includes
@@ -248,6 +302,44 @@ export default function FinanceView({
               Open the Hyperion JV on Economics
             </button>
           )}
+        </p>
+      </section>
+
+      <section className="card card--full fin-section" aria-label="SPV and project financing examples">
+        <h2 className="card__title">SPV and project financing examples</h2>
+        <p className="card__sub">
+          Paper structures only. Coupon and principal are secondary until an indenture or 8-K is
+          opened. A cleared facility is not campus COD.
+        </p>
+        <div className="dc-table-wrap fin-table">
+          <div className="dc-row fin-spv-row fin-spv-row--head" role="row">
+            <span className="dc-th" style={{ cursor: "default" }}>Vehicle</span>
+            <span className="dc-th dc-num" style={{ cursor: "default" }}>Size / coupon</span>
+            <span className="dc-th" style={{ cursor: "default" }}>As of</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Stamp</span>
+          </div>
+          <ul className="dc-table" role="list">
+            {spvs.map((m) => (
+              <li key={m.id} className="dc-li">
+                <div className="dc-row fin-spv-row">
+                  <span className="dc-cell-main">
+                    <span className="dc-fac">{m.metric}</span>
+                    <span className="dc-op">{m.notes}</span>
+                  </span>
+                  <span className="dc-num dc-mw">{m.display}</span>
+                  <span className="dc-mw">{m.asOf}</span>
+                  <span className="fin-stamps">
+                    <MoneyMarks m={m} />
+                    <SourceLink m={m} />
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <p className="card__foot">
+          CoreWeave $8.5B is an IG delayed-draw term loan on GPU infrastructure (company press),
+          shown beside Beignet as a financing example, not as the same SPV anatomy.
         </p>
       </section>
 
@@ -297,10 +389,14 @@ export default function FinanceView({
           <div>
             <h3 className="sources-h">Today versus the implied run-rate (USD)</h3>
             <p className="fin-copy">
-              Tunguz puts today's annualized AI revenue at <Cite m={runToday} />. Reaching the
-              midpoint of the implied band (~$1.35T) from ~$150B in five years is{" "}
-              <Cite m={cagr} /> CAGR (9<sup>0.2</sup> − 1 ≈ 55.2%). Companion cloud growth:{" "}
-              <Cite m={cloudGrowth} />. Cloud growth is not AI-revenue growth and not load growth.
+              Tunguz's claim band for today's annualized AI revenue is <Cite m={runToday} />. That
+              band is not current IR. His essay's Microsoft AI ~$13B fragment is superseded and is
+              not shown as a current print. Mid-2026 primary is Microsoft AI ARR of{" "}
+              <Cite m={msftAi} />. Azure is cited separately as fiscal-year revenue:{" "}
+              <Cite m={azureFy} />, not a run-rate. Reaching the midpoint of the implied servicing
+              band (~$1.35T) from ~$150B in five years is <Cite m={cagr} /> CAGR (9<sup>0.2</sup> −
+              1 ≈ 55.2%). Companion cloud growth (Tunguz): <Cite m={cloudGrowth} />. Cloud growth
+              is not AI-revenue growth and not load growth.
             </p>
           </div>
           <div>
@@ -312,6 +408,38 @@ export default function FinanceView({
               only: not a data-center MW forecast.
             </p>
           </div>
+        </div>
+
+        <h3 className="sources-h" style={{ marginTop: 18 }}>Hyperscaler IR primaries (mid-2026)</h3>
+        <p className="card__sub">
+          Opened IR / SEC pages. Each row keeps its own unit (ARR, quarterly revenue, FY revenue,
+          backlog, RPO). Do not add them into the Tunguz $100B to $200B band.
+        </p>
+        <div className="dc-table-wrap fin-table">
+          <div className="dc-row fin-run-row fin-run-row--head" role="row">
+            <span className="dc-th" style={{ cursor: "default" }}>Print</span>
+            <span className="dc-th dc-num" style={{ cursor: "default" }}>Figure</span>
+            <span className="dc-th" style={{ cursor: "default" }}>As of</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Stamp</span>
+          </div>
+          <ul className="dc-table" role="list">
+            {runRates.map((m) => (
+              <li key={m.id} className="dc-li">
+                <div className="dc-row fin-run-row">
+                  <span className="dc-cell-main">
+                    <span className="dc-fac">{m.metric}</span>
+                    <span className="dc-op">{m.notes}</span>
+                  </span>
+                  <span className="dc-num dc-mw">{m.display}</span>
+                  <span className="dc-mw">{m.asOf}</span>
+                  <span className="fin-stamps">
+                    <MoneyMarks m={m} />
+                    <SourceLink m={m} />
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -328,10 +456,10 @@ export default function FinanceView({
         </aside>
 
         <div className="fin-creditbars" aria-label="Credit stocks versus claimed AI debt, USD">
-          {credit.map((r) => {
-            const max = Math.max(1, ...credit.map((x) => x.stock.value ?? 0));
+          {creditBars.map((r) => {
+            const max = Math.max(1, ...creditBars.map((x) => x.stock.value ?? 0));
             const pct = Math.max(2, ((r.stock.value ?? 0) / max) * 100);
-            const claim = r.id === "ai-debt";
+            const claim = r.id === "ai-debt" || r.id === "jpm-debt";
             return (
               <div className="fin-creditbars__row" key={r.id}>
                 <span className="fin-creditbars__name">{r.market}</span>
@@ -358,7 +486,7 @@ export default function FinanceView({
             <span className="dc-th" style={{ cursor: "default" }}>Market (USD)</span>
             <span className="dc-th dc-num" style={{ cursor: "default" }}>Outstanding / claim</span>
             <span className="dc-th" style={{ cursor: "default" }}>As of</span>
-            <span className="dc-th" style={{ cursor: "default" }}>$4T versus</span>
+            <span className="dc-th" style={{ cursor: "default" }}>Versus $4T / $4.1T</span>
             <span className="dc-th" style={{ cursor: "default" }}>Stamp</span>
           </div>
           <ul className="dc-table" role="list">
@@ -379,8 +507,11 @@ export default function FinanceView({
           </ul>
         </div>
         <p className="card__foot">
-          $4T / $11.7T = 34.2% on the SIFMA 1Q26 corporate stock. Arithmetic on a Cited claim
-          numerator over a Cited primary denominator. Not a crowding forecast and not COD.
+          $4T / $11.7T = 34.2% and $4.1T / $11.7T = 35.0% on the SIFMA 1Q26 corporate stock. $4T /
+          $4.5T = 88.9% of SIFMA munis. $4T / $1.4T ≈ 2.9× CP. Private credit is shown as two
+          labeled prints (FSB $1.5–2T end-2024 vs PIMCO ~$3.2T); Preqin raw is NOT FOUND free.
+          $50.5T total FI is table-only scale. Arithmetic on Cited claim numerators over Cited
+          primary denominators. Not a crowding forecast and not COD.
         </p>
       </section>
 
@@ -388,7 +519,8 @@ export default function FinanceView({
         <h2 className="card__title">Public and municipal channel</h2>
         <p className="card__sub">USD municipal market and tax rules. Not a campus MW tally.</p>
         <p className="fin-copy">
-          The US municipal market is about <Cite m={muniFed} />. Tunguz asks whether towns chasing
+          The US municipal market is <Cite m={muniSifma} /> as of 1Q26 on SIFMA. Fed Z.1 sits
+          nearby at <Cite m={muniFed} />. Tunguz asks whether towns chasing
           growth will use that market for some data-center infrastructure, as they have for power
           plants. Possible, with limits. A tax-exempt issue is still credit, not energized load.
         </p>
