@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
-import { formatCapacity, formatFullDate, formatGW, formatLocation } from "../lib/format";
-import { sumMW } from "../lib/select";
+import { formatCapacity, formatFullDate, formatGW, formatLocation, formatNumberKind, formatNumberKindNote } from "../lib/format";
+import { isNonGenerationUnit, sumMW } from "../lib/select";
 
 interface Props {
   selected: PreparedCommitment | null;
@@ -42,7 +42,7 @@ function Overview({
     const opGW = sumMW(visible.filter((c) => c.status === "operational"));
     const byBuyer = new Map<string, number>();
     for (const c of visible) {
-      if (c.numberKind === "contracted IT") continue;
+      if (isNonGenerationUnit(c)) continue;
       byBuyer.set(c.buyer, (byBuyer.get(c.buyer) ?? 0) + (c.capacityMW ?? 0));
     }
     const bars = [...byBuyer.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
@@ -151,11 +151,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
         <div className="detail__capten">
           <span className="detail__cap">{formatCapacity(c.capacityMW)}</span>
           <span className="detail__cap-label">
-            {c.numberKind === "contracted IT"
-              ? "contracted IT (critical IT load)"
-              : c.capacityMW
-                ? "committed capacity"
-                : "capacity undisclosed"}
+            {formatNumberKind(c.numberKind) ?? (c.capacityMW ? "committed capacity" : "capacity undisclosed")}
           </span>
         </div>
       </div>
@@ -193,6 +189,24 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
             <span className="kv__k">Confidence</span>
             <span className="kv__v" style={{ textTransform: "capitalize" }}>{c.confidence}</span>
           </div>
+          {c.numberKind && (
+            <div className="kv__row">
+              <span className="kv__k">Number kind</span>
+              <span className="kv__v">{formatNumberKind(c.numberKind)}</span>
+            </div>
+          )}
+          {"energizedMW" in c && (
+            <div className="kv__row">
+              <span className="kv__k">Energized MW</span>
+              <span className="kv__v">{c.energizedMW == null ? "empty" : formatCapacity(c.energizedMW)}</span>
+            </div>
+          )}
+          {"daysToCod" in c && (
+            <div className="kv__row">
+              <span className="kv__k">Days to COD</span>
+              <span className="kv__v">{c.daysToCod == null ? "empty" : String(c.daysToCod)}</span>
+            </div>
+          )}
         </div>
 
         <a className="detail__source" href={c.sourceUrl} target="_blank" rel="noopener noreferrer">
@@ -204,9 +218,8 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
         </a>
 
         <p style={{ fontSize: 11, color: "var(--text-4)", marginTop: 2 }}>
-          {c.numberKind === "contracted IT"
-            ? "Figure is contracted IT (critical IT load), not campus COD and not generation."
-            : `${formatGW(c.capacityMW ?? 0)} GW equivalent. Figures reflect publicly reported headline capacity.`}
+          {formatNumberKindNote(c.numberKind) ??
+            `${formatGW(c.capacityMW ?? 0)} GW equivalent. Figures reflect publicly reported headline capacity.`}
         </p>
       </div>
     </div>

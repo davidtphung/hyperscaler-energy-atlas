@@ -1,5 +1,7 @@
 // Pure formatting helpers. No dependencies, easy to unit test.
 
+import type { NumberKind } from "../types";
+
 const MONTHS = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
@@ -24,6 +26,31 @@ export function formatFullDate(s: string): string {
   if (parts.length < 3) return formatMonthYear(s);
   const [y, m, d] = parts;
   return `${MONTHS[Number(m) - 1]} ${Number(d)}, ${y}`;
+}
+
+const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
+  "contracted IT": "contracted IT (critical IT load)",
+  "contracted demand": "contracted demand (not COD)",
+  "compute target": "compute target",
+  DC: "DC capacity",
+};
+
+export function formatNumberKind(kind: NumberKind | undefined): string | null {
+  return kind ? NUMBER_KIND_LABEL[kind] : null;
+}
+
+export function formatNumberKindNote(kind: NumberKind | undefined): string | null {
+  if (!kind) return null;
+  if (kind === "contracted IT") {
+    return "Figure is contracted IT (critical IT load), not campus COD and not generation.";
+  }
+  if (kind === "contracted demand") {
+    return "Figure is contracted demand, not COD and not generation.";
+  }
+  if (kind === "compute target") {
+    return "Figure is a compute target, not generation and not COD.";
+  }
+  return "Figure is DC capacity only. Behind-the-meter generation is not on this row.";
 }
 
 /** Capacity in MW -> compact human string. 960 -> "960 MW"; 1200 -> "1.2 GW". */

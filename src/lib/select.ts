@@ -66,9 +66,14 @@ export function applyFacets(list: PreparedCommitment[], f: FilterState): Prepare
   );
 }
 
-/** Contracted IT is a lease unit, not headline generation. Do not Atlas-sum it. */
+/** Labeled lease / demand / compute-target / DC units are not headline generation. */
+export function isNonGenerationUnit(c: { numberKind?: string }): boolean {
+  return Boolean(c.numberKind);
+}
+
+/** Do not Atlas-sum labeled IT, demand, compute-target, or DC rows. */
 export function mwForAggregate(c: { capacityMW: number | null; numberKind?: string }): number {
-  if (c.numberKind === "contracted IT") return 0;
+  if (isNonGenerationUnit(c)) return 0;
   return c.capacityMW ?? 0;
 }
 
