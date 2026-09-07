@@ -31,6 +31,9 @@ export type Status =
 
 export type Confidence = "high" | "medium" | "low";
 
+/** How capacityMW should be read. Omitted on legacy headline-MW rows. */
+export type NumberKind = "contracted IT" | "contracted demand" | "compute target" | "DC";
+
 export interface Commitment {
   id: string;
   /** The hyperscaler or AI compute buyer. */
@@ -55,6 +58,12 @@ export interface Commitment {
   sourceName: string;
   sourceUrl: string;
   confidence: Confidence;
+  /** How capacityMW should be read. Omitted on legacy headline-MW rows. */
+  numberKind?: NumberKind;
+  /** Energized megawatts. null/omitted when not sourced. Do not invent. */
+  energizedMW?: number | null;
+  /** Days from announcement to COD. null/omitted when not sourced. Do not invent. */
+  daysToCod?: number | null;
 }
 
 // ---- Global data center directory ----

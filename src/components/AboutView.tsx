@@ -63,7 +63,8 @@ export default function AboutView({ total, totalGW }: Props) {
           <ul className="schema-list">
             {[
               "buyer", "counterparty", "project", "category", "techType (energy source)",
-              "capacityMW", "status", "era", "confidence", "date", "city / state / country",
+              "capacityMW", "numberKind", "energizedMW", "daysToCod", "status", "era",
+              "confidence", "date", "city / state / country",
               "lat / lng", "summary", "sourceName", "sourceUrl",
             ].map((f) => (
               <li key={f}><code>{f}</code></li>
