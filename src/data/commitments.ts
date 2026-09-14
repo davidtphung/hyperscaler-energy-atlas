@@ -2506,7 +2506,7 @@ export const COMMITMENTS: Commitment[] = [
     "techType": "wind",
     "category": "energy",
     "capacityMW": 629,
-    "city": "Finland",
+    "city": "",
     "state": "",
     "country": "Finland",
     "lat": 62.2415,
