@@ -33,6 +33,13 @@ const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
   "contracted demand": "contracted demand (not COD)",
   "compute target": "compute target",
   DC: "DC capacity",
+  "nuclear offtake share (derived)": "nuclear offtake share (derived)",
+  storage: "storage (not generation)",
+  "portfolio offtake": "portfolio offtake (not incremental)",
+  "firm geothermal offtake": "firm geothermal offtake",
+  "firm contracted utility offtake": "firm contracted utility offtake",
+  "renewable matching": "renewable matching (not campus IT)",
+  "renewable matching (up to)": "renewable matching, up to (not campus IT)",
 };
 
 export function formatNumberKind(kind: NumberKind | undefined): string | null {
@@ -41,16 +48,30 @@ export function formatNumberKind(kind: NumberKind | undefined): string | null {
 
 export function formatNumberKindNote(kind: NumberKind | undefined): string | null {
   if (!kind) return null;
-  if (kind === "contracted IT") {
-    return "Figure is contracted IT (critical IT load), not campus COD and not generation.";
+  switch (kind) {
+    case "contracted IT":
+      return "Figure is contracted IT (critical IT load), not campus COD and not generation.";
+    case "contracted demand":
+      return "Figure is contracted demand, not COD and not generation.";
+    case "compute target":
+      return "Figure is a compute target, not generation and not COD.";
+    case "DC":
+      return "Figure is DC capacity only. Behind-the-meter generation is not on this row.";
+    case "nuclear offtake share (derived)":
+      return "Figure is a derived nuclear offtake share, not plant nameplate and not Google-owned generation.";
+    case "storage":
+      return "Figure is storage capacity, not generation.";
+    case "portfolio offtake":
+      return "Figure is a portfolio offtake total, not a new incremental deal. Delta is empty.";
+    case "firm geothermal offtake":
+      return "Figure is a firm geothermal PPA offtake, not plant ownership. The option is not firm and is not on this row.";
+    case "firm contracted utility offtake":
+      return "Figure is firm contracted utility offtake (Contract Quantity), not campus IT, not plant nameplate, and not buyer-owned generation.";
+    case "renewable matching":
+      return "Figure is renewable matching (VPPA, supply, or RECs), not campus IT and not a generation hero.";
+    case "renewable matching (up to)":
+      return "Figure is a renewable matching ceiling (up to), not campus IT and not a generation hero. Plants may be unnamed.";
   }
-  if (kind === "contracted demand") {
-    return "Figure is contracted demand, not COD and not generation.";
-  }
-  if (kind === "compute target") {
-    return "Figure is a compute target, not generation and not COD.";
-  }
-  return "Figure is DC capacity only. Behind-the-meter generation is not on this row.";
 }
 
 /** Capacity in MW -> compact human string. 960 -> "960 MW"; 1200 -> "1.2 GW". */

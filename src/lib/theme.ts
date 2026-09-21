@@ -136,6 +136,7 @@ export const BUYER_ACCENT: Record<string, string> = {
   Baidu: "#3b6fd6",
   GDS: "#e0916b",
   Chindata: "#9ad17a",
+  "New Era Energy & Digital": "#5ec8c5",
 };
 
 export function buyerAccent(buyer: string): string {

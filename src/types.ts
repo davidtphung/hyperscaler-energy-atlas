@@ -32,7 +32,18 @@ export type Status =
 export type Confidence = "high" | "medium" | "low";
 
 /** How capacityMW should be read. Omitted on legacy headline-MW rows. */
-export type NumberKind = "contracted IT" | "contracted demand" | "compute target" | "DC";
+export type NumberKind =
+  | "contracted IT"
+  | "contracted demand"
+  | "compute target"
+  | "DC"
+  | "nuclear offtake share (derived)"
+  | "storage"
+  | "portfolio offtake"
+  | "firm geothermal offtake"
+  | "firm contracted utility offtake"
+  | "renewable matching"
+  | "renewable matching (up to)";
 
 export interface Commitment {
   id: string;
