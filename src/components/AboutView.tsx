@@ -64,7 +64,7 @@ export default function AboutView({ total, totalGW }: Props) {
             {[
               "buyer", "counterparty", "project", "category", "techType (energy source)",
               "capacityMW", "numberKind", "energizedMW", "daysToCod", "status", "era",
-              "confidence", "date", "city / state / country",
+              "confidence", "date", "constructionStart (empty unless sourced)", "onlineDate (empty unless sourced)", "city / state / country",
               "lat / lng", "summary", "sourceName", "sourceUrl",
             ].map((f) => (
               <li key={f}><code>{f}</code></li>
@@ -77,8 +77,9 @@ export default function AboutView({ total, totalGW }: Props) {
             generation, so very large framework and supply agreements read as intent and momentum rather than a
             generation ledger. Per-tenant cloud spend programs such as Microsoft MACC, Azure savings plans, and AWS
             savings plans are private billing metrics and are not tracked here. Public, primary-source-backed
-            commitments are. The dataset lives in one typed file and is designed to grow as more public sources are
-            added.
+            commitments are. Construction start and the online or COD date stay empty unless a primary source
+            states them. Energized megawatts follow the same rule. The dataset lives in one typed file and is designed
+            to grow as more public sources are added.
           </p>
 
           <p className="about-credit">

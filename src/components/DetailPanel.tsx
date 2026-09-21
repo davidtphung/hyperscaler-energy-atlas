@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
-import { formatCapacity, formatFullDate, formatGW, formatLocation, formatNumberKind, formatNumberKindNote } from "../lib/format";
+import { formatCapacity, formatFullDate, formatGW, formatLocation, formatNumberKind, formatNumberKindNote, formatSourcedDate } from "../lib/format";
 import { isNonGenerationUnit, sumMW } from "../lib/select";
 
 interface Props {
@@ -184,6 +184,14 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
           <div className="kv__row">
             <span className="kv__k">Announced</span>
             <span className="kv__v">{formatFullDate(c.date)}</span>
+          </div>
+          <div className="kv__row">
+            <span className="kv__k">Construction start</span>
+            <span className="kv__v">{formatSourcedDate(c.constructionStart)}</span>
+          </div>
+          <div className="kv__row">
+            <span className="kv__k">Online / COD</span>
+            <span className="kv__v">{formatSourcedDate(c.onlineDate)}</span>
           </div>
           <div className="kv__row">
             <span className="kv__k">Confidence</span>

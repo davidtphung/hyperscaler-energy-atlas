@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
 
+/**
+ * Narrow viewports and landscape phones. Desktop (wide and tall) stays out.
+ * Keep in sync with the matching @media block in index.css.
+ */
+export const PHONE_LAYOUT_QUERY =
+  "(max-width: 820px), ((orientation: landscape) and (max-height: 520px) and (max-width: 1100px))";
+
 /** Subscribe to a CSS media query, SSR-safe and reactive. */
 export function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(() =>
