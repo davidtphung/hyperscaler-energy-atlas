@@ -66,12 +66,12 @@ export function applyFacets(list: PreparedCommitment[], f: FilterState): Prepare
   );
 }
 
-/** Labeled lease, demand, compute-target, DC, offtake, storage, derived, matching, BTM generation, and AI cluster units are not headline generation. */
+/** Labeled lease, demand, compute-target, DC, offtake, storage, derived, matching, BTM generation, facility-power, and AI cluster units are not headline generation. */
 export function isNonGenerationUnit(c: { numberKind?: string }): boolean {
   return Boolean(c.numberKind);
 }
 
-/** Do not Atlas-sum labeled IT, demand, compute-target, DC, offtake, storage, derived, matching, BTM generation, or AI cluster rows. */
+/** Do not Atlas-sum labeled IT, demand, compute-target, DC, offtake, storage, derived, matching, BTM generation, facility-power, or AI cluster rows. */
 export function mwForAggregate(c: { capacityMW: number | null; numberKind?: string }): number {
   if (isNonGenerationUnit(c)) return 0;
   return c.capacityMW ?? 0;

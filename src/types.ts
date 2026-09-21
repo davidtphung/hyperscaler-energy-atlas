@@ -45,6 +45,7 @@ export type NumberKind =
   | "renewable matching"
   | "renewable matching (up to)"
   | "BTM generation"
+  | "facility power"
   | "AI cluster capacity";
 
 export interface Commitment {

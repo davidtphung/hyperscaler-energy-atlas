@@ -41,6 +41,7 @@ const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
   "renewable matching": "renewable matching (not campus IT)",
   "renewable matching (up to)": "renewable matching, up to (not campus IT)",
   "BTM generation": "BTM generation (not IT)",
+  "facility power": "facility power (not IT, not generation)",
   "AI cluster capacity": "AI cluster capacity (not BTM, not IT)",
 };
 
@@ -74,7 +75,9 @@ export function formatNumberKindNote(kind: NumberKind | undefined): string | nul
     case "renewable matching (up to)":
       return "Figure is a renewable matching ceiling (up to), not campus IT and not a generation hero. Plants may be unnamed.";
     case "BTM generation":
-      return "Figure is behind-the-meter generation. Williams owns the plant and Sidecat is the load. It is not IT load and is not added to campus AI cluster capacity.";
+      return "Figure is behind-the-meter on-site generation, not critical IT load and not a combined campus total. It is not added to campus IT or AI cluster capacity.";
+    case "facility power":
+      return "Figure is total facility power, not critical IT load and not generation nameplate.";
     case "AI cluster capacity":
       return "Figure is announced AI cluster capacity, not behind-the-meter generation, not IT load, and not COD. Separate generation and nuclear matching rows are not added here.";
   }
