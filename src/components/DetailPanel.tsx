@@ -164,7 +164,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
             <span className="kv__k">Technology</span>
             <span className="kv__v" style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
               <span style={{ width: 8, height: 8, borderRadius: 2, background: techColor(c.techType) }} />
-              {TECH[c.techType].label}
+              {c.numberKind === "BTM generation" && c.techType === "datacenter" ? "On-site generation" : TECH[c.techType].label}
             </span>
           </div>
           <div className="kv__row">

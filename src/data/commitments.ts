@@ -2743,7 +2743,7 @@ export const COMMITMENTS: Commitment[] = [
     "buyer": "Microsoft",
     "counterparty": "Crusoe",
     "project": "Abilene campus 2 on-site plant",
-    "techType": "grid",
+    "techType": "datacenter",
     "category": "energy",
     "capacityMW": 900,
     "city": "Abilene",
