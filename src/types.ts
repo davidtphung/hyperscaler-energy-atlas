@@ -66,6 +66,16 @@ export interface Commitment {
   lng: number | null;
   /** Announcement or signing date, YYYY-MM-DD or YYYY-MM. */
   date: string;
+  /**
+   * Construction start, YYYY-MM-DD or YYYY-MM.
+   * null or omitted when a primary source does not state it. Do not invent.
+   */
+  constructionStart?: string | null;
+  /**
+   * Online or commercial operation date from a primary source.
+   * null or omitted when that source does not state it. Do not invent.
+   */
+  onlineDate?: string | null;
   status: Status;
   headline: string;
   summary: string;

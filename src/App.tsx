@@ -4,7 +4,7 @@ import { prepare, domainOf, applyFacets, facetCounts, sumMW } from "./lib/select
 import type { FilterState } from "./lib/select";
 import type { TechType, Status, Category, Era } from "./types";
 import { formatCapacity, formatGW } from "./lib/format";
-import { useMediaQuery, useReducedMotion } from "./lib/hooks";
+import { PHONE_LAYOUT_QUERY, useMediaQuery, useReducedMotion } from "./lib/hooks";
 import TopBar, { type Page } from "./components/TopBar";
 import FilterRail from "./components/FilterRail";
 import MapCanvas, { type MapView } from "./components/MapCanvas";
@@ -56,7 +56,19 @@ export default function App() {
   const [announce, setAnnounce] = useState("");
 
   const isCompact = useMediaQuery("(max-width: 1180px)");
+  const phoneLayout = useMediaQuery(PHONE_LAYOUT_QUERY);
   const reducedMotion = useReducedMotion();
+  const [timelineOpen, setTimelineOpen] = useState(false);
+  const timelineCollapsed = phoneLayout && !timelineOpen;
+
+  // Phone layouts open on the full live map. The timeline player is optional
+  // there, so a scrub from a wider window does not leave the map on a sliver
+  // of the record once the player is collapsed.
+  useEffect(() => {
+    if (!timelineCollapsed) return;
+    setPlaying(false);
+    setScrubT(domain.maxT);
+  }, [timelineCollapsed, domain.maxT]);
 
   // Boot reveal.
   useEffect(() => {
@@ -67,7 +79,9 @@ export default function App() {
   // Derived selections.
   const facetFiltered = useMemo(() => applyFacets(prepared, filters), [prepared, filters]);
   const visible = useMemo(() => facetFiltered.filter((c) => c.t <= scrubT), [facetFiltered, scrubT]);
-  const inRange = useMemo(() => new Set(visible.map((c) => c.id)), [visible]);
+  // Collapsed phone timeline is the live record, not whatever the scrubber last sat on.
+  const shown = timelineCollapsed ? facetFiltered : visible;
+  const inRange = useMemo(() => new Set(shown.map((c) => c.id)), [shown]);
   const counts = useMemo(() => facetCounts(prepared, filters), [prepared, filters]);
   const selected = useMemo(() => prepared.find((c) => c.id === selectedId) ?? null, [prepared, selectedId]);
   const cumulativeGW = useMemo(() => sumMW(visible), [visible]);
@@ -145,6 +159,10 @@ export default function App() {
     setScrubT(t);
   }, []);
 
+  const onToggleTimeline = useCallback(() => {
+    setTimelineOpen((open) => !open);
+  }, []);
+
   const onSelect = useCallback(
     (id: string | null) => {
       setSelectedId(id);
@@ -192,7 +210,7 @@ export default function App() {
         Skip to map
       </a>
 
-      <div className="app">
+      <div className={`app${page === "atlas" && timelineCollapsed ? " app--tl-collapsed" : ""}`}>
         <TopBar
           page={page}
           onPageChange={onPageChange}
@@ -237,7 +255,7 @@ export default function App() {
 
             <DetailPanel
               selected={selected}
-              visible={visible}
+              visible={shown}
               totalAll={prepared.length}
               open={isCompact ? detailOpen : true}
               onSelect={onSelect}
@@ -262,8 +280,10 @@ export default function App() {
               atLive={scrubT >= domain.maxT}
               selectedId={selectedId}
               onSelect={onSelect}
-              cumulativeGW={cumulativeGW}
-              countInRange={visible.length}
+              cumulativeGW={timelineCollapsed ? sumMW(facetFiltered) : cumulativeGW}
+              countInRange={shown.length}
+              collapsed={timelineCollapsed}
+              onToggleCollapsed={phoneLayout ? onToggleTimeline : undefined}
             />
           </>
         ) : (

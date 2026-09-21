@@ -28,6 +28,15 @@ export function formatFullDate(s: string): string {
   return `${MONTHS[Number(m) - 1]} ${Number(d)}, ${y}`;
 }
 
+/**
+ * A calendar date from a primary source, or "empty" when that source did not
+ * state one. Never derive a stand-in from status, daysToCod, or energizedMW.
+ */
+export function formatSourcedDate(s: string | null | undefined): string {
+  if (s == null || s.trim() === "") return "empty";
+  return formatFullDate(s);
+}
+
 const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
   "contracted IT": "contracted IT (critical IT load)",
   "contracted demand": "contracted demand (not COD)",

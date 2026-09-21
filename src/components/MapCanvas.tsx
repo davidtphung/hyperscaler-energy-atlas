@@ -364,7 +364,8 @@ export default function MapCanvas({
 
       <div className="map__viewtoggle" role="group" aria-label="Map view">
         <button className="seg" aria-pressed={view === "us"} onClick={() => onViewChange("us")}>
-          United States
+          <span className="seg__full">United States</span>
+          <span className="seg__short">US</span>
         </button>
         <button className="seg" aria-pressed={view === "china"} onClick={() => onViewChange("china")}>
           China

@@ -23,6 +23,10 @@ interface Props {
   onSelect: (id: string) => void;
   cumulativeGW: number;
   countInRange: number;
+  /** Phone layouts start collapsed so the map keeps the vertical space. */
+  collapsed?: boolean;
+  /** Present only when the timeline can be collapsed. Desktop omits it. */
+  onToggleCollapsed?: () => void;
 }
 
 const PAD_L = 10;
@@ -52,6 +56,8 @@ export default function Timeline({
   onSelect,
   cumulativeGW,
   countInRange,
+  collapsed = false,
+  onToggleCollapsed,
 }: Props) {
   const { ref, width, height } = useElementSize<HTMLDivElement>();
   const dragging = useRef(false);
@@ -140,10 +146,44 @@ export default function Timeline({
     }
   };
 
+  if (collapsed) {
+    return (
+      <section className="timeline timeline--collapsed" aria-label="Timeline">
+        <div className="timeline__head">
+          <button type="button" className="tl-reveal" aria-expanded={false} aria-label="Show timeline" onClick={onToggleCollapsed}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+              <path d="M6 14l6-6 6 6" />
+            </svg>
+            Timeline
+          </button>
+          <div className="timeline__spacer" />
+          <div className="tl-stat">
+            <b>{formatGW(cumulativeGW)}</b> GW committed
+            <span className="tl-stat__sep">·</span>
+            <span className="tl-stat__count">{countInRange} sites</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="timeline" aria-label="Timeline">
       <div className="timeline__head">
         <div className="tl-controls" role="group" aria-label="Timeline playback">
+          {onToggleCollapsed && (
+            <button
+              type="button"
+              className="tlc-icon"
+              onClick={onToggleCollapsed}
+              aria-expanded={true}
+              aria-label="Hide timeline"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4">
+                <path d="M6 10l6 6 6-6" />
+              </svg>
+            </button>
+          )}
           <button
             className="tlc-icon"
             onClick={onTogglePlay}
