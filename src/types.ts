@@ -43,7 +43,9 @@ export type NumberKind =
   | "firm geothermal offtake"
   | "firm contracted utility offtake"
   | "renewable matching"
-  | "renewable matching (up to)";
+  | "renewable matching (up to)"
+  | "BTM generation"
+  | "AI cluster capacity";
 
 export interface Commitment {
   id: string;
