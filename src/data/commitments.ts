@@ -6,7 +6,7 @@ import type { Commitment } from "../types";
 //
 // Compiled and cross-checked across company press releases, Reuters, AP, CNBC,
 // World Nuclear News, DOE, and utility investor-relations pages through a
-// multi-agent verification pass. 134 commitments, 2021-05 to 2026-09.
+// multi-agent verification pass. 135 commitments, 2021-05 to 2026-09.
 
 export const COMMITMENTS: Commitment[] = [
   {
@@ -2903,6 +2903,30 @@ export const COMMITMENTS: Commitment[] = [
     "sourceUrl": "https://nebius.com/schuylkillcountypa",
     "confidence": "high",
     "numberKind": "DC",
+    "energizedMW": null,
+    "daysToCod": null
+  },
+  {
+    "id": "fluidstack-cameron-county-tx-1500",
+    "buyer": "Fluidstack",
+    "counterparty": "",
+    "project": "Cameron County AI campus first phase",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 1500,
+    "city": "Cameron County",
+    "state": "Texas",
+    "country": "United States",
+    "lat": 26.15,
+    "lng": -97.45,
+    "date": "2026-09-21",
+    "status": "announced",
+    "headline": "Fluidstack begins Cameron County first phase, planned up to 1.5 GW",
+    "summary": "Fluidstack said on 21 September 2026 that construction has begun on the $4 billion first phase of its AI data center campus in Cameron County, Texas, in the Rio Grande Valley, planned to support up to 1.5 GW of capacity. This row is that announcement: 1,500 MW of campus design capacity (up to). Up to is not a contracted floor. First-phase design capacity is not a landlord IT pin. Do not add this 1,500 MW to the Fluidstack contracted IT rows at Lake Mariner (360 MW), Abernathy (168 MW), Barber Lake (207 MW), River Bend (245 MW), or Meridian Arc (430 MW). Those five rows stay at 1,410 MW of contracted IT and are not summed with this campus. This row is not the Anthropic $50 billion Texas and New York plan, which has no megawatt pin. The page says the project is expected to create more than 2,500 construction jobs and several hundred permanent jobs, that Fluidstack will pay for campus energy, infrastructure, and water, and that it requested and received no local property tax abatements. The map pin is the Cameron County centroid at 26.15 N, 97.45 W. The page does not publish a parcel. Atlas status is announced. The page says construction has begun, and no commercial operation date is given. The announcement is high confidence. The 1,500 MW is medium confidence because it is planned capacity of up to 1.5 GW. Energized MW and days to COD are empty.",
+    "sourceName": "Fluidstack",
+    "sourceUrl": "https://fluidstack.io/community/building-compute-in-cameron-county",
+    "confidence": "medium",
+    "numberKind": "campus design capacity (up to)",
     "energizedMW": null,
     "daysToCod": null
   }

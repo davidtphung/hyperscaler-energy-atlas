@@ -43,6 +43,7 @@ const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
   "BTM generation": "BTM generation (not IT)",
   "facility power": "facility power (not IT, not generation)",
   "AI cluster capacity": "AI cluster capacity (not BTM, not IT)",
+  "campus design capacity (up to)": "campus design capacity (up to)",
 };
 
 export function formatNumberKind(kind: NumberKind | undefined): string | null {
@@ -80,6 +81,8 @@ export function formatNumberKindNote(kind: NumberKind | undefined): string | nul
       return "Figure is total facility power, not critical IT load and not generation nameplate.";
     case "AI cluster capacity":
       return "Figure is announced AI cluster capacity, not behind-the-meter generation, not IT load, and not COD. Separate generation and nuclear matching rows are not added here.";
+    case "campus design capacity (up to)":
+      return "Figure is announced campus design capacity (up to), not contracted IT, not a generation floor, and not COD. Do not add it to landlord IT pins or generation heroes.";
   }
 }
 
