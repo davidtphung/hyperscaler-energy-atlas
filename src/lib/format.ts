@@ -37,6 +37,9 @@ const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
   storage: "storage (not generation)",
   "portfolio offtake": "portfolio offtake (not incremental)",
   "firm geothermal offtake": "firm geothermal offtake",
+  "firm contracted utility offtake": "firm contracted utility offtake",
+  "renewable matching": "renewable matching (not campus IT)",
+  "renewable matching (up to)": "renewable matching, up to (not campus IT)",
 };
 
 export function formatNumberKind(kind: NumberKind | undefined): string | null {
@@ -62,6 +65,12 @@ export function formatNumberKindNote(kind: NumberKind | undefined): string | nul
       return "Figure is a portfolio offtake total, not a new incremental deal. Delta is empty.";
     case "firm geothermal offtake":
       return "Figure is a firm geothermal PPA offtake, not plant ownership. The option is not firm and is not on this row.";
+    case "firm contracted utility offtake":
+      return "Figure is firm contracted utility offtake (Contract Quantity), not campus IT, not plant nameplate, and not buyer-owned generation.";
+    case "renewable matching":
+      return "Figure is renewable matching (VPPA, supply, or RECs), not campus IT and not a generation hero.";
+    case "renewable matching (up to)":
+      return "Figure is a renewable matching ceiling (up to), not campus IT and not a generation hero. Plants may be unnamed.";
   }
 }
 

@@ -40,7 +40,10 @@ export type NumberKind =
   | "nuclear offtake share (derived)"
   | "storage"
   | "portfolio offtake"
-  | "firm geothermal offtake";
+  | "firm geothermal offtake"
+  | "firm contracted utility offtake"
+  | "renewable matching"
+  | "renewable matching (up to)";
 
 export interface Commitment {
   id: string;
