@@ -914,9 +914,21 @@ a { color: inherit; }
 
 /* =========================================================================
    Top nav tabs
+   Map, Sites, Story, Analysis, then quieter Meta at the end of the bar.
    ========================================================================= */
 
 .nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+
+.nav-primary {
   display: flex;
   align-items: center;
   gap: 2px;
@@ -924,24 +936,106 @@ a { color: inherit; }
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--ink-800);
-  flex: 0 1 auto;
-  min-width: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
+  flex: none;
 }
-.nav-tabs::-webkit-scrollbar { display: none; }
+
+.nav-group { display: flex; align-items: center; flex: none; }
+.nav-group--meta { gap: 2px; }
+
+.nav-sep {
+  width: 1px;
+  height: 14px;
+  margin: 0 3px;
+  background: var(--line-3);
+  flex: none;
+}
+.nav-sep--meta {
+  height: 16px;
+  margin: 0 2px 0 0;
+  background: var(--line-2);
+}
+
 .nav-tab {
   height: 30px;
   padding: 0 14px;
   border-radius: 999px;
   font-size: 12.5px;
   letter-spacing: 0.01em;
-  color: var(--text-3);
+  color: var(--text-2);
   white-space: nowrap;
   transition: color 0.15s var(--ease), background 0.15s var(--ease);
 }
+.nav-tab--lead { color: var(--text); }
+.nav-tab--quiet {
+  color: var(--text-3);
+  font-size: 12px;
+  padding: 0 10px;
+}
 .nav-tab:hover { color: var(--text); }
-.nav-tab[aria-current="page"] { color: #0a0c10; background: var(--signal); font-weight: 500; }
+.nav-tab[aria-current="page"],
+.nav-tab.is-current { color: #0a0c10; background: var(--signal); font-weight: 500; }
+
+.nav-tab--story {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding-right: 10px;
+}
+.nav-caret { flex: none; transition: transform 0.16s var(--ease); }
+.nav-tab--story[aria-expanded="true"] .nav-caret { transform: rotate(180deg); }
+
+/* Popover escapes the scrolling tab row (overflow would clip an absolute menu). */
+.nav-story__panel {
+  position: fixed;
+  z-index: 80;
+  margin: 0;
+  inset: auto;
+  width: min(200px, calc(100vw - 16px));
+  height: auto;
+  padding: 6px;
+  border-radius: 12px;
+  border: 1px solid var(--line-2);
+  background: var(--ink-850);
+  color: var(--text);
+  box-shadow: var(--shadow-pop);
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  overflow: visible;
+}
+.nav-story__panel.is-open { display: flex; }
+.nav-story__label {
+  margin: 0;
+  padding: 5px 10px 3px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.nav-story__item {
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 8px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.nav-story__item:hover { color: var(--text); background: var(--ink-700); }
+.nav-story__item[aria-current="page"] {
+  color: #0a0c10;
+  background: var(--signal);
+  font-weight: 500;
+}
+
+@media (max-width: 1180px) {
+  .nav-tabs { flex: 1 1 auto; padding: 0; }
+  .nav-tab { padding: 0 11px; }
+  .nav-tab--quiet { padding: 0 8px; }
+  .nav-tab--story { padding-right: 8px; }
+  .nav-sep { margin: 0 2px; }
+}
 
 /* =========================================================================
    Page shell (Portfolio / Sources / About)
@@ -1305,6 +1399,8 @@ a { color: inherit; }
 @media (max-width: 720px) {
   .page { padding: 24px 16px 56px; }
   .nav-tab { padding: 0 11px; font-size: 12px; }
+  .nav-tab--quiet { padding: 0 8px; font-size: 11.5px; }
+  .nav-story__item { height: 40px; }
   .era-bar { grid-template-columns: 96px 1fr auto; }
   .era-bar__n { display: none; }
 }
