@@ -38,7 +38,7 @@ const ids = new Set(COMMITMENTS.map((c) => c.id));
 const byId = new Map(COMMITMENTS.map((c) => [c.id, c]));
 
 if (ids.size !== COMMITMENTS.length) errors.push("duplicate commitment ids");
-if (COMMITMENTS.length !== 150) errors.push(`expected 150 rows, got ${COMMITMENTS.length}`);
+if (COMMITMENTS.length !== 151) errors.push(`expected 151 rows, got ${COMMITMENTS.length}`);
 
 for (const c of COMMITMENTS) {
   if (!c.numberKind || !KINDS.has(c.numberKind)) errors.push(`${c.id}: missing or illegal numberKind`);
@@ -79,9 +79,9 @@ for (const c of COMMITMENTS) {
 }
 
 const EXPECTED: Record<string, { rows: number; mw: number; rendered: string }> = {
-  it_capacity: { rows: 15, mw: 7024.5, rendered: "7.02 GW (7,024.5 MW)" },
+  it_capacity: { rows: 21, mw: 9085.5, rendered: "9.09 GW (9,085.5 MW)" },
   grid_gen_for_dc: { rows: 0, mw: 0, rendered: "0 MW" },
-  btm_gen: { rows: 0, mw: 0, rendered: "0 MW" },
+  btm_gen: { rows: 2, mw: 400, rendered: "400 MW" },
   offtake_new: { rows: 3, mw: 1188, rendered: "1.19 GW (1,188 MW)" },
   offtake_existing: { rows: 0, mw: 0, rendered: "0 MW" },
 };
@@ -134,6 +134,17 @@ for (const [kind, expected] of Object.entries(EXPECTED)) {
   }
   console.log(`${rendered} ${label}`);
 }
+
+const btmRows = COMMITMENTS.filter((c) => c.numberKind === "btm_gen");
+const btmCounted = btmRows.filter((c) => c.counts === "yes");
+const btmMw = (status: string) =>
+  btmCounted.filter((c) => c.status === status).reduce((sum, c) => sum + (c.capacityMW ?? 0), 0);
+const btmMore = btmRows.filter(
+  (c) => c.counts !== "yes" && c.excludeReason !== "duplicate" && (c.status === "permitted" || c.status === "construction"),
+).length;
+const btmNote = `${formatExactMW(btmCounted.reduce((sum, c) => sum + (c.capacityMW ?? 0), 0))} counted: ${formatExactMW(btmMw("operational"))} operating, ${formatExactMW(btmMw("construction"))} under construction. ${btmMore} more on-site ${btmMore === 1 ? "project" : "projects"} permitted or building, with no MW counted.`;
+const expectedBtmNote = "400 MW counted: 200 MW operating, 200 MW under construction. 3 more on-site projects permitted or building, with no MW counted.";
+if (btmNote !== expectedBtmNote) errors.push(`on-site note rendered ${btmNote}`);
 
 const blended = [...totals.values()].reduce((sum, b) => sum + b.mw, 0);
 if (COMMITMENTS.some((c) => `${c.headline} ${c.summary}`.includes("121.1"))) {

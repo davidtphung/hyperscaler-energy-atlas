@@ -1,5 +1,5 @@
 import type { Commitment, PreparedCommitment, TechType, Status, Category, Era, NumberKind } from "../types";
-import { parseDate } from "./format";
+import { formatExactMW, parseDate } from "./format";
 import { classifyEra } from "./era";
 import { resolveActorKind } from "./actors";
 
@@ -136,12 +136,36 @@ export function gridHeroNote(
   return null;
 }
 
-/** Extra line on a zero hero card, built from the rows in view. */
+/** On-site card note. Every figure is summed from the rows in view. */
+export function btmHeroNote(
+  list: Pick<Commitment, "numberKind" | "counts" | "status" | "capacityMW" | "excludeReason">[],
+): string | null {
+  const rows = list.filter((c) => c.numberKind === "btm_gen");
+  const counted = rows.filter((c) => c.counts === "yes");
+  if (counted.length === 0) return null;
+  const mw = (status: Status) =>
+    counted.filter((c) => c.status === status).reduce((sum, c) => sum + (c.capacityMW ?? 0), 0);
+  const total = counted.reduce((sum, c) => sum + (c.capacityMW ?? 0), 0);
+  const more = rows.filter(
+    (c) =>
+      c.counts !== "yes" &&
+      c.excludeReason !== "duplicate" &&
+      (c.status === "permitted" || c.status === "construction"),
+  ).length;
+  const word = more === 1 ? "project" : "projects";
+  return `${formatExactMW(total)} counted: ${formatExactMW(mw("operational"))} operating, ${formatExactMW(mw("construction"))} under construction. ${more} more on-site ${word} permitted or building, with no MW counted.`;
+}
+
+/** Extra line on a hero card, built from the rows in view. */
 export function kindHeroNote(
   kind: NumberKind,
-  list: Pick<Commitment, "id" | "numberKind" | "counts" | "status">[],
+  list: Pick<Commitment, "id" | "numberKind" | "counts" | "status" | "capacityMW" | "excludeReason">[],
 ): string | null {
   if (kind === "grid_gen_for_dc") return gridHeroNote(list);
+  if (kind === "btm_gen") {
+    const counted = btmHeroNote(list);
+    if (counted) return counted;
+  }
   const rows = list.filter((c) => c.numberKind === kind);
   if (rows.some((c) => c.counts === "yes")) return null;
   const permitted = rows.filter((c) => c.status === "permitted" && c.counts !== "yes");
