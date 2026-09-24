@@ -54,6 +54,17 @@ for (const c of COMMITMENTS) {
   if (c.counts === "yes" && c.status !== "construction" && c.status !== "operational") {
     errors.push(`${c.id}: counted row is not under construction or operating`);
   }
+  if (c.status === "permitted" && c.counts === "yes") {
+    errors.push(`${c.id}: an issued permit is not construction evidence`);
+  }
+  if (
+    c.status === "permitted" &&
+    COUNT_BOUNDS.has(c.bound) &&
+    COUNTABLE.has(c.numberKind) &&
+    !c.excludeReason
+  ) {
+    errors.push(`${c.id}: permitted countable row needs an excludeReason`);
+  }
   if (c.counts === "yes" && !c.sourceUrl) errors.push(`${c.id}: counted row has no primary source`);
   if (c.parentId && !ids.has(c.parentId)) errors.push(`${c.id}: parentId ${c.parentId} is an orphan`);
   if (c.parentId) {
@@ -67,7 +78,7 @@ for (const c of COMMITMENTS) {
 const EXPECTED: Record<string, { rows: number; mw: number; rendered: string }> = {
   it_capacity: { rows: 27, mw: 13827.5, rendered: "13.83 GW (13,827.5 MW)" },
   grid_gen_for_dc: { rows: 1, mw: 2262, rendered: "2.26 GW (2,262 MW)" },
-  btm_gen: { rows: 5, mw: 2176.5, rendered: "2.18 GW (2,176.5 MW)" },
+  btm_gen: { rows: 3, mw: 616, rendered: "616 MW" },
   offtake_new: { rows: 3, mw: 1188, rendered: "1.19 GW (1,188 MW)" },
   offtake_existing: { rows: 1, mw: 140, rendered: "140 MW" },
 };

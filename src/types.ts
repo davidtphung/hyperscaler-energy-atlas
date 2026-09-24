@@ -24,6 +24,7 @@ export type Category = "energy" | "datacenter";
 export type Status =
   | "operational"
   | "construction"
+  | "permitted"
   | "ppa-signed"
   | "announced"
   | "exploratory"
@@ -97,6 +98,8 @@ export interface Commitment {
   country: string;
   lat: number | null;
   lng: number | null;
+  /** True when the pin is not an exact site. */
+  locationApprox?: boolean;
   /** Announcement or signing date, YYYY-MM-DD or YYYY-MM. Empty when the source states none. */
   date: string;
   /**

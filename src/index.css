@@ -609,6 +609,7 @@ a { color: inherit; }
   padding-right: 24px;
 }
 .detail__loc { font-size: 13px; color: var(--text-3); }
+.detail__loc-note { display: block; margin-top: 4px; color: var(--text-2); }
 
 .detail__capten {
   display: flex; align-items: baseline; gap: 8px;

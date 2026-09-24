@@ -274,11 +274,11 @@ export default function MapCanvas({
                 return (
                   <g
                     key={m.c.id}
-                    className={`marker${isSel ? " marker--selected" : ""}${m.future ? " marker--future" : ""}`}
+                    className={`marker${isSel ? " marker--selected" : ""}${m.future ? " marker--future" : ""}${m.c.locationApprox ? " marker--approx" : ""}`}
                     transform={`translate(${m.x},${m.y})`}
                     role="button"
                     tabIndex={m.future ? -1 : 0}
-                    aria-label={`${m.c.buyer}, ${m.c.project}. ${formatBoundPower(m.c.capacityMW, m.c.bound)} ${formatNumberKind(m.c.numberKind) ?? TECH[m.c.techType].label}. ${formatLocation(m.c.city, m.c.state, m.c.country)}.`}
+                    aria-label={`${m.c.buyer}, ${m.c.project}. ${formatBoundPower(m.c.capacityMW, m.c.bound)} ${formatNumberKind(m.c.numberKind) ?? TECH[m.c.techType].label}. ${formatLocation(m.c.city, m.c.state, m.c.country)}${m.c.locationApprox ? ". Approximate pin, not an exact site." : "."}`}
                     aria-pressed={isSel}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -309,6 +309,9 @@ export default function MapCanvas({
                       fill="#ffffff"
                       opacity={0.24}
                     />
+                    {m.c.locationApprox && (
+                      <circle className="marker__approx" r={m.r + 7} fill="none" stroke={color} strokeWidth={1.4} strokeDasharray="3 2" />
+                    )}
                     {isSel && <circle className="marker__ring" r={m.r + 5} />}
                     <circle className="marker__hit" r={Math.max(m.r + 8, 22)} />
                   </g>
@@ -328,7 +331,7 @@ export default function MapCanvas({
             <div className="tooltip__meta">
               <span className="tooltip__cap">{formatBoundPower(hover.c.capacityMW, hover.c.bound)}</span>
               <span>{hover.c.numberKind ?? TECH[hover.c.techType].short}</span>
-              <span>{formatLocation(hover.c.city, hover.c.state, hover.c.country)}</span>
+              <span>{formatLocation(hover.c.city, hover.c.state, hover.c.country)}{hover.c.locationApprox ? " · Approximate pin" : ""}</span>
             </div>
           </div>
         )}

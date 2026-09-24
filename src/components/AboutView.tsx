@@ -22,11 +22,13 @@ export default function AboutView({ total }: Props) {
           <h2>What counts in a firm total</h2>
           <p>
             A row counts only when it is under construction or operating, the figure is for that built capacity,
-            and a primary source states it. An exact figure counts. A public filing also counts when it says
-            approximately, and the atlas marks that figure with a tilde. A public filing means an SEC filing, a
-            state or federal regulator permit or order, or a utility or grid filing. Figures that say up to, as
-            much as, over, or at least stay out, as do goals, slogans, press releases, news articles, and
-            newsletters. The five kinds stay separate and are not added together.
+            and a primary source states it. An issued permit is not evidence of construction. A permitted row
+            stays out until a primary source shows the capacity under construction or operating. An exact figure
+            counts. A public filing also counts when it says approximately, and the atlas marks that figure with
+            a tilde. A public filing means an SEC filing, a state or federal regulator permit or order, or a
+            utility or grid filing. Figures that say up to, as much as, over, or at least stay out, as do goals,
+            slogans, press releases, news articles, and newsletters. The five kinds stay separate and are not
+            added together.
           </p>
 
           <h2>What counts as a commitment</h2>
@@ -55,8 +57,8 @@ export default function AboutView({ total }: Props) {
           <p>
             Confidence reflects how well the reported figures are sourced, from high (company release or filing with a
             clear capacity) to low (early or estimated). Firmness is separate: it reflects contract maturity, from
-            operational and under construction through signed PPA, announced, and exploratory. A deal can be real but
-            still speculative on capacity, and the interface keeps those two ideas distinct.
+            operational and under construction through permitted, signed PPA, announced, and exploratory. A deal can
+            be real but still speculative on capacity, and the interface keeps those two ideas distinct.
           </p>
 
           <h2>Live grid input</h2>
@@ -75,7 +77,7 @@ export default function AboutView({ total }: Props) {
               "buyer", "actorKind", "counterparty", "project", "category", "techType (energy source)",
               "capacityMW", "numberKind", "counts", "bound", "excludeReason", "parentId", "energizedMW", "daysToCod", "status", "era",
               "confidence", "date", "constructionStart (empty unless sourced)", "onlineDate (empty unless sourced)", "city / state / country",
-              "lat / lng", "summary", "sourceName", "sourceUrl",
+              "lat / lng", "locationApprox (pin is not an exact site)", "summary", "sourceName", "sourceUrl",
             ].map((f) => (
               <li key={f}><code>{f}</code></li>
             ))}

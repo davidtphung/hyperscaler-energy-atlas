@@ -122,7 +122,10 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
           <span className="detail__buyer-kind">{c.actorKind}</span>
         </div>
         <h2 className="detail__title">{c.project}</h2>
-        <div className="detail__loc">{formatLocation(c.city, c.state, c.country) || c.country}</div>
+        <div className="detail__loc">
+          {formatLocation(c.city, c.state, c.country) || c.country}
+          {c.locationApprox && <span className="detail__loc-note">Approximate pin. Not an exact site.</span>}
+        </div>
         <div className="detail__capten">
           <span className="detail__cap">{formatBoundPower(c.capacityMW, c.bound)}</span>
           <span className="detail__cap-label">
