@@ -1,4 +1,5 @@
 import { ERA, ERA_ORDER } from "../lib/era";
+import DonateView from "./DonateView";
 
 interface Props {
   total: number;
@@ -90,6 +91,7 @@ export default function AboutView({ total }: Props) {
           </p>
         </aside>
       </div>
+      <DonateView />
     </div>
   );
 }

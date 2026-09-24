@@ -26,11 +26,11 @@ const NOTES = [
 
 export default function DonateView() {
   return (
-    <div className="page page--donate">
+    <section id="donate" className="donate-section" aria-labelledby="donate-title" tabIndex={-1}>
       <div className="donate2">
         <header className="donate2__head">
           <p className="overview__eyebrow">Support</p>
-          <h1 className="donate2__title">Support HYPERGRID</h1>
+          <h2 id="donate-title" className="donate2__title">Support HYPERGRID</h2>
           <p className="donate2__lead">
             Independent, source-backed data. No ads, no paywalls, no corporate sponsors, no user tracking. Your
             contribution funds research, data, and hosting.
@@ -78,7 +78,7 @@ export default function DonateView() {
           on X.
         </p>
       </div>
-    </div>
+    </section>
   );
 }
 

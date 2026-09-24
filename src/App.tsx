@@ -19,12 +19,18 @@ import PolicyView from "./components/PolicyView";
 import ForecastView from "./components/ForecastView";
 import EconomicsView from "./components/EconomicsView";
 import HistoryView from "./components/HistoryView";
-import DonateView from "./components/DonateView";
 
 // Average month in ms. Playback speed is expressed as simulated months per real
 // second, so "6mo/s" advances the scrubber six months for every wall-clock
 // second, mirroring the speed-mode pill on a live tracker.
 const MONTH_MS = 2.6298e9;
+
+function donateRequested(): boolean {
+  if (typeof window === "undefined") return false;
+  const hash = window.location.hash.replace(/^#/, "").toLowerCase();
+  if (hash === "donate") return true;
+  return new URLSearchParams(window.location.search).get("tab")?.toLowerCase() === "donate";
+}
 
 function toggle<T>(set: Set<T>, value: T): Set<T> {
   const next = new Set(set);
@@ -44,7 +50,8 @@ export default function App() {
     eras: new Set(),
     query: "",
   });
-  const [page, setPage] = useState<Page>("atlas");
+  const [page, setPage] = useState<Page>(() => (donateRequested() ? "about" : "atlas"));
+  const [scrollDonate, setScrollDonate] = useState(donateRequested);
   const [view, setView] = useState<MapView>("us");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [scrubT, setScrubT] = useState(domain.maxT);
@@ -69,6 +76,30 @@ export default function App() {
     setPlaying(false);
     setScrubT(domain.maxT);
   }, [timelineCollapsed, domain.maxT]);
+
+  // Old Donate links (#donate or ?tab=donate) open About and land on that section.
+  useEffect(() => {
+    const openDonate = () => {
+      if (!donateRequested()) return;
+      setPage("about");
+      setScrollDonate(true);
+    };
+    window.addEventListener("hashchange", openDonate);
+    window.addEventListener("popstate", openDonate);
+    return () => {
+      window.removeEventListener("hashchange", openDonate);
+      window.removeEventListener("popstate", openDonate);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (page !== "about" || !scrollDonate) return;
+    const el = document.getElementById("donate");
+    if (!el) return;
+    el.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    el.focus({ preventScroll: true });
+    setScrollDonate(false);
+  }, [page, scrollDonate, reducedMotion]);
 
   // Boot reveal.
   useEffect(() => {
@@ -305,7 +336,6 @@ export default function App() {
                 <SourcesView commitments={facetFiltered} />
               </>
             )}
-            {page === "donate" && <DonateView />}
           </div>
         )}
       </div>

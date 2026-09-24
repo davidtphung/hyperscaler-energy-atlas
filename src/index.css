@@ -1220,6 +1220,7 @@ a { color: inherit; }
 .about-credit a:hover { color: var(--signal); border-color: var(--signal-line); }
 
 /* Donate (crypto wallets + Venmo, copy-to-clipboard) */
+.donate-section { margin-top: 48px; padding-top: 8px; border-top: 1px solid var(--line); scroll-margin-top: 16px; outline: none; }
 .donate2 { max-width: 600px; margin: 0 auto; }
 .donate2__head { margin-bottom: 30px; }
 .donate2__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 4vw, 34px); letter-spacing: -0.03em; line-height: 1.1; margin: 6px 0 14px; }
