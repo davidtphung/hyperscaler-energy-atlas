@@ -90,14 +90,16 @@ export function formatFirmMW(mw: number): string {
   return frac === "0" ? `${withCommas} MW` : `${withCommas}.${frac} MW`;
 }
 
-/** Capacity in MW -> compact human string. 960 -> "960 MW"; 1200 -> "1.2 GW". */
+/** Capacity in MW -> compact human string. 960 -> "960 MW"; 1200 -> "1.2 GW". Halves stay halves. */
 export function formatCapacity(mw: number | null): string {
   if (mw == null) return "Undisclosed";
-  if (mw >= 1000) {
+  if (mw >= 1000 && mw % 100 === 0) {
     const gw = mw / 1000;
-    return `${gw >= 10 ? Math.round(gw) : trim(gw, 1)} GW`;
+    return `${trim(gw, 1)} GW`;
   }
-  return `${Math.round(mw)} MW`;
+  const rounded = Math.round(mw * 10) / 10;
+  if (Number.isInteger(rounded)) return `${rounded.toLocaleString("en-US")} MW`;
+  return `${rounded.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} MW`;
 }
 
 /** Sum of MW rendered as GW with one decimal. */

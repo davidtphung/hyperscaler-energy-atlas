@@ -1612,7 +1612,9 @@ export const COMMITMENTS: Commitment[] = [
     "numberKind": "offtake_existing",
     "counts": "no",
     "bound": "exact",
-    "excludeReason": "restart"
+    "excludeReason": "restart",
+    "energizedMW": null,
+    "daysToCod": null
   },
   {
     "id": "google-kairos-tva-hermes2-oak-ridge",
