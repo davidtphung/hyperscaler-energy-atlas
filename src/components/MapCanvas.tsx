@@ -6,6 +6,7 @@ import { techColor, TECH } from "../lib/theme";
 import { radiusForCapacity } from "../lib/scales";
 import { formatLocation, formatNumberKind, formatPower } from "../lib/format";
 import { useElementSize } from "../lib/hooks";
+import { IDENTITY_TRANSFORM, clampTransform, zoomAt, type MapTransform } from "../lib/mapZoom";
 import { usStates, usStateBorders, worldCountries, worldBorders } from "../lib/geo";
 
 export type MapView = "us" | "world" | "china";
@@ -35,26 +36,6 @@ interface Props {
   onViewChange: (v: MapView) => void;
 }
 
-interface Transform {
-  k: number;
-  tx: number;
-  ty: number;
-}
-
-const IDENTITY: Transform = { k: 1, tx: 0, ty: 0 };
-
-function clampTransform(t: Transform, w: number, h: number): Transform {
-  const slack = 100;
-  const k = Math.max(1, Math.min(8, t.k));
-  const txMin = w - w * k - slack;
-  const tyMin = h - h * k - slack;
-  return {
-    k,
-    tx: Math.max(txMin, Math.min(slack, t.tx)),
-    ty: Math.max(tyMin, Math.min(slack, t.ty)),
-  };
-}
-
 export default function MapCanvas({
   commitments,
   inRange,
@@ -72,7 +53,7 @@ export default function MapCanvas({
     },
     [sizeRef]
   );
-  const [transform, setTransform] = useState<Transform>(IDENTITY);
+  const [transform, setTransform] = useState<MapTransform>(IDENTITY_TRANSFORM);
   const [hoverId, setHoverId] = useState<string | null>(null);
 
   // Native, non-passive listeners so we can preventDefault and own every zoom
@@ -89,13 +70,8 @@ export default function MapCanvas({
     if (!el) return;
 
     // Zoom by `factor` while keeping the world point under (fx, fy) fixed.
-    const zoomAt = (factor: number, fx: number, fy: number, w: number, h: number) => {
-      setTransform((t) => {
-        const k = t.k * factor;
-        const wx = (fx - t.tx) / t.k;
-        const wy = (fy - t.ty) / t.k;
-        return clampTransform({ k, tx: fx - wx * k, ty: fy - wy * k }, w, h);
-      });
+    const zoomAtPoint = (factor: number, fx: number, fy: number, w: number, h: number) => {
+      setTransform((t) => zoomAt(t, factor, fx, fy, w, h));
     };
 
     const onWheel = (e: WheelEvent) => {
@@ -104,7 +80,7 @@ export default function MapCanvas({
       // Clamp the per-event delta so a trackpad momentum spike cannot teleport
       // the zoom in one frame.
       const dy = Math.max(-60, Math.min(60, e.deltaY));
-      zoomAt(Math.exp(-dy * 0.0016), e.clientX - rect.left, e.clientY - rect.top, rect.width, rect.height);
+      zoomAtPoint(Math.exp(-dy * 0.0016), e.clientX - rect.left, e.clientY - rect.top, rect.width, rect.height);
     };
 
     // Anchor the pinch to where it began and hold it there for the whole
@@ -125,7 +101,7 @@ export default function MapCanvas({
       const s = e.scale || 1;
       const factor = s / (lastScale || 1);
       lastScale = s;
-      zoomAt(factor, gfx, gfy, rect.width, rect.height);
+      zoomAtPoint(factor, gfx, gfy, rect.width, rect.height);
     };
     const onGestureEnd = (e: GestureEvent) => e.preventDefault();
 
@@ -143,7 +119,12 @@ export default function MapCanvas({
 
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const pan = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
-  const pinch = useRef<{ dist: number; cx: number; cy: number; t: Transform } | null>(null);
+  const pinch = useRef<{ dist: number; cx: number; cy: number; t: MapTransform } | null>(null);
+
+  // The fitted projection changes with the view control. That is the one automatic reset.
+  useEffect(() => {
+    setTransform(IDENTITY_TRANSFORM);
+  }, [view]);
   const moved = useRef(false);
 
   // Projection fitted to the container for the active view.
@@ -203,13 +184,9 @@ export default function MapCanvas({
       const [a, b] = [...pointers.current.values()];
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
       const ratio = dist / (pinch.current.dist || 1);
-      const base = pinch.current.t;
-      const k = base.k * ratio;
       const fx = pinch.current.cx - rect.left;
       const fy = pinch.current.cy - rect.top;
-      const wx = (fx - base.tx) / base.k;
-      const wy = (fy - base.ty) / base.k;
-      setTransform(clampTransform({ k, tx: fx - wx * k, ty: fy - wy * k }, width, height));
+      setTransform(zoomAt(pinch.current.t, ratio, fx, fy, width, height));
       moved.current = true;
       return;
     }
@@ -230,16 +207,11 @@ export default function MapCanvas({
   };
 
   const zoomAround = (factor: number, fx: number, fy: number) => {
-    setTransform((t) => {
-      const k = t.k * factor;
-      const wx = (fx - t.tx) / t.k;
-      const wy = (fy - t.ty) / t.k;
-      return clampTransform({ k, tx: fx - wx * k, ty: fy - wy * k }, width, height);
-    });
+    setTransform((t) => zoomAt(t, factor, fx, fy, width, height));
   };
 
   const zoomBy = (factor: number) => zoomAround(factor, width / 2, height / 2);
-  const reset = () => setTransform(IDENTITY);
+  const reset = () => setTransform(IDENTITY_TRANSFORM);
 
   // Markers projected to screen space, culled to the viewport, ordered so the
   // selected and smaller markers paint last (on top).
