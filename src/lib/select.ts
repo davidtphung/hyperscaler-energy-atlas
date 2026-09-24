@@ -98,16 +98,18 @@ export interface KindTotal {
   kind: NumberKind;
   rows: number;
   mw: number;
+  approx: boolean;
 }
 
 /** counts=yes rows only, split by kind. */
-export function firmKindTotals(list: Pick<Commitment, "numberKind" | "counts" | "capacityMW">[]): KindTotal[] {
+export function firmKindTotals(list: Pick<Commitment, "numberKind" | "counts" | "capacityMW" | "bound">[]): KindTotal[] {
   return FIRM_KIND_ORDER.map((kind) => {
     const rows = list.filter((c) => c.numberKind === kind && c.counts === "yes");
     return {
       kind,
       rows: rows.length,
       mw: rows.reduce((sum, c) => sum + (c.capacityMW ?? 0), 0),
+      approx: rows.some((c) => c.bound === "approx_filing"),
     };
   });
 }

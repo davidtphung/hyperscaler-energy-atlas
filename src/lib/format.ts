@@ -87,10 +87,15 @@ export function formatNumberKindNote(kind: NumberKind | undefined): string | nul
  * At least 1,000 MW becomes GW with up to two decimals, trailing zeros trimmed,
  * and at least one decimal kept from 10 GW up. Below 1,000 MW stays exact MW.
  */
-export function formatPower(mw: number | null | undefined): string {
+export function formatPower(mw: number | null | undefined, approx = false): string {
   if (mw == null || !Number.isFinite(mw)) return "Undisclosed";
-  if (mw < 1000) return formatExactMW(mw);
-  return `${formatGwMagnitude(mw / 1000)} GW`;
+  const text = mw < 1000 ? formatExactMW(mw) : `${formatGwMagnitude(mw / 1000)} GW`;
+  return approx ? `~${text}` : text;
+}
+
+/** Tilde prefix when a public filing states the figure as approximate. */
+export function formatBoundPower(mw: number | null | undefined, bound: string | undefined): string {
+  return formatPower(mw, bound === "approx_filing");
 }
 
 /** Exact stored MW with thousands separators. Used beside a GW headline. */

@@ -19,6 +19,16 @@ export default function AboutView({ total }: Props) {
 
       <div className="about-grid">
         <section className="prose">
+          <h2>What counts in a firm total</h2>
+          <p>
+            A row counts only when it is under construction or operating, the figure is for that built capacity,
+            and a primary source states it. An exact figure counts. A public filing also counts when it says
+            approximately, and the atlas marks that figure with a tilde. A public filing means an SEC filing, a
+            state or federal regulator permit or order, or a utility or grid filing. Figures that say up to, as
+            much as, over, or at least stay out, as do goals, slogans, press releases, news articles, and
+            newsletters. The five kinds stay separate and are not added together.
+          </p>
+
           <h2>What counts as a commitment</h2>
           <p>
             A commitment is a publicly announced agreement, filing, or pledge that ties a hyperscaler or AI compute

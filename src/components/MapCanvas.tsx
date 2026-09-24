@@ -4,7 +4,7 @@ import type { GeoProjection } from "d3-geo";
 import type { PreparedCommitment } from "../types";
 import { techColor, TECH } from "../lib/theme";
 import { radiusForCapacity } from "../lib/scales";
-import { formatLocation, formatNumberKind, formatPower } from "../lib/format";
+import { formatBoundPower, formatLocation, formatNumberKind } from "../lib/format";
 import { useElementSize } from "../lib/hooks";
 import { IDENTITY_TRANSFORM, clampTransform, zoomAt, type MapTransform } from "../lib/mapZoom";
 import { usStates, usStateBorders, worldCountries, worldBorders } from "../lib/geo";
@@ -278,7 +278,7 @@ export default function MapCanvas({
                     transform={`translate(${m.x},${m.y})`}
                     role="button"
                     tabIndex={m.future ? -1 : 0}
-                    aria-label={`${m.c.buyer}, ${m.c.project}. ${formatPower(m.c.capacityMW)} ${formatNumberKind(m.c.numberKind) ?? TECH[m.c.techType].label}. ${formatLocation(m.c.city, m.c.state, m.c.country)}.`}
+                    aria-label={`${m.c.buyer}, ${m.c.project}. ${formatBoundPower(m.c.capacityMW, m.c.bound)} ${formatNumberKind(m.c.numberKind) ?? TECH[m.c.techType].label}. ${formatLocation(m.c.city, m.c.state, m.c.country)}.`}
                     aria-pressed={isSel}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -326,7 +326,7 @@ export default function MapCanvas({
             </div>
             <div className="tooltip__title">{hover.c.project}</div>
             <div className="tooltip__meta">
-              <span className="tooltip__cap">{formatPower(hover.c.capacityMW)}</span>
+              <span className="tooltip__cap">{formatBoundPower(hover.c.capacityMW, hover.c.bound)}</span>
               <span>{hover.c.numberKind ?? TECH[hover.c.techType].short}</span>
               <span>{formatLocation(hover.c.city, hover.c.state, hover.c.country)}</span>
             </div>

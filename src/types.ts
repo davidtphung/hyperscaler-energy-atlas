@@ -64,7 +64,7 @@ export type NumberKind =
 
 export type CountsFlag = "yes" | "no";
 
-export type Bound = "exact" | "up_to" | "at_least";
+export type Bound = "exact" | "up_to" | "at_least" | "approx_filing";
 
 export type ExcludeReason =
   | "mw_null"

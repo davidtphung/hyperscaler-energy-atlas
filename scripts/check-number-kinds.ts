@@ -17,7 +17,8 @@ const KINDS = new Set<NumberKind>([
   "unresolved",
 ]);
 const COUNTS = new Set<CountsFlag>(["yes", "no"]);
-const BOUNDS = new Set<Bound>(["exact", "up_to", "at_least"]);
+const BOUNDS = new Set<Bound>(["exact", "up_to", "at_least", "approx_filing"]);
+const COUNT_BOUNDS = new Set<Bound>(["exact", "approx_filing"]);
 const REASONS = new Set<ExcludeReason>([
   "mw_null",
   "unverified",
@@ -42,11 +43,11 @@ for (const c of COMMITMENTS) {
   if (!COUNTS.has(c.counts)) errors.push(`${c.id}: illegal counts`);
   if (!BOUNDS.has(c.bound)) errors.push(`${c.id}: illegal bound`);
   if (c.excludeReason && !REASONS.has(c.excludeReason)) errors.push(`${c.id}: illegal excludeReason`);
-  if (c.counts === "yes" && (c.bound !== "exact" || NEVER.has(c.numberKind))) {
+  if (c.counts === "yes" && (!COUNT_BOUNDS.has(c.bound) || NEVER.has(c.numberKind))) {
     errors.push(`${c.id}: counted row is non-exact or a never-count kind`);
   }
   const built = c.status === "construction" || c.status === "operational";
-  if (c.counts === "no" && c.bound === "exact" && COUNTABLE.has(c.numberKind) && built && !c.excludeReason) {
+  if (c.counts === "no" && COUNT_BOUNDS.has(c.bound) && COUNTABLE.has(c.numberKind) && built && !c.excludeReason) {
     errors.push(`${c.id}: exact countable construction or operational row has counts=no and no excludeReason`);
   }
   if (c.counts === "yes" && c.excludeReason) errors.push(`${c.id}: counted row has an excludeReason`);
@@ -64,9 +65,9 @@ for (const c of COMMITMENTS) {
 }
 
 const EXPECTED: Record<string, { rows: number; mw: number; rendered: string }> = {
-  it_capacity: { rows: 26, mw: 13397.5, rendered: "13.4 GW (13,397.5 MW)" },
+  it_capacity: { rows: 27, mw: 13827.5, rendered: "13.83 GW (13,827.5 MW)" },
   grid_gen_for_dc: { rows: 1, mw: 2262, rendered: "2.26 GW (2,262 MW)" },
-  btm_gen: { rows: 3, mw: 616, rendered: "616 MW" },
+  btm_gen: { rows: 5, mw: 2176.5, rendered: "2.18 GW (2,176.5 MW)" },
   offtake_new: { rows: 3, mw: 1188, rendered: "1.19 GW (1,188 MW)" },
   offtake_existing: { rows: 1, mw: 140, rendered: "140 MW" },
 };

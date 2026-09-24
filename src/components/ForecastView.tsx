@@ -20,7 +20,7 @@ export default function ForecastView() {
       <div className="dc-stats">
         {kinds.map((k) => (
           <div className="dc-stat" key={k.kind}>
-            <span className="dc-stat__v">{formatPower(k.mw)}{k.mw >= 1000 ? <> <small>{formatExactMW(k.mw)}</small></> : null}</span>
+            <span className="dc-stat__v">{formatPower(k.mw, k.approx)}{k.mw >= 1000 ? <> <small>{formatExactMW(k.mw)}</small></> : null}</span>
             <span className="dc-stat__l">{formatNumberKind(k.kind)}</span>
           </div>
         ))}

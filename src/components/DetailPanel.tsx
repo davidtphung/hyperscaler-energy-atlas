@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
-import { formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
+import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
 import { announcedCount, firmKindTotals } from "../lib/select";
 
 interface Props {
@@ -58,7 +58,7 @@ function Overview({
         {stats.kinds.map((k) => (
           <div className="kind-total" key={k.kind}>
             <div className="kind-total__val">
-              {formatPower(k.mw)}
+              {formatPower(k.mw, k.approx)}
               {k.mw >= 1000 && <small className="kind-total__mw">{formatExactMW(k.mw)}</small>}
             </div>
             <div className="kind-total__label">{formatNumberKind(k.kind)}</div>
@@ -97,7 +97,7 @@ function Overview({
                   {c.buyer} · {formatFullDate(c.date)}
                 </span>
               </span>
-              <span className="legend__val">{formatPower(c.capacityMW)}</span>
+              <span className="legend__val">{formatBoundPower(c.capacityMW, c.bound)}</span>
             </button>
           ))}
         </div>
@@ -124,7 +124,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
         <h2 className="detail__title">{c.project}</h2>
         <div className="detail__loc">{formatLocation(c.city, c.state, c.country) || c.country}</div>
         <div className="detail__capten">
-          <span className="detail__cap">{formatPower(c.capacityMW)}</span>
+          <span className="detail__cap">{formatBoundPower(c.capacityMW, c.bound)}</span>
           <span className="detail__cap-label">
             {formatNumberKind(c.numberKind) ?? (c.capacityMW ? "committed capacity" : "capacity undisclosed")}
           </span>
@@ -202,7 +202,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
 
         <p style={{ fontSize: 11, color: "var(--text-4)", marginTop: 2 }}>
           {formatNumberKindNote(c.numberKind) ??
-            `${formatPower(c.capacityMW)}. Figures reflect publicly reported headline capacity.`}
+            `${formatBoundPower(c.capacityMW, c.bound)}. Figures reflect publicly reported headline capacity.`}
         </p>
       </div>
     </div>

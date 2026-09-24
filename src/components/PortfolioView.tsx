@@ -48,7 +48,7 @@ export default function PortfolioView({ commitments }: Props) {
             {data.kinds.map((k) => (
               <li key={k.kind}>
                 <span className="donut-legend__name">{formatNumberKind(k.kind)}</span>
-                <span className="donut-legend__val">{formatPower(k.mw)}{k.mw >= 1000 ? ` (${formatExactMW(k.mw)})` : ""}</span>
+                <span className="donut-legend__val">{formatPower(k.mw, k.approx)}{k.mw >= 1000 ? ` (${formatExactMW(k.mw)})` : ""}</span>
                 <span className="donut-legend__pct">{k.rows} rows</span>
               </li>
             ))}
@@ -109,7 +109,7 @@ export default function PortfolioView({ commitments }: Props) {
           <h3 className="card__title">Datacenter load mapped</h3>
           <p className="card__sub">Demand behind the buildout</p>
           <div className="bigstat">
-            <span className="bigstat__val">{data.kinds[0] ? formatPower(data.kinds[0].mw) : "0 MW"}{data.kinds[0] && data.kinds[0].mw >= 1000 ? <> <small>{formatExactMW(data.kinds[0].mw)}</small></> : null}</span>
+            <span className="bigstat__val">{data.kinds[0] ? formatPower(data.kinds[0].mw, data.kinds[0].approx) : "0 MW"}{data.kinds[0] && data.kinds[0].mw >= 1000 ? <> <small>{formatExactMW(data.kinds[0].mw)}</small></> : null}</span>
             <span className="bigstat__lab">Data center IT counted on its own. Not added to generation.</span>
           </div>
           <p className="card__foot">
