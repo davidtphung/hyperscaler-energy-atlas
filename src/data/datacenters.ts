@@ -4763,13 +4763,13 @@ export const DATACENTERS: DataCenter[] = [
     "lng": -90.1186,
     "status": "operating",
     "facilityType": "ai-campus",
-    "capacityMW": 250,
+    "capacityMW": 130,
     "aiOriented": true,
     "yearOperational": 2024,
     "powerSource": "gas",
-    "summary": "xAI's Memphis supercomputer campus on the former Electrolux site in South Memphis, online since mid-2024 to train Grok. Backed by on-site gas turbines plus TVA/MLGW grid power, with IT load scaling from about 150MW toward 250MW and a Colossus 2 expansion underway.",
-    "sourceName": "Global Energy Monitor",
-    "sourceUrl": "https://www.gem.wiki/Colossus_1_power_station",
+    "summary": "SpaceX's 12 June 2026 Form 424B4 says: At COLOSSUS, we brought online the first cluster of approximately 100,000 H100 processors, approximately 130 megawatts of compute power, in just 122 days. That is the only filing-backed figure, and it is a floor. This directory row is not a second counted total.",
+    "sourceName": "SpaceX Form 424B4 (SEC)",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026042639/spaceexplorationtechnologi.htm",
     "confidence": "high"
   },
   {

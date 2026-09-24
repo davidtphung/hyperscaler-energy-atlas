@@ -76,7 +76,7 @@ for (const c of COMMITMENTS) {
 }
 
 const EXPECTED: Record<string, { rows: number; mw: number; rendered: string }> = {
-  it_capacity: { rows: 27, mw: 13827.5, rendered: "13.83 GW (13,827.5 MW)" },
+  it_capacity: { rows: 27, mw: 13707.5, rendered: "13.71 GW (13,707.5 MW)" },
   grid_gen_for_dc: { rows: 1, mw: 2262, rendered: "2.26 GW (2,262 MW)" },
   btm_gen: { rows: 3, mw: 616, rendered: "616 MW" },
   offtake_new: { rows: 3, mw: 1188, rendered: "1.19 GW (1,188 MW)" },
