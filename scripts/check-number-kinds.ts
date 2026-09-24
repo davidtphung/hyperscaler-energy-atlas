@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { COMMITMENTS } from "../src/data/commitments.ts";
-import { formatFirmGW, formatFirmMW, formatNumberKind } from "../src/lib/format.ts";
+import { formatExactMW, formatKindTotal, formatNumberKind, formatPower } from "../src/lib/format.ts";
 import type { Bound, CountsFlag, ExcludeReason, NumberKind } from "../src/types.ts";
 
 const KINDS = new Set<NumberKind>([
@@ -63,13 +63,34 @@ for (const c of COMMITMENTS) {
   }
 }
 
-const EXPECTED: Record<string, { rows: number; mw: number; gw: string; mwLabel: string }> = {
-  it_capacity: { rows: 26, mw: 13397.5, gw: "13.40 GW", mwLabel: "13,397.5 MW" },
-  grid_gen_for_dc: { rows: 1, mw: 2262, gw: "2.26 GW", mwLabel: "2,262 MW" },
-  btm_gen: { rows: 3, mw: 616, gw: "0.62 GW", mwLabel: "616 MW" },
-  offtake_new: { rows: 3, mw: 1188, gw: "1.19 GW", mwLabel: "1,188 MW" },
-  offtake_existing: { rows: 1, mw: 140, gw: "0.14 GW", mwLabel: "140 MW" },
+const EXPECTED: Record<string, { rows: number; mw: number; rendered: string }> = {
+  it_capacity: { rows: 26, mw: 13397.5, rendered: "13.4 GW (13,397.5 MW)" },
+  grid_gen_for_dc: { rows: 1, mw: 2262, rendered: "2.26 GW (2,262 MW)" },
+  btm_gen: { rows: 3, mw: 616, rendered: "616 MW" },
+  offtake_new: { rows: 3, mw: 1188, rendered: "1.19 GW (1,188 MW)" },
+  offtake_existing: { rows: 1, mw: 140, rendered: "140 MW" },
 };
+
+const POWER_CASES: [number, string][] = [
+  [13397.5, "13.4 GW"],
+  [2262, "2.26 GW"],
+  [1188, "1.19 GW"],
+  [2670, "2.67 GW"],
+  [6000, "6 GW"],
+  [5000, "5 GW"],
+  [616, "616 MW"],
+  [140, "140 MW"],
+  [360.5, "360.5 MW"],
+  [16.5, "16.5 MW"],
+  [999.9, "999.9 MW"],
+  [1000, "1 GW"],
+];
+for (const [mw, want] of POWER_CASES) {
+  const got = formatPower(mw);
+  if (got !== want) errors.push(`formatPower(${mw}) rendered ${got}, expected ${want}`);
+}
+if (formatExactMW(13397.5) !== "13,397.5 MW") errors.push(`formatExactMW(13397.5) rendered ${formatExactMW(13397.5)}`);
+if (formatExactMW(2262) !== "2,262 MW") errors.push(`formatExactMW(2262) rendered ${formatExactMW(2262)}`);
 
 const totals = new Map<string, { rows: number; mw: number }>();
 for (const c of COMMITMENTS) {
@@ -89,15 +110,14 @@ for (const [kind, expected] of Object.entries(EXPECTED)) {
     errors.push(`${kind}: expected ${expected.rows} rows ${expected.mw} MW, got ${got.rows} rows ${got.mw} MW. ${rows}`);
   }
   const label = formatNumberKind(kind as NumberKind);
-  const gw = formatFirmGW(expected.mw);
-  const mwLabel = formatFirmMW(expected.mw);
-  if (gw !== expected.gw || mwLabel !== expected.mwLabel) {
-    errors.push(`${kind}: rendered ${gw} (${mwLabel}), expected ${expected.gw} (${expected.mwLabel})`);
+  const rendered = formatKindTotal(expected.mw);
+  if (rendered !== expected.rendered) {
+    errors.push(`${kind}: rendered ${rendered}, expected ${expected.rendered}`);
   }
   if (kind === "grid_gen_for_dc" && label !== "Grid generation being built for a data center") {
     errors.push(`grid label is "${label}"`);
   }
-  console.log(`${gw} (${mwLabel}) ${label}`);
+  console.log(`${rendered} ${label}`);
 }
 
 const blended = [...totals.values()].reduce((sum, b) => sum + b.mw, 0);

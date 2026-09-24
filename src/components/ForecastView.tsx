@@ -1,5 +1,5 @@
 import { COMMITMENTS } from "../data/commitments";
-import { formatFirmGW, formatFirmMW, formatNumberKind } from "../lib/format";
+import { formatExactMW, formatNumberKind, formatPower } from "../lib/format";
 import { firmKindTotals } from "../lib/select";
 
 export default function ForecastView() {
@@ -20,7 +20,7 @@ export default function ForecastView() {
       <div className="dc-stats">
         {kinds.map((k) => (
           <div className="dc-stat" key={k.kind}>
-            <span className="dc-stat__v">{formatFirmGW(k.mw)} <small>{formatFirmMW(k.mw)}</small></span>
+            <span className="dc-stat__v">{formatPower(k.mw)}{k.mw >= 1000 ? <> <small>{formatExactMW(k.mw)}</small></> : null}</span>
             <span className="dc-stat__l">{formatNumberKind(k.kind)}</span>
           </div>
         ))}

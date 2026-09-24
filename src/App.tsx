@@ -3,7 +3,7 @@ import { COMMITMENTS } from "./data/commitments";
 import { prepare, domainOf, applyFacets, facetCounts } from "./lib/select";
 import type { FilterState } from "./lib/select";
 import type { TechType, Status, Category, Era } from "./types";
-import { formatCapacity } from "./lib/format";
+import { formatPower } from "./lib/format";
 import { PHONE_LAYOUT_QUERY, useMediaQuery, useReducedMotion } from "./lib/hooks";
 import TopBar, { type Page } from "./components/TopBar";
 import FilterRail from "./components/FilterRail";
@@ -169,7 +169,7 @@ export default function App() {
       setSelectedId(id);
       if (id) {
         const c = prepared.find((x) => x.id === id);
-        if (c) setAnnounce(`Selected ${c.project} by ${c.buyer}, ${formatCapacity(c.capacityMW)}.`);
+        if (c) setAnnounce(`Selected ${c.project} by ${c.buyer}, ${formatPower(c.capacityMW)}.`);
       }
       if (isCompact) setDetailOpen(!!id);
     },

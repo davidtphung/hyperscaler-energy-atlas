@@ -82,35 +82,44 @@ export function formatNumberKindNote(kind: NumberKind | undefined): string | nul
   }
 }
 
-/** GW headline for a summed MW total. Divide after the sum. Two decimals. */
-export function formatFirmGW(mw: number): string {
-  return `${(mw / 1000).toFixed(2)} GW`;
+/**
+ * Display power. Conversion happens after any sum.
+ * At least 1,000 MW becomes GW with up to two decimals, trailing zeros trimmed,
+ * and at least one decimal kept from 10 GW up. Below 1,000 MW stays exact MW.
+ */
+export function formatPower(mw: number | null | undefined): string {
+  if (mw == null || !Number.isFinite(mw)) return "Undisclosed";
+  if (mw < 1000) return formatExactMW(mw);
+  return `${formatGwMagnitude(mw / 1000)} GW`;
 }
 
-/** Exact MW beside a GW headline. One decimal only when the sum has a fraction. */
-export function formatFirmMW(mw: number): string {
-  const rounded = Math.round(mw * 10) / 10;
-  const [whole, frac] = rounded.toFixed(1).split(".");
+/** Exact stored MW with thousands separators. Used beside a GW headline. */
+export function formatExactMW(mw: number): string {
+  const negative = mw < 0;
+  const raw = String(Math.abs(mw));
+  const [whole, frac] = raw.split(".");
   const withCommas = Number(whole).toLocaleString("en-US");
-  return frac === "0" ? `${withCommas} MW` : `${withCommas}.${frac} MW`;
+  const body = frac ? `${withCommas}.${frac}` : withCommas;
+  return `${negative ? "-" : ""}${body} MW`;
 }
 
-/** Capacity in MW -> compact human string. 960 -> "960 MW"; 1200 -> "1.2 GW". Halves stay halves. */
-export function formatCapacity(mw: number | null): string {
-  if (mw == null) return "Undisclosed";
-  if (mw >= 1000 && mw % 100 === 0) {
-    const gw = mw / 1000;
-    return `${trim(gw, 1)} GW`;
-  }
-  const rounded = Math.round(mw * 10) / 10;
-  if (Number.isInteger(rounded)) return `${rounded.toLocaleString("en-US")} MW`;
-  return `${rounded.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} MW`;
+/** GW headline plus the exact MW when the headline is in GW. */
+export function formatKindTotal(mw: number): string {
+  const headline = formatPower(mw);
+  if (mw < 1000) return headline;
+  return `${headline} (${formatExactMW(mw)})`;
 }
 
-/** Sum of MW rendered as GW with one decimal. */
-export function formatGW(mw: number): string {
-  const gw = mw / 1000;
-  return `${gw >= 10 ? trim(gw, 1) : trim(gw, 2)}`;
+function formatGwMagnitude(gw: number): string {
+  const negative = gw < 0;
+  const fixed = Math.abs(gw).toFixed(2);
+  const rounded = Number(fixed);
+  const [whole, frac] = fixed.split(".");
+  let tail = frac;
+  if (tail[1] === "0") tail = tail[0];
+  if (rounded < 10 && tail === "0") tail = "";
+  const sign = negative ? "-" : "";
+  return tail ? `${sign}${whole}.${tail}` : `${sign}${whole}`;
 }
 
 /** USD compact: 9.6e9 -> "$9.6B"; 7.5e8 -> "$750M". */
