@@ -7,8 +7,9 @@ const MONTHS = [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
-/** Parse "YYYY-MM-DD" or "YYYY-MM" to a UTC timestamp (ms). */
+/** Parse "YYYY-MM-DD" or "YYYY-MM" to a UTC timestamp (ms). Empty stays unset. */
 export function parseDate(s: string): number {
+  if (!s || !s.trim()) return Number.NaN;
   const [y, m = "1", d = "1"] = s.split("-");
   return Date.UTC(Number(y), Number(m) - 1, Number(d));
 }
@@ -22,6 +23,7 @@ export function formatMonthYear(s: string): string {
 }
 
 export function formatFullDate(s: string): string {
+  if (!s || !s.trim()) return "empty";
   const parts = s.split("-");
   if (parts.length < 3) return formatMonthYear(s);
   const [y, m, d] = parts;
@@ -38,21 +40,16 @@ export function formatSourcedDate(s: string | null | undefined): string {
 }
 
 const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
-  "contracted IT": "contracted IT (critical IT load)",
-  "contracted demand": "contracted demand (not COD)",
-  "compute target": "compute target",
-  DC: "DC capacity",
-  "nuclear offtake share (derived)": "nuclear offtake share (derived)",
-  storage: "storage (not generation)",
-  "portfolio offtake": "portfolio offtake (not incremental)",
-  "firm geothermal offtake": "firm geothermal offtake",
-  "firm contracted utility offtake": "firm contracted utility offtake",
-  "renewable matching": "renewable matching (not campus IT)",
-  "renewable matching (up to)": "renewable matching, up to (not campus IT)",
-  "BTM generation": "BTM generation (not IT)",
-  "facility power": "facility power (not IT, not generation)",
-  "AI cluster capacity": "AI cluster capacity (not BTM, not IT)",
-  "campus design capacity (up to)": "campus design capacity (up to)",
+  it_capacity: "Data center IT",
+  grid_gen_for_dc: "Grid generation for a data center",
+  btm_gen: "On-site generation",
+  offtake_new: "Offtake from new plants",
+  offtake_existing: "Offtake from existing plants",
+  utility_load: "Utility load",
+  program: "Program",
+  equipment_supply: "Equipment supply",
+  storage: "Storage",
+  unresolved: "Unresolved",
 };
 
 export function formatNumberKind(kind: NumberKind | undefined): string | null {
@@ -62,37 +59,35 @@ export function formatNumberKind(kind: NumberKind | undefined): string | null {
 export function formatNumberKindNote(kind: NumberKind | undefined): string | null {
   if (!kind) return null;
   switch (kind) {
-    case "contracted IT":
-      return "Figure is contracted IT (critical IT load), not campus COD and not generation.";
-    case "contracted demand":
-      return "Figure is contracted demand, not COD and not generation.";
-    case "compute target":
-      return "Figure is a compute target, not generation and not COD.";
-    case "DC":
-      return "Figure is DC capacity only. Behind-the-meter generation is not on this row.";
-    case "nuclear offtake share (derived)":
-      return "Figure is a derived nuclear offtake share, not plant nameplate and not Google-owned generation.";
+    case "it_capacity":
+      return "Figure is data center IT (contracted or leased). It is not added to generation or offtake.";
+    case "grid_gen_for_dc":
+      return "Figure is grid generation built for a data center. It is not added to IT or on-site generation.";
+    case "btm_gen":
+      return "Figure is on-site generation for a campus. It is not added to IT or grid generation.";
+    case "offtake_new":
+      return "Figure is offtake from a plant that was not yet operating when the contract was signed.";
+    case "offtake_existing":
+      return "Figure is offtake from an existing plant. These are not new watts.";
+    case "utility_load":
+      return "Figure is a utility load or delivery agreement. It is not IT and it does not count in a firm total.";
+    case "program":
+      return "Figure is a program or framework. It does not count.";
+    case "equipment_supply":
+      return "Figure is an equipment supply deal. It does not count.";
     case "storage":
-      return "Figure is storage capacity, not generation.";
-    case "portfolio offtake":
-      return "Figure is a portfolio offtake total, not a new incremental deal. Delta is empty.";
-    case "firm geothermal offtake":
-      return "Figure is a firm geothermal PPA offtake, not plant ownership. The option is not firm and is not on this row.";
-    case "firm contracted utility offtake":
-      return "Figure is firm contracted utility offtake (Contract Quantity), not campus IT, not plant nameplate, and not buyer-owned generation.";
-    case "renewable matching":
-      return "Figure is renewable matching (VPPA, supply, or RECs), not campus IT and not a generation hero.";
-    case "renewable matching (up to)":
-      return "Figure is a renewable matching ceiling (up to), not campus IT and not a generation hero. Plants may be unnamed.";
-    case "BTM generation":
-      return "Figure is behind-the-meter on-site generation, not critical IT load and not a combined campus total. It is not added to campus IT or AI cluster capacity.";
-    case "facility power":
-      return "Figure is total facility power, not critical IT load and not generation nameplate.";
-    case "AI cluster capacity":
-      return "Figure is announced AI cluster capacity, not behind-the-meter generation, not IT load, and not COD. Separate generation and nuclear matching rows are not added here.";
-    case "campus design capacity (up to)":
-      return "Figure is announced campus design capacity (up to), not contracted IT, not a generation floor, and not COD. Do not add it to landlord IT pins or generation heroes.";
+      return "Figure is storage. It does not count.";
+    case "unresolved":
+      return "Kind is unresolved. It does not count.";
   }
+}
+
+/** Firm totals stay in MW so a half megawatt is not rounded away. */
+export function formatFirmMW(mw: number): string {
+  const rounded = Math.round(mw * 10) / 10;
+  const [whole, frac] = rounded.toFixed(1).split(".");
+  const withCommas = Number(whole).toLocaleString("en-US");
+  return frac === "0" ? `${withCommas} MW` : `${withCommas}.${frac} MW`;
 }
 
 /** Capacity in MW -> compact human string. 960 -> "960 MW"; 1200 -> "1.2 GW". */

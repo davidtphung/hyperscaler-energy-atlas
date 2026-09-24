@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { COMMITMENTS } from "./data/commitments";
-import { prepare, domainOf, applyFacets, facetCounts, sumMW } from "./lib/select";
+import { prepare, domainOf, applyFacets, facetCounts } from "./lib/select";
 import type { FilterState } from "./lib/select";
 import type { TechType, Status, Category, Era } from "./types";
-import { formatCapacity, formatGW } from "./lib/format";
+import { formatCapacity } from "./lib/format";
 import { PHONE_LAYOUT_QUERY, useMediaQuery, useReducedMotion } from "./lib/hooks";
 import TopBar, { type Page } from "./components/TopBar";
 import FilterRail from "./components/FilterRail";
@@ -78,14 +78,15 @@ export default function App() {
 
   // Derived selections.
   const facetFiltered = useMemo(() => applyFacets(prepared, filters), [prepared, filters]);
-  const visible = useMemo(() => facetFiltered.filter((c) => c.t <= scrubT), [facetFiltered, scrubT]);
+  const visible = useMemo(
+    () => facetFiltered.filter((c) => !Number.isFinite(c.t) || c.t <= scrubT),
+    [facetFiltered, scrubT],
+  );
   // Collapsed phone timeline is the live record, not whatever the scrubber last sat on.
   const shown = timelineCollapsed ? facetFiltered : visible;
   const inRange = useMemo(() => new Set(shown.map((c) => c.id)), [shown]);
   const counts = useMemo(() => facetCounts(prepared, filters), [prepared, filters]);
   const selected = useMemo(() => prepared.find((c) => c.id === selectedId) ?? null, [prepared, selectedId]);
-  const cumulativeGW = useMemo(() => sumMW(visible), [visible]);
-
   // Announce filter results.
   useEffect(() => {
     setAnnounce(`${facetFiltered.length} commitment${facetFiltered.length === 1 ? "" : "s"} match the current filters.`);
@@ -280,7 +281,6 @@ export default function App() {
               atLive={scrubT >= domain.maxT}
               selectedId={selectedId}
               onSelect={onSelect}
-              cumulativeGW={timelineCollapsed ? sumMW(facetFiltered) : cumulativeGW}
               countInRange={shown.length}
               collapsed={timelineCollapsed}
               onToggleCollapsed={phoneLayout ? onToggleTimeline : undefined}
@@ -301,7 +301,7 @@ export default function App() {
             )}
             {page === "about" && (
               <>
-                <AboutView total={prepared.length} totalGW={formatGW(domain.totalMW)} />
+                <AboutView total={prepared.length} />
                 <SourcesView commitments={facetFiltered} />
               </>
             )}

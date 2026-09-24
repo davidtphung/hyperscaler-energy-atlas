@@ -1,4 +1,4 @@
-import type { Commitment, PreparedCommitment, TechType, Status, Category, Era } from "../types";
+import type { Commitment, PreparedCommitment, TechType, Status, Category, Era, NumberKind } from "../types";
 import { parseDate } from "./format";
 import { classifyEra } from "./era";
 import { resolveActorKind } from "./actors";
@@ -16,16 +16,24 @@ export function prepare(commitments: Commitment[]): PreparedCommitment[] {
   return commitments
     .map((c) => {
       const t = parseDate(c.date);
+      const dated = Number.isFinite(t);
       return {
         ...c,
         actorKind: resolveActorKind(c.buyer, c.actorKind),
-        t,
-        year: new Date(t).getUTCFullYear(),
-        era: classifyEra(t),
+        t: dated ? t : Number.NaN,
+        year: dated ? new Date(t).getUTCFullYear() : 0,
+        era: dated ? classifyEra(t) : "current",
         point: null,
       };
     })
-    .sort((a, b) => a.t - b.t);
+    .sort((a, b) => {
+      const af = Number.isFinite(a.t);
+      const bf = Number.isFinite(b.t);
+      if (af && bf) return a.t - b.t;
+      if (af) return -1;
+      if (bf) return 1;
+      return 0;
+    });
 }
 
 export interface Domain {
@@ -41,10 +49,12 @@ export function domainOf(prepared: PreparedCommitment[]): Domain {
   let totalMW = 0;
   const buyers = new Map<string, number>();
   for (const c of prepared) {
-    minT = Math.min(minT, c.t);
-    maxT = Math.max(maxT, c.t);
+    if (Number.isFinite(c.t)) {
+      minT = Math.min(minT, c.t);
+      maxT = Math.max(maxT, c.t);
+    }
     totalMW += mwForAggregate(c);
-    buyers.set(c.buyer, (buyers.get(c.buyer) ?? 0) + mwForAggregate(c));
+    buyers.set(c.buyer, (buyers.get(c.buyer) ?? 0) + 1);
   }
   const ordered = [...buyers.entries()].sort((a, b) => b[1] - a[1]).map(([b]) => b);
   return { minT, maxT, buyers: ordered, totalMW };
@@ -75,7 +85,38 @@ export function applyFacets(list: PreparedCommitment[], f: FilterState): Prepare
   );
 }
 
-/** Labeled lease, demand, compute-target, DC, offtake, storage, derived, matching, BTM generation, facility-power, AI cluster, and campus design capacity units are not headline generation. */
+/** Firm hero kinds, in display order. These totals are never added together. */
+export const FIRM_KIND_ORDER = [
+  "it_capacity",
+  "grid_gen_for_dc",
+  "btm_gen",
+  "offtake_new",
+  "offtake_existing",
+] as const satisfies readonly NumberKind[];
+
+export interface KindTotal {
+  kind: NumberKind;
+  rows: number;
+  mw: number;
+}
+
+/** counts=yes rows only, split by kind. */
+export function firmKindTotals(list: Pick<Commitment, "numberKind" | "counts" | "capacityMW">[]): KindTotal[] {
+  return FIRM_KIND_ORDER.map((kind) => {
+    const rows = list.filter((c) => c.numberKind === kind && c.counts === "yes");
+    return {
+      kind,
+      rows: rows.length,
+      mw: rows.reduce((sum, c) => sum + (c.capacityMW ?? 0), 0),
+    };
+  });
+}
+
+export function announcedCount(list: Pick<Commitment, "status">[]): number {
+  return list.filter((c) => c.status === "announced").length;
+}
+
+/** Rows with a number kind are not mixed into a single generation total. */
 export function isNonGenerationUnit(c: { numberKind?: string }): boolean {
   return Boolean(c.numberKind);
 }

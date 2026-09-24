@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
-import { formatCapacity, formatFullDate, formatGW, formatLocation, formatNumberKind, formatNumberKindNote, formatSourcedDate } from "../lib/format";
-import { isNonGenerationUnit, sumMW } from "../lib/select";
+import { formatCapacity, formatFirmMW, formatFullDate, formatGW, formatLocation, formatNumberKind, formatNumberKindNote, formatSourcedDate } from "../lib/format";
+import { announcedCount, firmKindTotals } from "../lib/select";
 
 interface Props {
   selected: PreparedCommitment | null;
@@ -37,17 +37,12 @@ function Overview({
   onSelect: (id: string) => void;
 }) {
   const stats = useMemo(() => {
-    const totalGW = sumMW(visible);
-    const buyers = new Set(visible.map((c) => c.buyer));
-    const opGW = sumMW(visible.filter((c) => c.status === "operational"));
-    const byBuyer = new Map<string, number>();
-    for (const c of visible) {
-      if (isNonGenerationUnit(c)) continue;
-      byBuyer.set(c.buyer, (byBuyer.get(c.buyer) ?? 0) + (c.capacityMW ?? 0));
-    }
-    const bars = [...byBuyer.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
-    const maxBar = Math.max(1, ...bars.map((b) => b[1]));
-    return { totalGW, buyers: buyers.size, opGW, bars, maxBar };
+    const actors = new Set(visible.map((c) => c.buyer));
+    return {
+      kinds: firmKindTotals(visible),
+      actors: actors.size,
+      announced: announcedCount(visible),
+    };
   }, [visible]);
 
   const recent = useMemo(() => [...visible].sort((a, b) => b.t - a.t).slice(0, 40), [visible]);
@@ -59,52 +54,28 @@ function Overview({
         The hyperscalers are buying the <em>future of energy</em> to feed the AI era.
       </h2>
 
-      <div className="stat-grid">
-        <div className="stat">
-          <div className="stat__val">
-            {formatGW(stats.totalGW)}
-            <small>GW</small>
+      <div className="kind-totals" aria-label="Firm totals by kind">
+        {stats.kinds.map((k) => (
+          <div className="kind-total" key={k.kind}>
+            <div className="kind-total__val">{formatFirmMW(k.mw)}</div>
+            <div className="kind-total__label">{formatNumberKind(k.kind)}</div>
+            <div className="kind-total__meta">{k.rows} {k.rows === 1 ? "row" : "rows"} counted</div>
           </div>
-          <div className="stat__label">Capacity committed</div>
-        </div>
+        ))}
+      </div>
+      <p className="kind-note">These totals are separate. They are not added together.</p>
+      <p className="kind-note">Announced: {stats.announced} {stats.announced === 1 ? "row" : "rows"}. Not included in the totals above.</p>
+
+      <div className="stat-grid">
         <div className="stat">
           <div className="stat__val">{visible.length}</div>
           <div className="stat__label">Commitments in view</div>
         </div>
         <div className="stat">
-          <div className="stat__val">{stats.buyers}</div>
+          <div className="stat__val">{stats.actors}</div>
           <div className="stat__label">Actors</div>
         </div>
-        <div className="stat">
-          <div className="stat__val">
-            {formatGW(stats.opGW)}
-            <small>GW</small>
-          </div>
-          <div className="stat__label">Already operational</div>
-        </div>
       </div>
-
-      {stats.bars.length > 0 && (
-        <div className="rail__group" style={{ marginBottom: 22 }}>
-          <div className="rail__head">
-            <h3 className="rail__title">Capacity by actor</h3>
-          </div>
-          <div className="bars">
-            {stats.bars.map(([name, mw]) => (
-              <div className="bar__row" key={name}>
-                <span className="bar__name">{name}</span>
-                <span className="bar__track">
-                  <span
-                    className="bar__fill"
-                    style={{ width: `${(mw / stats.maxBar) * 100}%`, background: buyerAccent(name) }}
-                  />
-                </span>
-                <span className="bar__val">{mw ? `${formatGW(mw)} GW` : "n/a"}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       <div className="rail__group">
         <div className="rail__head">
@@ -165,12 +136,12 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
             <span className="kv__k">Technology</span>
             <span className="kv__v" style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
               <span style={{ width: 8, height: 8, borderRadius: 2, background: techColor(c.techType) }} />
-              {c.numberKind === "BTM generation" && c.techType === "datacenter" ? "On-site generation" : TECH[c.techType].label}
+              {c.numberKind === "btm_gen" ? "On-site generation" : TECH[c.techType].label}
             </span>
           </div>
           <div className="kv__row">
             <span className="kv__k">Status</span>
-            <span className="kv__v">{STATUS[c.status].label}</span>
+            <span className="kv__v">{c.excludeReason === "restart" ? "Restart in progress" : STATUS[c.status].label}</span>
           </div>
           <div className="kv__row">
             <span className="kv__k">Category</span>

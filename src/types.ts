@@ -46,23 +46,35 @@ export type ActorKind =
   | "Vendor/developer"
   | "Undisclosed";
 
-/** How capacityMW should be read. Omitted on legacy headline-MW rows. */
+/**
+ * What capacityMW measures. Kinds are never added together.
+ * program, equipment_supply, storage, utility_load, and unresolved never count.
+ */
 export type NumberKind =
-  | "contracted IT"
-  | "contracted demand"
-  | "compute target"
-  | "DC"
-  | "nuclear offtake share (derived)"
+  | "it_capacity"
+  | "grid_gen_for_dc"
+  | "btm_gen"
+  | "offtake_existing"
+  | "offtake_new"
+  | "utility_load"
+  | "program"
+  | "equipment_supply"
   | "storage"
-  | "portfolio offtake"
-  | "firm geothermal offtake"
-  | "firm contracted utility offtake"
-  | "renewable matching"
-  | "renewable matching (up to)"
-  | "BTM generation"
-  | "facility power"
-  | "AI cluster capacity"
-  | "campus design capacity (up to)";
+  | "unresolved";
+
+export type CountsFlag = "yes" | "no";
+
+export type Bound = "exact" | "up_to" | "at_least";
+
+export type ExcludeReason =
+  | "mw_null"
+  | "unverified"
+  | "duplicate"
+  | "conflict"
+  | "target_not_firm"
+  | "restart"
+  | "status_flip_pending"
+  | "remove_candidate";
 
 export interface Commitment {
   id: string;
@@ -85,7 +97,7 @@ export interface Commitment {
   country: string;
   lat: number | null;
   lng: number | null;
-  /** Announcement or signing date, YYYY-MM-DD or YYYY-MM. */
+  /** Announcement or signing date, YYYY-MM-DD or YYYY-MM. Empty when the source states none. */
   date: string;
   /**
    * Construction start, YYYY-MM-DD or YYYY-MM.
@@ -103,8 +115,16 @@ export interface Commitment {
   sourceName: string;
   sourceUrl: string;
   confidence: Confidence;
-  /** How capacityMW should be read. Omitted on legacy headline-MW rows. */
-  numberKind?: NumberKind;
+  /** What capacityMW measures. Required on every row. */
+  numberKind: NumberKind;
+  /** Other row this one sits inside. Omitted when the row is not a child. */
+  parentId?: string;
+  /** Whether this row enters its kind's firm total. */
+  counts: CountsFlag;
+  /** exact, up_to, or at_least. Only exact rows can count. */
+  bound: Bound;
+  /** Why an exact countable construction or operational row does not count. */
+  excludeReason?: ExcludeReason;
   /** Energized megawatts. null/omitted when not sourced. Do not invent. */
   energizedMW?: number | null;
   /** Days from announcement to COD. null/omitted when not sourced. Do not invent. */

@@ -2,10 +2,9 @@ import { ERA, ERA_ORDER } from "../lib/era";
 
 interface Props {
   total: number;
-  totalGW: string;
 }
 
-export default function AboutView({ total, totalGW }: Props) {
+export default function AboutView({ total }: Props) {
   return (
     <div className="page page--about">
       <header className="page__head">
@@ -13,7 +12,7 @@ export default function AboutView({ total, totalGW }: Props) {
         <h1 className="page__title">How this atlas is built</h1>
         <p className="page__lead">
           HYPERGRID maps the energy and datacenter commitments behind the AI build. It tracks {total} source-backed
-          commitments totaling about {totalGW} GW of committed capacity, across time, space, and energy source.
+          commitments. Capacity is shown as a separate total for each kind. Those totals are not added together.
         </p>
       </header>
 
@@ -63,7 +62,7 @@ export default function AboutView({ total, totalGW }: Props) {
           <ul className="schema-list">
             {[
               "buyer", "actorKind", "counterparty", "project", "category", "techType (energy source)",
-              "capacityMW", "numberKind", "energizedMW", "daysToCod", "status", "era",
+              "capacityMW", "numberKind", "counts", "bound", "excludeReason", "parentId", "energizedMW", "daysToCod", "status", "era",
               "confidence", "date", "constructionStart (empty unless sourced)", "onlineDate (empty unless sourced)", "city / state / country",
               "lat / lng", "summary", "sourceName", "sourceUrl",
             ].map((f) => (
