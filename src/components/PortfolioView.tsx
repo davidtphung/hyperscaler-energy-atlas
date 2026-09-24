@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { ERA, ERA_ORDER } from "../lib/era";
-import { formatFirmMW, formatNumberKind } from "../lib/format";
+import { formatFirmGW, formatFirmMW, formatNumberKind } from "../lib/format";
 import { firmKindTotals } from "../lib/select";
 import LiveGrid from "./LiveGrid";
 
@@ -48,7 +48,7 @@ export default function PortfolioView({ commitments }: Props) {
             {data.kinds.map((k) => (
               <li key={k.kind}>
                 <span className="donut-legend__name">{formatNumberKind(k.kind)}</span>
-                <span className="donut-legend__val">{formatFirmMW(k.mw)}</span>
+                <span className="donut-legend__val">{formatFirmGW(k.mw)} ({formatFirmMW(k.mw)})</span>
                 <span className="donut-legend__pct">{k.rows} rows</span>
               </li>
             ))}
@@ -109,7 +109,7 @@ export default function PortfolioView({ commitments }: Props) {
           <h3 className="card__title">Datacenter load mapped</h3>
           <p className="card__sub">Demand behind the buildout</p>
           <div className="bigstat">
-            <span className="bigstat__val">{data.kinds[0] ? formatFirmMW(data.kinds[0].mw) : "0 MW"}</span>
+            <span className="bigstat__val">{data.kinds[0] ? formatFirmGW(data.kinds[0].mw) : "0.00 GW"} <small>{data.kinds[0] ? formatFirmMW(data.kinds[0].mw) : "0 MW"}</small></span>
             <span className="bigstat__lab">Data center IT counted on its own. Not added to generation.</span>
           </div>
           <p className="card__foot">

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { DATACENTERS } from "../data/datacenters";
 import type { DataCenter, DCStatus, FacilityType } from "../types";
 import { DC_STATUS, DC_STATUS_ORDER, FACILITY_TYPE, FACILITY_TYPE_ORDER } from "../lib/theme";
-import { formatGW, formatCapacity } from "../lib/format";
+import { formatFirmGW, formatCapacity } from "../lib/format";
 import ScatterMap, { type ScatterPoint, type ScatterView } from "./ScatterMap";
 
 type SortKey = "facility" | "location" | "type" | "status" | "mw";
@@ -140,7 +140,7 @@ export default function DataCentersView() {
 
       <div className="dc-stats">
         <Stat v={String(stats.facilities)} l="Facilities" />
-        <Stat v={`${formatGW(stats.mw)}`} u="GW" l="Mapped capacity" />
+        <Stat v={formatFirmGW(stats.mw).replace(" GW", "")} u="GW" l="Mapped capacity" />
         <Stat v={String(stats.countries)} l="Countries" />
         <Stat v={String(stats.operators)} l="Operators" />
         <Stat v={String(stats.hyperscale)} l="Hyperscale" />

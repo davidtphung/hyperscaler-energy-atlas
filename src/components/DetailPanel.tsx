@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
-import { formatCapacity, formatFirmMW, formatFullDate, formatGW, formatLocation, formatNumberKind, formatNumberKindNote, formatSourcedDate } from "../lib/format";
+import { formatCapacity, formatFirmGW, formatFirmMW, formatFullDate, formatGW, formatLocation, formatNumberKind, formatNumberKindNote, formatSourcedDate } from "../lib/format";
 import { announcedCount, firmKindTotals } from "../lib/select";
 
 interface Props {
@@ -57,7 +57,10 @@ function Overview({
       <div className="kind-totals" aria-label="Firm totals by kind">
         {stats.kinds.map((k) => (
           <div className="kind-total" key={k.kind}>
-            <div className="kind-total__val">{formatFirmMW(k.mw)}</div>
+            <div className="kind-total__val">
+              {formatFirmGW(k.mw)}
+              <small className="kind-total__mw">{formatFirmMW(k.mw)}</small>
+            </div>
             <div className="kind-total__label">{formatNumberKind(k.kind)}</div>
             <div className="kind-total__meta">{k.rows} {k.rows === 1 ? "row" : "rows"} counted</div>
           </div>

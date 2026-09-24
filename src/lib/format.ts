@@ -41,10 +41,10 @@ export function formatSourcedDate(s: string | null | undefined): string {
 
 const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
   it_capacity: "Data center IT",
-  grid_gen_for_dc: "Grid generation for a data center",
+  grid_gen_for_dc: "Grid generation being built for a data center",
   btm_gen: "On-site generation",
-  offtake_new: "Offtake from new plants",
-  offtake_existing: "Offtake from existing plants",
+  offtake_new: "Contracts with new plants",
+  offtake_existing: "Contracts with existing plants",
   utility_load: "Utility load",
   program: "Program",
   equipment_supply: "Equipment supply",
@@ -62,7 +62,7 @@ export function formatNumberKindNote(kind: NumberKind | undefined): string | nul
     case "it_capacity":
       return "Figure is data center IT (contracted or leased). It is not added to generation or offtake.";
     case "grid_gen_for_dc":
-      return "Figure is grid generation built for a data center. It is not added to IT or on-site generation.";
+      return "Figure is grid generation being built for a data center. It is not added to IT or on-site generation.";
     case "btm_gen":
       return "Figure is on-site generation for a campus. It is not added to IT or grid generation.";
     case "offtake_new":
@@ -82,7 +82,12 @@ export function formatNumberKindNote(kind: NumberKind | undefined): string | nul
   }
 }
 
-/** Firm totals stay in MW so a half megawatt is not rounded away. */
+/** GW headline for a summed MW total. Divide after the sum. Two decimals. */
+export function formatFirmGW(mw: number): string {
+  return `${(mw / 1000).toFixed(2)} GW`;
+}
+
+/** Exact MW beside a GW headline. One decimal only when the sum has a fraction. */
 export function formatFirmMW(mw: number): string {
   const rounded = Math.round(mw * 10) / 10;
   const [whole, frac] = rounded.toFixed(1).split(".");
