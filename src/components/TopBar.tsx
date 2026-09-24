@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent as ReactFocusEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
 
-export type Page = "atlas" | "datacenters" | "economics" | "history" | "contested" | "policy" | "portfolio" | "about" | "donate";
+export type Page = "atlas" | "datacenters" | "economics" | "history" | "contested" | "policy" | "portfolio" | "about";
 
 interface Props {
   page: Page;
@@ -224,7 +224,6 @@ export default function TopBar({ page, onPageChange, query, onQuery, onToggleRai
         <span className="nav-sep nav-sep--meta" aria-hidden="true" />
         <div className="nav-group nav-group--meta" role="group" aria-label="Meta">
           <NavTab id="about" label="About" page={page} onPageChange={onPageChange} quiet />
-          <NavTab id="donate" label="Donate" page={page} onPageChange={onPageChange} quiet />
         </div>
       </nav>
 

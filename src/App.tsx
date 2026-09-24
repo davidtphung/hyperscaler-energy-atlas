@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { COMMITMENTS } from "./data/commitments";
-import { prepare, domainOf, applyFacets, facetCounts, sumMW } from "./lib/select";
+import { prepare, domainOf, applyFacets, facetCounts } from "./lib/select";
 import type { FilterState } from "./lib/select";
 import type { TechType, Status, Category, Era } from "./types";
-import { formatCapacity, formatGW } from "./lib/format";
+import { formatBoundPower } from "./lib/format";
 import { PHONE_LAYOUT_QUERY, useMediaQuery, useReducedMotion } from "./lib/hooks";
 import TopBar, { type Page } from "./components/TopBar";
 import FilterRail from "./components/FilterRail";
@@ -19,12 +19,18 @@ import PolicyView from "./components/PolicyView";
 import ForecastView from "./components/ForecastView";
 import EconomicsView from "./components/EconomicsView";
 import HistoryView from "./components/HistoryView";
-import DonateView from "./components/DonateView";
 
 // Average month in ms. Playback speed is expressed as simulated months per real
 // second, so "6mo/s" advances the scrubber six months for every wall-clock
 // second, mirroring the speed-mode pill on a live tracker.
 const MONTH_MS = 2.6298e9;
+
+function donateRequested(): boolean {
+  if (typeof window === "undefined") return false;
+  const hash = window.location.hash.replace(/^#/, "").toLowerCase();
+  if (hash === "donate") return true;
+  return new URLSearchParams(window.location.search).get("tab")?.toLowerCase() === "donate";
+}
 
 function toggle<T>(set: Set<T>, value: T): Set<T> {
   const next = new Set(set);
@@ -44,7 +50,8 @@ export default function App() {
     eras: new Set(),
     query: "",
   });
-  const [page, setPage] = useState<Page>("atlas");
+  const [page, setPage] = useState<Page>(() => (donateRequested() ? "about" : "atlas"));
+  const [scrollDonate, setScrollDonate] = useState(donateRequested);
   const [view, setView] = useState<MapView>("us");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [scrubT, setScrubT] = useState(domain.maxT);
@@ -70,6 +77,30 @@ export default function App() {
     setScrubT(domain.maxT);
   }, [timelineCollapsed, domain.maxT]);
 
+  // Old Donate links (#donate or ?tab=donate) open About and land on that section.
+  useEffect(() => {
+    const openDonate = () => {
+      if (!donateRequested()) return;
+      setPage("about");
+      setScrollDonate(true);
+    };
+    window.addEventListener("hashchange", openDonate);
+    window.addEventListener("popstate", openDonate);
+    return () => {
+      window.removeEventListener("hashchange", openDonate);
+      window.removeEventListener("popstate", openDonate);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (page !== "about" || !scrollDonate) return;
+    const el = document.getElementById("donate");
+    if (!el) return;
+    el.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+    el.focus({ preventScroll: true });
+    setScrollDonate(false);
+  }, [page, scrollDonate, reducedMotion]);
+
   // Boot reveal.
   useEffect(() => {
     const t = setTimeout(() => setBooted(true), reducedMotion ? 100 : 620);
@@ -78,14 +109,15 @@ export default function App() {
 
   // Derived selections.
   const facetFiltered = useMemo(() => applyFacets(prepared, filters), [prepared, filters]);
-  const visible = useMemo(() => facetFiltered.filter((c) => c.t <= scrubT), [facetFiltered, scrubT]);
+  const visible = useMemo(
+    () => facetFiltered.filter((c) => !Number.isFinite(c.t) || c.t <= scrubT),
+    [facetFiltered, scrubT],
+  );
   // Collapsed phone timeline is the live record, not whatever the scrubber last sat on.
   const shown = timelineCollapsed ? facetFiltered : visible;
   const inRange = useMemo(() => new Set(shown.map((c) => c.id)), [shown]);
   const counts = useMemo(() => facetCounts(prepared, filters), [prepared, filters]);
   const selected = useMemo(() => prepared.find((c) => c.id === selectedId) ?? null, [prepared, selectedId]);
-  const cumulativeGW = useMemo(() => sumMW(visible), [visible]);
-
   // Announce filter results.
   useEffect(() => {
     setAnnounce(`${facetFiltered.length} commitment${facetFiltered.length === 1 ? "" : "s"} match the current filters.`);
@@ -168,7 +200,7 @@ export default function App() {
       setSelectedId(id);
       if (id) {
         const c = prepared.find((x) => x.id === id);
-        if (c) setAnnounce(`Selected ${c.project} by ${c.buyer}, ${formatCapacity(c.capacityMW)}.`);
+        if (c) setAnnounce(`Selected ${c.project} by ${c.buyer}, ${formatBoundPower(c.capacityMW, c.bound)}.`);
       }
       if (isCompact) setDetailOpen(!!id);
     },
@@ -280,7 +312,6 @@ export default function App() {
               atLive={scrubT >= domain.maxT}
               selectedId={selectedId}
               onSelect={onSelect}
-              cumulativeGW={timelineCollapsed ? sumMW(facetFiltered) : cumulativeGW}
               countInRange={shown.length}
               collapsed={timelineCollapsed}
               onToggleCollapsed={phoneLayout ? onToggleTimeline : undefined}
@@ -301,11 +332,10 @@ export default function App() {
             )}
             {page === "about" && (
               <>
-                <AboutView total={prepared.length} totalGW={formatGW(domain.totalMW)} />
+                <AboutView total={prepared.length} />
                 <SourcesView commitments={facetFiltered} />
               </>
             )}
-            {page === "donate" && <DonateView />}
           </div>
         )}
       </div>

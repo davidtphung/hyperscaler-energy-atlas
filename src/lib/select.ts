@@ -1,5 +1,5 @@
-import type { Commitment, PreparedCommitment, TechType, Status, Category, Era } from "../types";
-import { parseDate } from "./format";
+import type { Commitment, PreparedCommitment, TechType, Status, Category, Era, NumberKind } from "../types";
+import { formatExactMW, parseDate } from "./format";
 import { classifyEra } from "./era";
 import { resolveActorKind } from "./actors";
 
@@ -16,16 +16,24 @@ export function prepare(commitments: Commitment[]): PreparedCommitment[] {
   return commitments
     .map((c) => {
       const t = parseDate(c.date);
+      const dated = Number.isFinite(t);
       return {
         ...c,
         actorKind: resolveActorKind(c.buyer, c.actorKind),
-        t,
-        year: new Date(t).getUTCFullYear(),
-        era: classifyEra(t),
+        t: dated ? t : Number.NaN,
+        year: dated ? new Date(t).getUTCFullYear() : 0,
+        era: dated ? classifyEra(t) : "current",
         point: null,
       };
     })
-    .sort((a, b) => a.t - b.t);
+    .sort((a, b) => {
+      const af = Number.isFinite(a.t);
+      const bf = Number.isFinite(b.t);
+      if (af && bf) return a.t - b.t;
+      if (af) return -1;
+      if (bf) return 1;
+      return 0;
+    });
 }
 
 export interface Domain {
@@ -41,10 +49,12 @@ export function domainOf(prepared: PreparedCommitment[]): Domain {
   let totalMW = 0;
   const buyers = new Map<string, number>();
   for (const c of prepared) {
-    minT = Math.min(minT, c.t);
-    maxT = Math.max(maxT, c.t);
+    if (Number.isFinite(c.t)) {
+      minT = Math.min(minT, c.t);
+      maxT = Math.max(maxT, c.t);
+    }
     totalMW += mwForAggregate(c);
-    buyers.set(c.buyer, (buyers.get(c.buyer) ?? 0) + mwForAggregate(c));
+    buyers.set(c.buyer, (buyers.get(c.buyer) ?? 0) + 1);
   }
   const ordered = [...buyers.entries()].sort((a, b) => b[1] - a[1]).map(([b]) => b);
   return { minT, maxT, buyers: ordered, totalMW };
@@ -75,7 +85,97 @@ export function applyFacets(list: PreparedCommitment[], f: FilterState): Prepare
   );
 }
 
-/** Labeled lease, demand, compute-target, DC, offtake, storage, derived, matching, BTM generation, facility-power, AI cluster, and campus design capacity units are not headline generation. */
+/** Firm hero kinds, in display order. These totals are never added together. */
+export const FIRM_KIND_ORDER = [
+  "it_capacity",
+  "grid_gen_for_dc",
+  "btm_gen",
+  "offtake_new",
+  "offtake_existing",
+] as const satisfies readonly NumberKind[];
+
+export interface KindTotal {
+  kind: NumberKind;
+  rows: number;
+  mw: number;
+  approx: boolean;
+}
+
+/** counts=yes rows only, split by kind. */
+export function firmKindTotals(list: Pick<Commitment, "numberKind" | "counts" | "capacityMW" | "bound">[]): KindTotal[] {
+  return FIRM_KIND_ORDER.map((kind) => {
+    const rows = list.filter((c) => c.numberKind === kind && c.counts === "yes");
+    return {
+      kind,
+      rows: rows.length,
+      mw: rows.reduce((sum, c) => sum + (c.capacityMW ?? 0), 0),
+      approx: rows.some((c) => c.bound === "approx_filing"),
+    };
+  });
+}
+
+export function announcedCount(list: Pick<Commitment, "status">[]): number {
+  return list.filter((c) => c.status === "announced").length;
+}
+
+/**
+ * Grid card note. Derived from the rows in view.
+ * The sentence below matches the current data: meta-entergy-hyperion-gas-three
+ * is the one permitted grid row and it does not count. When that row counts,
+ * this function returns null and must not say "no construction shown."
+ */
+export function gridHeroNote(
+  list: Pick<Commitment, "id" | "numberKind" | "counts" | "status">[],
+): string | null {
+  const grid = list.filter((c) => c.numberKind === "grid_gen_for_dc");
+  if (grid.some((c) => c.counts === "yes")) return null;
+  const approved = grid.filter((c) => c.status === "permitted" && c.counts !== "yes");
+  if (approved.length === 1 && approved[0].id === "meta-entergy-hyperion-gas-three") {
+    return "0 MW counted. One approved project (three gas plants), no construction shown.";
+  }
+  return null;
+}
+
+/** On-site card note. Every figure is summed from the rows in view. */
+export function btmHeroNote(
+  list: Pick<Commitment, "numberKind" | "counts" | "status" | "capacityMW" | "excludeReason">[],
+): string | null {
+  const rows = list.filter((c) => c.numberKind === "btm_gen");
+  const counted = rows.filter((c) => c.counts === "yes");
+  if (counted.length === 0) return null;
+  const mw = (status: Status) =>
+    counted.filter((c) => c.status === status).reduce((sum, c) => sum + (c.capacityMW ?? 0), 0);
+  const total = counted.reduce((sum, c) => sum + (c.capacityMW ?? 0), 0);
+  const more = rows.filter(
+    (c) =>
+      c.counts !== "yes" &&
+      c.excludeReason !== "duplicate" &&
+      (c.status === "permitted" || c.status === "construction"),
+  ).length;
+  const word = more === 1 ? "project" : "projects";
+  return `${formatExactMW(total)} counted: ${formatExactMW(mw("operational"))} operating, ${formatExactMW(mw("construction"))} under construction. ${more} more on-site ${word} permitted or building, with no MW counted.`;
+}
+
+/** Extra line on a hero card, built from the rows in view. */
+export function kindHeroNote(
+  kind: NumberKind,
+  list: Pick<Commitment, "id" | "numberKind" | "counts" | "status" | "capacityMW" | "excludeReason">[],
+): string | null {
+  if (kind === "grid_gen_for_dc") return gridHeroNote(list);
+  if (kind === "btm_gen") {
+    const counted = btmHeroNote(list);
+    if (counted) return counted;
+  }
+  const rows = list.filter((c) => c.numberKind === kind);
+  if (rows.some((c) => c.counts === "yes")) return null;
+  const permitted = rows.filter((c) => c.status === "permitted" && c.counts !== "yes");
+  if (permitted.length === 0) return null;
+  const n = permitted.length === 1 ? "One" : String(permitted.length);
+  const word = permitted.length === 1 ? "project" : "projects";
+  return `0 MW counted. ${n} permitted ${word}, no construction shown.`;
+}
+
+/** Rows with a number kind are not mixed into a single generation total. */
 export function isNonGenerationUnit(c: { numberKind?: string }): boolean {
   return Boolean(c.numberKind);
 }

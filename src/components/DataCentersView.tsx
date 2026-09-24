@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { DATACENTERS } from "../data/datacenters";
 import type { DataCenter, DCStatus, FacilityType } from "../types";
 import { DC_STATUS, DC_STATUS_ORDER, FACILITY_TYPE, FACILITY_TYPE_ORDER } from "../lib/theme";
-import { formatGW, formatCapacity } from "../lib/format";
+import { formatPower } from "../lib/format";
 import ScatterMap, { type ScatterPoint, type ScatterView } from "./ScatterMap";
 
 type SortKey = "facility" | "location" | "type" | "status" | "mw";
@@ -12,7 +12,7 @@ const COLUMNS: { key: SortKey; label: string; num?: boolean }[] = [
   { key: "location", label: "Location" },
   { key: "type", label: "Type" },
   { key: "status", label: "Status" },
-  { key: "mw", label: "MW", num: true },
+  { key: "mw", label: "Power", num: true },
 ];
 
 function toggle<T>(s: Set<T>, v: T): Set<T> {
@@ -100,7 +100,7 @@ export default function DataCentersView() {
         color: DC_STATUS[d.status].color,
         r: d.capacityMW ? Math.max(3.5, Math.min(10, 3 + Math.sqrt(d.capacityMW) / 9)) : 3.5,
         label: d.facility,
-        sublabel: `${d.operator} · ${d.city}, ${d.country} · ${formatCapacity(d.capacityMW)}`,
+        sublabel: `${d.operator} · ${d.city}, ${d.country} · ${formatPower(d.capacityMW)}`,
       })),
     [filtered]
   );
@@ -140,7 +140,7 @@ export default function DataCentersView() {
 
       <div className="dc-stats">
         <Stat v={String(stats.facilities)} l="Facilities" />
-        <Stat v={`${formatGW(stats.mw)}`} u="GW" l="Mapped capacity" />
+        <Stat v={formatPower(stats.mw)} l="Mapped capacity" />
         <Stat v={String(stats.countries)} l="Countries" />
         <Stat v={String(stats.operators)} l="Operators" />
         <Stat v={String(stats.hyperscale)} l="Hyperscale" />
@@ -269,7 +269,7 @@ function FacilityCard({ d, onClose }: { d: DataCenter; onClose: () => void }) {
         <span>{[d.city, d.region, d.country].filter(Boolean).join(", ")}</span>
         <span>{FACILITY_TYPE[d.facilityType]}</span>
         <span>{DC_STATUS[d.status].label}</span>
-        {d.capacityMW != null && <span>{formatCapacity(d.capacityMW)}</span>}
+        {d.capacityMW != null && <span>{formatPower(d.capacityMW)}</span>}
         {d.yearOperational && <span>Online {d.yearOperational}</span>}
         {d.powerSource && <span>Power: {d.powerSource}</span>}
         <a href={d.sourceUrl} target="_blank" rel="noopener noreferrer">Source: {d.sourceName} ↗</a>
@@ -301,7 +301,7 @@ function Row({ d, open, onToggle }: { d: DataCenter; open: boolean; onToggle: ()
           <span className="dc-status__dot" style={{ background: DC_STATUS[d.status].color }} />
           {DC_STATUS[d.status].label}
         </span>
-        <span className="dc-num dc-mw">{d.capacityMW ? formatCapacity(d.capacityMW) : "n/a"}</span>
+        <span className="dc-num dc-mw">{d.capacityMW ? formatPower(d.capacityMW) : "n/a"}</span>
       </button>
       {open && (
         <div className="dc-detail">

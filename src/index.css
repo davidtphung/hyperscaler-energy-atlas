@@ -548,6 +548,13 @@ a { color: inherit; }
 }
 .overview__lead em { font-style: normal; color: var(--signal); }
 
+.kind-totals { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.kind-total { border: 1px solid var(--line); border-radius: var(--r-md); padding: 10px 12px; }
+.kind-total__val { font-family: var(--font-mono); font-size: 18px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+.kind-total__mw { font-size: 12px; font-weight: 400; color: var(--text-3); margin-left: 8px; }
+.kind-total__label { font-size: 12px; color: var(--text-2); margin-top: 3px; }
+.kind-total__meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.kind-note { font-size: 12px; color: var(--text-3); margin: 0 0 8px; }
 .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; margin-bottom: 20px; }
 .stat {
   background: var(--ink-800);
@@ -602,6 +609,7 @@ a { color: inherit; }
   padding-right: 24px;
 }
 .detail__loc { font-size: 13px; color: var(--text-3); }
+.detail__loc-note { display: block; margin-top: 4px; color: var(--text-2); }
 
 .detail__capten {
   display: flex; align-items: baseline; gap: 8px;
@@ -1213,6 +1221,7 @@ a { color: inherit; }
 .about-credit a:hover { color: var(--signal); border-color: var(--signal-line); }
 
 /* Donate (crypto wallets + Venmo, copy-to-clipboard) */
+.donate-section { margin-top: 48px; padding-top: 8px; border-top: 1px solid var(--line); scroll-margin-top: 16px; outline: none; }
 .donate2 { max-width: 600px; margin: 0 auto; }
 .donate2__head { margin-bottom: 30px; }
 .donate2__title { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 4vw, 34px); letter-spacing: -0.03em; line-height: 1.1; margin: 6px 0 14px; }

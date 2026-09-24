@@ -1,12 +1,9 @@
 import type { Commitment } from "../types";
 
 // HYPERGRID dataset: publicly announced energy and datacenter commitments tied
-// to the hyperscalers and frontier AI compute buyers. Figures are electrical
-// megawatts. Each row carries a primary source.
-//
-// Compiled and cross-checked across company press releases, Reuters, AP, CNBC,
-// World Nuclear News, DOE, and utility investor-relations pages through a
-// multi-agent verification pass. 135 commitments, 2021-05 to 2026-09.
+// to hyperscalers, labs, neoclouds, and other actors. Figures are electrical
+// megawatts. Each row carries a primary source and a number kind.
+// Kinds are not added together. Firm totals count only rows with counts "yes".
 
 export const COMMITMENTS: Commitment[] = [
   {
@@ -28,7 +25,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Alibaba Cloud's Zhangbei data center cluster in Hebei is sited in a wind and solar resource zone and uses natural free-cooling plus local renewables, an early model for green hyperscale compute in China.",
     "sourceName": "Alibaba Cloud",
     "sourceUrl": "https://www.alibabacloud.com/blog/alibaba-cloud-zhangbei-data-center_594299",
-    "confidence": "low"
+    "confidence": "low",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "remove_candidate"
   },
   {
     "id": "chindata-100-renewable-2030",
@@ -47,9 +48,12 @@ export const COMMITMENTS: Commitment[] = [
     "status": "announced",
     "headline": "Chindata commits to 100 percent renewable energy",
     "summary": "Chindata Group pledged to power its hyperscale campuses with 100 percent renewable energy and reach carbon neutrality by 2030, among the first net-zero commitments from a Chinese data center operator.",
-    "sourceName": "Chindata Group",
-    "sourceUrl": "https://www.chindatagroup.com/en/esg",
-    "confidence": "medium"
+    "sourceName": "PR Newswire (Chindata)",
+    "sourceUrl": "https://www.prnewswire.com/news-releases/chindata-group-releases-2030-carbon-neutral-roadmap-301208160.html",
+    "confidence": "high",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-fervo-project-red-nevada",
@@ -70,7 +74,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google partnered with Fervo Energy on Project Red, the first corporate agreement to develop an enhanced geothermal system. The 3.5 MW pilot in northern Nevada's Blue Mountain field began delivering carbon-free power to the local grid serving Google's Nevada data centers in 2023, becoming the longest-running enhanced geothermal system at the time.",
     "sourceName": "Google Blog",
     "sourceUrl": "https://blog.google/outreach-initiatives/sustainability/google-fervo-geothermal-energy-partnership/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified"
   },
   {
     "id": "baidu-carbon-neutral-2030",
@@ -91,7 +99,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Baidu committed to achieving carbon neutrality across its operations, including its AI Cloud data centers, by 2030, paired with green power procurement and efficiency measures.",
     "sourceName": "Baidu",
     "sourceUrl": "https://www.baidu.com/",
-    "confidence": "low"
+    "confidence": "low",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "gds-100-renewable-2030",
@@ -112,7 +123,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "GDS Holdings, China's largest carrier-neutral data center operator, committed to use 100 percent renewable energy and reach carbon neutrality by 2030, signing renewable PPAs and building solar at its campuses.",
     "sourceName": "GDS Holdings",
     "sourceUrl": "https://www.gds-services.com/en/about-esg/",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-germany-engie-cfe-hanau",
@@ -128,12 +142,16 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 50.1328,
     "lng": 8.9165,
     "date": "2021-08-31",
-    "status": "operational",
+    "status": "announced",
     "headline": "Google taps ENGIE for 140 MW German carbon-free portfolio",
-    "summary": "Google partnered with ENGIE to assemble a 140 MW carbon-free energy portfolio of solar and life-extended wind parks to power its German operations, including the Hanau data center, on a 24/7 basis. The deal targeted nearly 80 percent carbon-free energy on an hourly basis by 2022 and was later extended.",
+    "summary": "140 MW is a Germany-wide ENGIE portfolio under a three-year deal from 2022, not a Hanau site figure.",
     "sourceName": "Google Cloud Blog",
     "sourceUrl": "https://cloud.google.com/blog/products/infrastructure/google-invests-1-billion-euros-in-germanys-digital-future",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified_construction",
   },
   {
     "id": "microsoft-aes-576mw-pjm",
@@ -154,7 +172,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft signed a long term agreement with AES to source from a 576 MW portfolio of wind, solar and battery storage assets in the PJM market to deliver around the clock renewable energy to its Virginia data centers, supporting its 100/100/0 by 2030 goal.",
     "sourceName": "PR Newswire (Microsoft and AES)",
     "sourceUrl": "https://www.prnewswire.com/news-releases/microsoft-and-aes-partner-to-bring-around-the-clock-renewable-energy-to-data-centers-301414877.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-vattenfall-sweden-247-renewable",
@@ -175,7 +196,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft opened its Swedish datacenter region across Gavle, Sandviken and Staffanstorp, using Vattenfall's commercial 24/7 hourly renewable matching from wind and hydro for 100 percent renewable energy. Backup generators run on Nordic eco-labeled renewable diesel.",
     "sourceName": "Microsoft News Centre Europe",
     "sourceUrl": "https://news.microsoft.com/europe/2021/11/16/microsoft-opens-its-sustainable-datacenter-region-in-sweden-creating-new-opportunities-for-a-cloud-first-sweden/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "mw_null"
   },
   {
     "id": "alibaba-clean-energy-2030",
@@ -196,7 +221,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "In its first carbon neutrality report, Alibaba pledged to reach carbon neutrality in its own operations by 2030 and to scale clean energy across Alibaba Cloud data centers, including direct renewable procurement.",
     "sourceName": "Alibaba Group",
     "sourceUrl": "https://www.alibabagroup.com/en-US/document-1609540210226999296",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "tencent-carbon-neutral-2030",
@@ -217,7 +245,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Tencent committed to carbon neutrality across its operations and supply chain by 2030 and to source renewable electricity for its data centers, one of the earliest such pledges by a Chinese hyperscaler.",
     "sourceName": "Tencent",
     "sourceUrl": "https://www.tencent.com/en-us/articles/2201441.html",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-fortum-finland-heat-reuse",
@@ -238,7 +269,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft announced a Southern Finland datacenter region in Espoo and Kirkkonummi where waste heat is recycled into Fortum's district heating, described as the world's largest such scheme. It will provide about 40 percent of area district heat and cut up to 400,000 tonnes of CO2 annually. Fortum's heat pump plants have since begun operations.",
     "sourceName": "Microsoft News Centre Europe",
     "sourceUrl": "https://news.microsoft.com/europe/2022/03/17/microsoft-announces-intent-to-build-a-new-datacenter-region-in-finland-accelerating-sustainable-digital-transformation-and-enabling-large-scale-carbon-free-district-heating/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "mw_null"
   },
   {
     "id": "microsoft-qcells-2500mw-solar",
@@ -259,7 +294,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft contracted more than 2,500 MW (2.5 GW) of solar modules plus engineering, procurement and construction services from Qcells, a partnership later expanded to 12 GW in January 2024. The deal anchored US made solar supply from Qcells' Georgia operations.",
     "sourceName": "pv magazine",
     "sourceUrl": "https://pv-magazine-usa.com/2023/01/25/microsoft-to-purchase-2-5-gw-of-qcells-solar/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "equipment_supply",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "microsoft-qcells-12gw-solar"
   },
   {
     "id": "microsoft-helion-fusion-ppa",
@@ -275,12 +314,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 47.3179,
     "lng": -120.1717,
     "date": "2023-05-10",
-    "status": "construction",
+    "status": "announced",
     "headline": "Microsoft signs world's first fusion power purchase agreement",
-    "summary": "Microsoft agreed to buy electricity from Helion Energy's first commercial fusion power plant, targeting at least 50 MW after a one year ramp up, in what both companies call the world's first fusion PPA. Helion began site work on the Orion plant near Malaga in Chelan County, Washington in 2025 with a 2028 online target.",
+    "summary": "On 10 May 2023 Helion announced an agreement to provide Microsoft electricity from its first fusion power plant. Constellation will serve as the power marketer. The plant is expected to be online by 2028 and will target power generation of 50 MW or greater after a 1-year ramp up. The linked page does not say site work has started.",
     "sourceName": "Helion Energy",
     "sourceUrl": "https://www.helionenergy.com/newsroom/helion-announces-worlds-first-fusion-ppa-with-microsoft",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "at_least"
   },
   {
     "id": "aws-india-12-7bn-cloud",
@@ -296,12 +338,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 19.076,
     "lng": 72.8777,
     "date": "2023-05-17",
-    "status": "construction",
+    "status": "announced",
     "headline": "AWS commits 12.7 billion dollars to India cloud by 2030",
     "summary": "AWS announced a 12.7 billion dollar investment in Indian cloud infrastructure by 2030, building on its Mumbai and Hyderabad regions. Subsequent allocations include 8.3 billion dollars in Maharashtra and 6.95 billion dollars in Telangana, supporting large-scale datacenter buildout.",
     "sourceName": "About Amazon (Press Release)",
     "sourceUrl": "https://press.aboutamazon.com/in/news-releases/news-release-details/aws-invest-inr-105600-crores-us-127-billion-cloud-infrastructure",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-constellation-boydton-cfe",
@@ -322,7 +367,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Constellation and Microsoft agreed to provide hourly carbon free energy matching for Microsoft's Boydton, Virginia data center, with the facility receiving up to 35 percent of its environmental attributes from nuclear power via Constellation's hourly matching platform. An early demonstration of 24/7 carbon free matching for data centers.",
     "sourceName": "Constellation Energy",
     "sourceUrl": "https://www.constellationenergy.com/newsroom/2023/Constellation-signs-hourly-carbon-free-energy-matching-agreement-with-Microsoft-to-support-a-clean-powered-data-center.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-nuclear-smr-hiring",
@@ -343,7 +391,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft began hiring nuclear leadership, including a principal program manager for nuclear technology, to mature and implement a global small modular reactor and microreactor strategy to power its data centers. The roles signal Microsoft's intent to pursue advanced nuclear for AI compute.",
     "sourceName": "CNBC",
     "sourceUrl": "https://www.cnbc.com/2023/09/25/microsoft-is-hiring-a-nuclear-energy-expert-to-help-power-data-centers.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-uk-25bn-ai-datacenters",
@@ -359,12 +410,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 51.5074,
     "lng": -0.1278,
     "date": "2023-11-30",
-    "status": "construction",
+    "status": "announced",
     "headline": "Microsoft to invest 2.5 billion pounds in UK AI datacenters",
     "summary": "Microsoft committed 2.5 billion pounds over three years to expand UK AI datacenter infrastructure in London and Cardiff, bringing more than 20,000 advanced GPUs to the UK by 2026 and more than doubling its UK datacenter footprint. It was Microsoft's largest UK investment in 40 years.",
     "sourceName": "GOV.UK",
     "sourceUrl": "https://www.gov.uk/government/news/boost-for-uk-ai-as-microsoft-unveils-25-billion-investment",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-qcells-12gw-solar",
@@ -385,7 +439,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft expanded its strategic alliance with Qcells to procure 12,000 MW (12 GW) of US made solar modules plus engineering, procurement and construction services over eight years through 2032, building on an earlier 2.5 GW agreement. Modules are supplied from Qcells' Cartersville, Georgia factory.",
     "sourceName": "Utility Dive",
     "sourceUrl": "https://www.utilitydive.com/news/hanwha-qcells-microsoft-expand-solar-panel-supply-partnership-cartersville-georgia/703949/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "equipment_supply",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "aws-mississippi-10b-madison",
@@ -401,12 +458,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 32.6126,
     "lng": -90.0353,
     "date": "2024-01-25",
-    "status": "construction",
+    "status": "announced",
     "headline": "AWS to invest 10 billion dollars in Mississippi data centers",
     "summary": "AWS announced a 10 billion dollar investment in two hyperscale data center complexes in Madison County, Mississippi, the largest capital investment in state history, creating at least 1,000 jobs. Amazon later expanded its total Mississippi commitment to about 25 billion dollars.",
     "sourceName": "About Amazon",
     "sourceUrl": "https://www.aboutamazon.com/news/aws/aws-10-billion-investment-mississippi",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "amazon-engie-moray-west-offshore-wind",
@@ -427,7 +487,12 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Amazon signed a corporate PPA with ENGIE for 473 MW of output from Ocean Winds' 882 MW Moray West offshore wind farm in Scotland, more than half the project's capacity and one of its largest single offshore wind offtakes in Europe. The wind farm reached operations in 2024 and supports Amazon's renewable energy goal.",
     "sourceName": "Ocean Winds",
     "sourceUrl": "https://www.oceanwinds.com/news/uncategorized/amazon-signs-agreement-with-engie-to-procure-473mw-of-renewable-energy-from-the-moray-west-offshore-wind-farm-in-scotland/",
-    "confidence": "high"
+    "sourceName2": "UK Government",
+    "sourceUrl2": "https://www.gov.uk/government/news/windfarm-capable-of-powering-half-of-scotlands-homes",
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "amazon-talen-cumulus-acquisition",
@@ -443,12 +508,16 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 41.0894,
     "lng": -76.1483,
     "date": "2024-03-04",
-    "status": "construction",
+    "status": "announced",
     "headline": "AWS buys Talen nuclear-powered data center campus",
-    "summary": "AWS acquired Talen Energy's 960 MW Cumulus data center campus adjacent to the 2.5 GW Susquehanna nuclear plant for about 650 million dollars, with power commitments ramping in 120 MW increments starting 2025. Talen received 350 million dollars at close with 300 million dollars in escrow tied to development milestones.",
-    "sourceName": "World Nuclear News",
-    "sourceUrl": "https://www.world-nuclear-news.org/Articles/Talen-sells-carbon-free-data-centre-to-Amazon-clou",
-    "confidence": "high"
+    "summary": "960 MW is power consumption and a development right, not IT under construction. AWS has a reported 480 MW cap option.",
+    "sourceName": "Talen Energy press release (SEC)",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1622536/000162828024038388/a20240826pressreleasecumul.htm",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified"
   },
   {
     "id": "amazon-iberdrola-east-anglia-three",
@@ -469,7 +538,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Amazon signed a power purchase agreement for 159 MW from Iberdrola's 1.4 GW East Anglia THREE offshore wind farm off the coast of Suffolk, equivalent to about 700 GWh per year. Over the life of their PPAs Amazon has contracted about 54,000 GWh of renewable energy from Iberdrola.",
     "sourceName": "Iberdrola",
     "sourceUrl": "https://www.iberdrola.com/press-room/news/detail/iberdrola-confirms-new-agreement-with-amazon-to-procure-159-mw-of-renewable-energy-from-east-anglia-three-worlds-second-largest-offshore-wind-farm",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-japan-2-9bn-ai-cloud",
@@ -485,12 +557,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 35.6762,
     "lng": 139.6503,
     "date": "2024-04-10",
-    "status": "construction",
+    "status": "announced",
     "headline": "Microsoft to invest 2.9 billion dollars in Japan AI infrastructure",
     "summary": "Microsoft announced a 2.9 billion dollar investment over two years to expand hyperscale cloud and AI infrastructure in Japan, its largest investment in 46 years in the country. The plan also funds AI skilling, a Microsoft Research Asia lab, and cybersecurity work with the Japanese government.",
     "sourceName": "Microsoft Stories Asia",
     "sourceUrl": "https://news.microsoft.com/apac/2024/04/10/microsoft-to-invest-us2-9-billion-in-ai-and-cloud-infrastructure-in-japan-while-boosting-the-nations-skills-research-and-cybersecurity/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-union-city-atlanta-datacenter",
@@ -499,19 +574,23 @@ export const COMMITMENTS: Commitment[] = [
     "project": "Union City data center campus",
     "techType": "datacenter",
     "category": "datacenter",
-    "capacityMW": 324,
+    "capacityMW": 202,
     "city": "Union City",
     "state": "Georgia",
     "country": "United States",
     "lat": 33.5871,
     "lng": -84.5424,
     "date": "2024-04-15",
-    "status": "construction",
-    "headline": "Microsoft invests 1.8 billion dollars in Atlanta data centers",
-    "summary": "Microsoft is investing about 1.8 billion dollars to build a three building data center campus in Union City, southwest of Atlanta, with a total power capacity of 324 MW. Phase 1 was targeted to come online by 2026 with all phases completed by 2032.",
-    "sourceName": "Data Center Frontier",
-    "sourceUrl": "https://www.datacenterfrontier.com/hyperscale/article/55126626/details-emerge-on-microsofts-18-billion-investment-in-atlanta-data-centers-amid-tax-development-wrangles",
-    "confidence": "medium"
+    "status": "announced",
+    "headline": "Union City data center data sheet lists 202 MW",
+    "summary": "The EdgeConneX Atlanta data sheet lists 202 MW. There is no construction evidence, and the data sheet does not name Microsoft as tenant (tenant unverified). This row does not count.",
+    "sourceName": "EdgeConneX Atlanta data sheet",
+    "sourceUrl": "https://www.edgeconnex.com/wp-content/uploads/2024/09/Atlanta-Data-Sheet.pdf",
+    "confidence": "medium",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified"
   },
   {
     "id": "aws-indiana-11b-newcarlisle",
@@ -527,12 +606,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 41.7017,
     "lng": -86.5089,
     "date": "2024-04-25",
-    "status": "construction",
+    "status": "announced",
     "headline": "AWS commits 11 billion dollars to Indiana data center campus",
     "summary": "AWS announced an 11 billion dollar data center campus near New Carlisle in St. Joseph County, the largest capital investment in Indiana history. A later 15 billion dollar expansion in northern Indiana lifted Amazon's total state commitment to roughly 26 billion dollars; the campus trains AI models for Anthropic.",
     "sourceName": "About Amazon",
     "sourceUrl": "https://www.aboutamazon.com/news/aws/aws-indiana-investment-11-billion",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-brookfield-10500mw-framework",
@@ -553,7 +635,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft and Brookfield Renewable signed a five year framework agreement to develop more than 10,500 MW (10.5 GW) of new renewable energy capacity between 2026 and 2030, initially across the US and Europe, described as nearly eight times larger than the previous largest single corporate PPA. The deal supports Microsoft's 100 percent carbon free matching goal by 2030.",
     "sourceName": "GlobeNewswire (Brookfield)",
     "sourceUrl": "https://www.globenewswire.com/news-release/2024/05/01/2873042/0/en/Brookfield-and-Microsoft-Collaborating-to-Deliver-Over-10-5-GW-of-New-Renewable-Power-Capacity-Globally.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-nv-energy-clean-transition-tariff-corsac",
@@ -569,12 +654,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 40.9712,
     "lng": -117.7357,
     "date": "2024-06-12",
-    "status": "construction",
+    "status": "contracted",
     "headline": "Nevada approves clean transition tariff for Google geothermal",
     "summary": "Google, NV Energy, and Fervo Energy agreed on a first-of-its-kind Clean Transition Tariff under which NV Energy buys 115 MW of 24/7 enhanced geothermal power from Fervo's Corsac Station project and sells it to Google's Nevada data centers. The Public Utilities Commission of Nevada approved the tariff in May 2025, scaling Google's geothermal capacity roughly 30 times beyond the Project Red pilot.",
     "sourceName": "Google Blog",
     "sourceUrl": "https://blog.google/feed/nevada-clean-energy/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "google-storey-county-nevada-datacenter",
@@ -595,7 +683,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google operates and continues to expand data centers at the Tahoe Reno Industrial Center in Storey County, Nevada, the anchor load behind its Fervo geothermal and NV Energy Clean Transition Tariff deals. Google has invested hundreds of millions of dollars in the Nevada campus, matched with new carbon-free geothermal supply.",
     "sourceName": "Google Data Centers",
     "sourceUrl": "https://datacenters.google/locations/storey-county-nevada/",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "mw_null"
   },
   {
     "id": "microsoft-aragon-spain-datacenter",
@@ -611,12 +703,16 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 41.6488,
     "lng": -0.8891,
     "date": "2024-06-25",
-    "status": "construction",
+    "status": "announced",
     "headline": "Microsoft to invest 7.16 billion dollars in Aragon datacenters",
     "summary": "Microsoft is investing about 6.69 billion euros (roughly 7.16 billion dollars) over ten years to build a data center cluster near Zaragoza in Aragon, northeastern Spain, building on a separate 2.1 billion dollar 2024 to 2025 AI and cloud commitment tied to its Spain Central region.",
     "sourceName": "Data Center Dynamics",
     "sourceUrl": "https://www.datacenterdynamics.com/en/news/microsoft-to-invest-716bn-in-new-data-centers-in-aragon-spain/",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "mw_null"
   },
   {
     "id": "xai-colossus-1",
@@ -625,7 +721,7 @@ export const COMMITMENTS: Commitment[] = [
     "project": "Colossus 1 (Memphis Supercluster)",
     "techType": "datacenter",
     "category": "datacenter",
-    "capacityMW": 250,
+    "capacityMW": 130,
     "city": "Memphis",
     "state": "TN",
     "country": "United States",
@@ -633,11 +729,14 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -90.1335,
     "date": "2024-07-01",
     "status": "operational",
-    "headline": "xAI Colossus 1: 200,000+ GPU Memphis supercomputer built in 122 days",
-    "summary": "xAI converted the former Electrolux factory at 3231 Riverport Rd in South Memphis into Colossus, its first AI training supercomputer for Grok. Operational in July 2024 after a 122 day buildout, it grew from 100,000 to 200,000 GPUs (roughly 150,000 H100, 50,000 H200 and 30,000 GB200 as of 2025). It draws about 250 MW today, up from an initial 150 MW utility connection.",
-    "sourceName": "Wikipedia (Colossus data center)",
-    "sourceUrl": "https://en.wikipedia.org/wiki/Colossus_(data_center)",
-    "confidence": "high"
+    "headline": "Colossus 1: approximately 130 megawatts of compute power, brought online in 122 days",
+    "summary": "SpaceX's 12 June 2026 Form 424B4 says: At COLOSSUS, we brought online the first cluster of approximately 100,000 H100 processors, approximately 130 megawatts of compute power, in just 122 days. This is the only filing-backed figure for Colossus 1, and it is a floor. Energized MW is empty. The duplicate Memphis row does not count.",
+    "sourceName": "SpaceX Form 424B4 (SEC)",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026042639/spaceexplorationtechnologi.htm",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "approx_filing"
   },
   {
     "id": "meta-sage-geosystems-geothermal",
@@ -658,7 +757,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta agreed to buy up to 150 MW of next generation geothermal power from Sage Geosystems using its Geopressured Geothermal Systems. Phase one is targeted to be operational by 2027 at an undisclosed site east of the Rocky Mountains. Houston reflects the Sage Geosystems headquarters, not a confirmed plant location.",
     "sourceName": "Business Wire",
     "sourceUrl": "https://www.businesswire.com/news/home/20240826755596/en/Sage-Geosystems-and-Meta-Announce-Agreement-for-Next-Generation-Geothermal-Power-Generation",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "aws-uk-8bn-datacenters",
@@ -674,12 +776,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 51.5074,
     "lng": -0.1278,
     "date": "2024-09",
-    "status": "construction",
+    "status": "announced",
     "headline": "AWS plans 8 billion pounds for UK datacenters",
     "summary": "AWS announced plans to invest 8 billion pounds over five years (2024 to 2028) to build and operate UK data centers, estimated to add 14 billion pounds to UK GDP and support more than 14,000 jobs annually.",
     "sourceName": "About Amazon UK",
     "sourceUrl": "https://www.aboutamazon.co.uk/news/job-creation-and-investment/aws-plans-to-invest-8-billion-in-the-uk",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-constellation-crane-tmi",
@@ -695,12 +800,16 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 40.1531,
     "lng": -76.7247,
     "date": "2024-09-20",
-    "status": "construction",
+    "status": "announced",
     "headline": "Microsoft revives Three Mile Island with 20 year nuclear PPA",
-    "summary": "Microsoft signed a 20 year power purchase agreement with Constellation Energy to restart Three Mile Island Unit 1, renamed the Crane Clean Energy Center, a retired 835 MW reactor. Constellation has since accelerated the targeted restart to 2027 and secured a $1 billion DOE loan to support the project.",
+    "summary": "Microsoft signed a 20 year power purchase agreement with Constellation Energy to restart Three Mile Island Unit 1, renamed the Crane Clean Energy Center, a retired 835 MW reactor. Constellation has since accelerated the targeted restart to 2027 and secured a $1 billion DOE loan to support the project. Primary source announces the restart; no primary evidence of site work yet.",
     "sourceName": "Constellation Energy",
     "sourceUrl": "https://www.constellationenergy.com/news/2024/Constellation-to-Launch-Crane-Clean-Energy-Center-Restoring-Jobs-and-Carbon-Free-Power-to-The-Grid.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "restart"
   },
   {
     "id": "google-kairos-power-500mw-fleet",
@@ -721,7 +830,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google and Kairos Power signed a Master Plant Development Agreement to deploy a fleet of advanced fluoride-salt-cooled reactors totaling 500 MW by 2035, with the first plant targeted online by 2030. It is the first corporate agreement for multiple deployments of a single advanced reactor design in the US, with energy sold to Google under long-term PPAs.",
     "sourceName": "Kairos Power",
     "sourceUrl": "https://kairospower.com/external_updates/google-and-kairos-power-partner-to-deploy-500-mw-of-clean-electricity-generation/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "amazon-xenergy-500m-investment",
@@ -742,7 +854,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Amazon's Climate Pledge Fund anchored an approximately 500 million dollar Series C-1 financing round for SMR developer X-energy, alongside Citadel's Ken Griffin, Ares Management affiliates, NGP and the University of Michigan. The investment supports development of X-energy's Xe-100 high-temperature gas reactor toward a goal of 5 GW online by 2039.",
     "sourceName": "X-energy",
     "sourceUrl": "https://x-energy.com/media/news-releases/amazon-invests-in-x-energy-to-support-advanced-small-modular-nuclear-reactors-and-expand-carbon-free-power",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "amazon-energy-northwest-cascade-smr",
@@ -763,7 +878,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Amazon agreed to support an initial four-unit, 320 MW X-energy Xe-100 SMR project with Energy Northwest near the Columbia Generating Station, with an option to expand to 12 units (about 960 MW). Now named the Cascade Advanced Energy Facility, first power is targeted for the early 2030s.",
     "sourceName": "Utility Dive",
     "sourceUrl": "https://www.utilitydive.com/news/amazon-small-modular-reactor-deals-nuclear-dominion-x-energy-energy-northwest/730022/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "amazon-cascade-12-units-2025"
   },
   {
     "id": "amazon-dominion-north-anna-smr",
@@ -784,7 +903,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Amazon and Dominion Energy Virginia signed a memorandum of understanding to explore deploying a small modular reactor near the North Anna nuclear station, aiming to add at least 300 MW of new capacity to the Virginia grid. The MOU does not commit to a specific reactor design or guarantee construction.",
     "sourceName": "Dominion Energy",
     "sourceUrl": "https://news.dominionenergy.com/press-releases/press-releases/2024/Dominion-Energy-and-Amazon-to-explore-advancement-of-Small-Modular-Reactor-SMR-nuclear-development-in-Virginia-10-16-2024/default.aspx",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "at_least"
   },
   {
     "id": "amazon-largest-renewable-buyer-portfolio",
@@ -805,7 +927,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Amazon was named the world's largest corporate buyer of renewable energy for a fifth consecutive year based on BloombergNEF data, backing more than 600 wind and solar projects globally. The company reports the portfolio can generate energy equivalent to powering millions of US homes when fully operational.",
     "sourceName": "About Amazon",
     "sourceUrl": "https://www.aboutamazon.com/news/sustainability/amazon-renewable-energy-solar-wind-nuclear-climate-change",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "meta-nuclear-rfp-2024",
@@ -826,7 +951,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta issued a request for proposals seeking 1 to 4 GW of new nuclear generation, open to both large reactors and SMRs, with delivery targeted for the early 2030s. The RFP drew more than 50 qualified submissions across 20 states, with initial proposals due February 2025. The 4 GW figure is the top of the range, not a firm contracted amount.",
     "sourceName": "Meta Sustainability",
     "sourceUrl": "https://sustainability.atmeta.com/blog/2024/12/03/accelerating-the-next-wave-of-nuclear-to-power-ai-innovation/",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "meta-hyperion-richland-parish",
@@ -842,15 +970,18 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 32.4188,
     "lng": -91.7637,
     "date": "2024-12-04",
-    "status": "construction",
+    "status": "announced",
     "headline": "Meta expands Hyperion to a 5 GW compute target",
     "summary": "Meta expanded its Richland Parish Hyperion campus to a 5,000 MW compute target. The figure is a compute target, not generation and not COD. Entergy gas and related generation packages are tracked on separate rows and are not added here. Energized MW and days to COD are empty.",
     "sourceName": "Meta Newsroom",
     "sourceUrl": "https://about.fb.com/news/2026/07/teachers-local-businesses-win-as-meta-expands-louisiana-data-center/",
     "confidence": "medium",
-    "numberKind": "compute target",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "target_not_firm"
   },
   {
     "id": "google-intersect-tpg-energy-parks-20b",
@@ -871,7 +1002,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google, Intersect Power, and TPG Rise Climate announced a partnership to build industrial parks with gigawatts of data center capacity co-located with new clean power, with Intersect targeting $20 billion in renewable infrastructure investment by the end of the decade. Google acts as offtaker and anchor tenant, with the first co-located project expected operational by 2026.",
     "sourceName": "ESG Dive",
     "sourceUrl": "https://www.esgdive.com/news/google-intersect-power-co-located-energy-park-data-center-ferc/735279/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "stargate-project-500b-announcement",
@@ -892,7 +1026,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "OpenAI, SoftBank, Oracle, and MGX announced the Stargate Project at the White House on January 21, 2025, a plan to invest $500 billion over four years building AI infrastructure in the U.S., targeting 10 GW (10,000 MW) with $100 billion deployed immediately. SoftBank holds financial responsibility and OpenAI operational responsibility.",
     "sourceName": "OpenAI",
     "sourceUrl": "https://openai.com/index/announcing-the-stargate-project/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "amazon-mississippi-warren-3b",
@@ -913,7 +1050,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Amazon announced at least 3 billion dollars for a next-generation data center campus in Warren County (Vicksburg), Mississippi, the largest private investment in the county's history. It followed the earlier 10 billion dollar Madison County project and lifted Amazon's total Mississippi commitment toward 25 billion dollars.",
     "sourceName": "About Amazon",
     "sourceUrl": "https://www.aboutamazon.com/news/company-news/amazon-3-billion-mississippi-data-center-investment",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "stargate-abilene-crusoe-lancium",
@@ -934,7 +1074,12 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Crusoe Energy, on the Lancium Clean Campus near Abilene, is developing Stargate's flagship data center to 1.2 GW (1,200 MW) across eight buildings, running on Oracle Cloud Infrastructure for OpenAI. The first two buildings went live in 2025 with full buildout targeted for mid-2026. A planned 600 MW expansion beyond 1.2 GW was later scrapped.",
     "sourceName": "Crusoe",
     "sourceUrl": "https://www.crusoe.ai/resources/newsroom/crusoe-expands-ai-data-center-campus-in-abilene-to-1-2-gigawatts",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "stargate-project-500b-announcement",
+    "excludeReason": "duplicate"
   },
   {
     "id": "crusoe-abilene-gas-engine-no-1",
@@ -950,12 +1095,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 32.4487,
     "lng": -99.7331,
     "date": "2025-03-04",
-    "status": "construction",
+    "status": "announced",
     "headline": "Crusoe secures 4.5 GW natural gas to power Abilene AI campus",
-    "summary": "Crusoe partnered with investment firm Engine No. 1 to secure up to 4.5 GW (4,500 MW) of behind-the-meter natural gas generation, with GE Vernova supplying aeroderivative gas turbines including a 29-unit LM2500XPRESS deal, to power the Abilene Stargate campus. Plans also reference solar, wind, and battery storage on site.",
+    "summary": "Crusoe partnered with investment firm Engine No. 1 to secure up to 4.5 GW (4,500 MW) of behind-the-meter natural gas generation, with GE Vernova supplying aeroderivative gas turbines including a 29-unit LM2500XPRESS deal, to power the Abilene Stargate campus. The 4,500 MW figure is reported by trade press. It is not the TCEQ 177263 permitted plant (360.5 MW at the Crusoe Longhorn site). The two rows are never added.",
     "sourceName": "Data Center Frontier",
     "sourceUrl": "https://www.datacenterfrontier.com/hyperscale/article/55276169/crusoe-adds-45-gw-natural-gas-to-fuel-ai-expands-abilene-data-center-to-12-gw",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "crusoe-engineno1-45gw-gas",
@@ -976,7 +1124,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Crusoe partnered with investment firm Engine No. 1 to secure about 4.5 GW of natural gas power for AI data centers using GE Vernova turbines, generating power directly for compute and bypassing traditional grids. Separately Crusoe ordered 29 GE Vernova turbines providing nearly 1 GW.",
     "sourceName": "Data Center Frontier",
     "sourceUrl": "https://www.datacenterfrontier.com/hyperscale/article/55276169/crusoe-adds-45-gw-natural-gas-to-fuel-ai-expands-abilene-data-center-to-12-gw",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "xai-colossus-1-power",
@@ -997,7 +1148,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "To power Colossus 1 ahead of full grid interconnection, xAI deployed 35 onsite natural gas turbines rated at a combined 422 MW plus 168 Tesla Megapack battery units for buffering. xAI also built a 150 MW MLGW substation in about 97 days. The gas turbines drew scrutiny and a lawsuit from environmental groups over Clean Air Act permitting.",
     "sourceName": "Tom's Hardware",
     "sourceUrl": "https://www.tomshardware.com/tech-industry/artificial-intelligence/musks-colossus-is-fully-operational-with-200-000-gpus-backed-by-tesla-batteries-phase-2-to-consume-300-mw-enough-to-power-300-000-homes",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified"
   },
   {
     "id": "google-baseload-geothermal-taiwan",
@@ -1018,7 +1173,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google signed Taiwan's first corporate geothermal power purchase agreement with Baseload Capital for 10 MW of always-on power, plus a direct equity investment, to supply its Taiwan data centers and offices. The capacity is expected online around 2029 and roughly doubles Taiwan's installed geothermal base.",
     "sourceName": "Google Blog",
     "sourceUrl": "https://blog.google/around-the-globe/google-asia/geothermal-taiwan/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "abilene-onsite-gas-turbines-permit",
@@ -1027,19 +1185,24 @@ export const COMMITMENTS: Commitment[] = [
     "project": "Abilene on-site gas turbine plant (permitted)",
     "techType": "gas",
     "category": "energy",
-    "capacityMW": 360,
+    "capacityMW": 360.5,
     "city": "Abilene",
     "state": "Texas",
     "country": "United States",
     "lat": 32.4487,
     "lng": -99.7331,
     "date": "2025-04-28",
-    "status": "construction",
-    "headline": "Permits show 360 MW gas turbines at first Stargate site",
-    "summary": "Texas air-permit filings authorized roughly 360 MW of on-site natural gas turbines at Stargate's Abilene site, across ten simple-cycle units (five Solar Turbines Titan 350 and five GE LM2500), to supplement grid power for the data center campus.",
-    "sourceName": "Data Center Dynamics",
-    "sourceUrl": "https://www.datacenterdynamics.com/en/news/natural-gas-plant-planned-for-stargate-ai-data-center-campus-report/",
-    "confidence": "medium"
+    "status": "permitted",
+    "headline": "TCEQ permit lists 360.5 MW of on-site turbines at the Crusoe Longhorn site",
+    "summary": "TCEQ Electric Generating Unit Standard Permit technical review for registration 177263 lists five 38 MW Titan 350 turbines and five 34.1 MW GE LM2500 turbines, 360.5 MW, to generate power for onsite use only at the Crusoe Longhorn Data Center. The registration was issued 22 January 2025. An issued permit is not construction evidence, so this row does not count. This 360.5 MW permit is the older Abilene on-site figure for the Crusoe Longhorn site. It is the same site as the 900 MW announced on-site row (microsoft-crusoe-abilene-2-btm-900). Those rows are never added. The 4,500 MW Abilene figure reported by trade press is not this plant. Energized MW and COD are empty.",
+    "sourceName": "TCEQ EGU standard permit technical review 177263",
+    "sourceUrl": "https://records.tceq.texas.gov/cs/idcplg?IdcService=TCEQ_EXTERNAL_SEARCH_GET_FILE&Rendition=Web&dID=8600163",
+    "confidence": "high",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified",
+    "energizedMW": null
   },
   {
     "id": "crusoe-abilene-stargate-12gw",
@@ -1060,7 +1223,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Crusoe is developing the Lancium Clean Campus in Abilene, Texas to 1.2 GW across eight buildings, the flagship site of OpenAI's Stargate. Crusoe secured 11.6 billion dollars in 2025 to expand from two to eight buildings; Oracle leases the site for OpenAI, with the first buildings live.",
     "sourceName": "Crusoe",
     "sourceUrl": "https://www.crusoe.ai/resources/newsroom/crusoe-expands-ai-data-center-campus-in-abilene-to-1-2-gigawatts",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact",
+    "parentId": "stargate-project-500b-announcement"
   },
   {
     "id": "google-elementl-power-1800mw-nuclear",
@@ -1081,7 +1248,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google signed a strategic agreement to provide early-stage development capital to Elementl Power for three advanced nuclear project sites in the US, each at least 600 MW, for a combined 1.8 GW. The technology-agnostic, site-first approach positions the projects for future reactor selection, with Google holding an option to buy the power once operational. Site locations were not disclosed.",
     "sourceName": "PR Newswire (Elementl Power)",
     "sourceUrl": "https://www.prnewswire.com/news-releases/elementl-power-and-google-sign-strategic-agreement-to-develop-locations-for-advanced-nuclear-projects-302447957.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "at_least"
   },
   {
     "id": "aws-humain-ai-zone-saudi-arabia",
@@ -1102,7 +1272,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "AWS and Saudi PIF backed HUMAIN announced a more than 5 billion dollar partnership to build a dedicated AI Zone in Saudi Arabia for training and deploying AI, including Arabic large language models. A November 2025 expansion added plans to deploy up to 150,000 AI accelerators using NVIDIA GB300 and AWS Trainium chips.",
     "sourceName": "About Amazon",
     "sourceUrl": "https://www.aboutamazon.com/news/company-news/amazon-aws-humain-ai-investment-in-saudi-arabia",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "stargate-uae-abu-dhabi-g42",
@@ -1118,12 +1291,42 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 24.4539,
     "lng": 54.3773,
     "date": "2025-05-22",
-    "status": "construction",
+    "status": "announced",
     "headline": "OpenAI and G42 launch 1 GW Stargate UAE cluster",
-    "summary": "Stargate UAE is a 1 GW (1,000 MW) AI compute cluster in Abu Dhabi, built by G42 and operated by OpenAI and Oracle, the first international Stargate site and the foundation of a planned 5 GW UAE-U.S. AI campus. The first 200 MW cluster is targeted to go live in 2026.",
+    "summary": "The 1 GW is the cluster target. The first 200 MW under construction is a separate row.",
     "sourceName": "OpenAI",
     "sourceUrl": "https://openai.com/index/introducing-stargate-uae/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "stargate-project-500b-announcement",
+    "excludeReason": "unverified_construction",
+  },
+  {
+    "id": "stargate-uae-phase1-200",
+    "parentId": "stargate-uae-abu-dhabi-g42",
+    "buyer": "OpenAI",
+    "counterparty": "G42, Oracle, NVIDIA, SoftBank, Cisco",
+    "project": "Stargate UAE phase 1",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 200,
+    "city": "Abu Dhabi",
+    "state": "",
+    "country": "United Arab Emirates",
+    "lat": 24.4539,
+    "lng": 54.3773,
+    "date": "2025-10-16",
+    "status": "construction",
+    "headline": "G42 is building the first 200 MW of the Stargate UAE cluster",
+    "summary": "G42's 16 October 2025 release says it is building the first 200MW of the 1GW Stargate UAE cluster. This row is that 200 MW. The 1 GW stays on the parent as the cluster target.",
+    "sourceName": "G42",
+    "sourceUrl": "https://www.prnewswire.com/news-releases/g42-provides-update-on-construction-of-stargate-uae-ai-infrastructure-cluster-302586430.html",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "google-tae-technologies-fusion-investment",
@@ -1144,7 +1347,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google participated in TAE Technologies' funding round of more than $150 million alongside Chevron and NEA, building on its investment in the California fusion company since 2015. Google has collaborated with TAE on machine learning for fusion since 2015, supporting TAE's roadmap toward its first prototype power plant, Da Vinci, in the early 2030s.",
     "sourceName": "TAE Technologies",
     "sourceUrl": "https://tae.com/tae-technologies-raises-150-million-in-latest-funding-round/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "meta-constellation-clinton-nuclear",
@@ -1165,7 +1371,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta signed a 20-year PPA for 1,121 MW from Constellation's Clinton Clean Energy Center in Illinois, beginning June 2027. The deal supports relicensing of the plant and adds 30 MW via uprates after the state ZEC program expires in mid-2027.",
     "sourceName": "Constellation Energy",
     "sourceUrl": "https://www.constellationenergy.com/news/2025/constellation-meta-sign-20-year-deal-for-clean-reliable-nuclear-energy-in-illinois.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "amazon-pennsylvania-20b-datacenters",
@@ -1181,12 +1390,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 41.1037,
     "lng": -76.1494,
     "date": "2025-06-09",
-    "status": "construction",
+    "status": "announced",
     "headline": "Amazon to invest 20 billion dollars in Pennsylvania data centers",
     "summary": "Amazon announced at least 20 billion dollars in Pennsylvania data center investment, the largest capital investment in state history, with initial campuses in Falls Township (Bucks County) and Salem Township (Luzerne County). The Salem Township site sits adjacent to the Susquehanna nuclear plant and the project is expected to create at least 1,250 permanent jobs.",
     "sourceName": "About Amazon",
     "sourceUrl": "https://www.aboutamazon.com/news/aws/amazon-pennsylvania-investment-cloud-infrastructure-ai-innovation",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "amazon-talen-1920mw-ppa-2025",
@@ -1207,7 +1419,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Talen Energy and Amazon signed a 17-year, roughly 18 billion dollar power purchase agreement to supply up to 1,920 MW of carbon-free nuclear power from the Susquehanna plant, ramping to 840 to 1,200 MW by 2029 and 1,680 to 1,920 MW by 2032. The grid-connected structure replaced an earlier 300 MW co-location arrangement, and the parties agreed to explore SMRs and uprates.",
     "sourceName": "Talen Energy Investor Relations",
     "sourceUrl": "https://ir.talenenergy.com/news-releases/news-release-details/talen-energy-expands-nuclear-energy-relationship-amazon",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "meta-xgs-energy-geothermal-nm",
@@ -1228,7 +1443,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta and XGS Energy announced a two-phase 150 MW advanced geothermal project on the PNM grid in New Mexico, using XGS technology that requires zero operating water. Both phases are projected operational by 2030.",
     "sourceName": "Business Wire",
     "sourceUrl": "https://www.businesswire.com/news/home/20250612778008/en/XGS-Energy-and-Meta-to-Partner-on-150-MW-Advanced-Geothermal-Project",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-cfs-fusion-200mw-arc-virginia",
@@ -1249,7 +1467,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google signed an offtake agreement for 200 MW from Commonwealth Fusion Systems' first ARC power plant in Chesterfield County, Virginia, which CFS expects to deliver about 400 MW to the grid in the early 2030s. Google, an investor in CFS since 2021, called it the largest direct corporate offtake agreement for fusion energy and increased its equity stake.",
     "sourceName": "PR Newswire (CFS)",
     "sourceUrl": "https://www.prnewswire.com/news-releases/google-and-commonwealth-fusion-systems-sign-strategic-partnership-agreement-to-commercialize-fusion-energy-302494208.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "xai-colossus1-memphis-mlgw",
@@ -1258,7 +1479,7 @@ export const COMMITMENTS: Commitment[] = [
     "project": "Colossus 1 (Memphis supercomputer)",
     "techType": "gas",
     "category": "datacenter",
-    "capacityMW": 250,
+    "capacityMW": 130,
     "city": "Memphis",
     "state": "Tennessee",
     "country": "United States",
@@ -1266,11 +1487,16 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -90.0833,
     "date": "2025-07",
     "status": "operational",
-    "headline": "xAI Colossus 1 runs on grid power plus on-site gas turbines",
-    "summary": "xAI's first Memphis Colossus supercomputer draws roughly 250 MW from MLGW grid power plus a fleet of on-site gas turbines. In July 2025 Shelby County granted an air permit allowing 15 turbines totaling 247.2 MW, a decision later appealed by environmental and civil rights groups.",
-    "sourceName": "DatacenterDynamics",
-    "sourceUrl": "https://www.datacenterdynamics.com/en/news/elon-musk-xai-gas-turbines-memphis/",
-    "confidence": "high"
+    "headline": "Colossus 1 Memphis row duplicates the 130 MW filing figure",
+    "summary": "This row duplicates Colossus 1. The SpaceX 424B4 figure is approximately 130 megawatts of compute power. This row does not count.",
+    "sourceName": "SpaceX Form 424B4 (SEC)",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026042639/spaceexplorationtechnologi.htm",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "approx_filing",
+    "excludeReason": "duplicate",
+    "parentId": "xai-colossus-1"
   },
   {
     "id": "xai-colossus-2-power-solaris",
@@ -1288,10 +1514,15 @@ export const COMMITMENTS: Commitment[] = [
     "date": "2025-07-01",
     "status": "construction",
     "headline": "Solaris-xAI joint venture to supply 900 MW of onsite gas power to Colossus",
-    "summary": "xAI and Solaris Energy Infrastructure formed a joint venture, Stateline Power, owned 50.1 percent by Solaris and 49.9 percent by xAI, to supply onsite natural gas power. The contract grew from an initial 500 MW to 900 MW over a seven year term, using mobile Titan-350 turbines from Caterpillar's Solar Turbines. Solaris expects over 1.1 GW operating for xAI by Q2 2027.",
-    "sourceName": "Data Center Dynamics",
-    "sourceUrl": "https://www.datacenterdynamics.com/en/news/solaris-to-supply-900mw-of-natural-gas-power-to-major-data-center-operator-as-part-of-joint-venture-agreement/",
-    "confidence": "high"
+    "summary": "Solaris's 8-K describes a 900 MW on-site supply for the same Southaven plant at 2875 Stanton Road. That 900 MW is a subset of the MDEQ permit for the plant and is not a second counted row.",
+    "sourceName": "Solaris Energy Infrastructure Form 8-K (SEC)",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1697500/000119312525107559/d939534d8k.htm",
+    "confidence": "high",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "duplicate",
+    "parentId": "xai-colossus-2-southaven-turbines"
   },
   {
     "id": "coreweave-corescientific-13gw",
@@ -1312,7 +1543,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "On July 7, 2025 CoreWeave agreed to acquire Core Scientific in an all-stock deal, gaining about 1.3 GW of gross power across a national data center footprint plus an incremental 1 GW or more available for expansion. The deal later collapsed when Core Scientific shareholders rejected it.",
     "sourceName": "CoreWeave",
     "sourceUrl": "https://www.coreweave.com/news/coreweave-to-acquire-core-scientific",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "coreweave-lancaster-pa-6b",
@@ -1328,12 +1562,16 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 40.0379,
     "lng": -76.3055,
     "date": "2025-07-15",
-    "status": "construction",
+    "status": "announced",
     "headline": "CoreWeave commits 6 billion dollars to Pennsylvania AI campus",
-    "summary": "CoreWeave announced an up to 6 billion dollar AI data center in Lancaster, Pennsylvania, initially supporting 100 MW of IT capacity with potential to expand to 300 MW. CoreWeave is the sole tenant; a Turner-Wohlsen joint venture is building the site.",
+    "summary": "AMEND4 (2026-09-24): counts=no, announcement; 300 is an up-to figure. Returns when a link shows construction. CoreWeave announced an up to 6 billion dollar AI data center in Lancaster, Pennsylvania, initially supporting 100 MW of IT capacity with potential to expand to 300 MW. CoreWeave is the sole tenant; a Turner-Wohlsen joint venture is building the site.",
     "sourceName": "CoreWeave Investor Relations",
     "sourceUrl": "https://investors.coreweave.com/news/news-details/2025/CoreWeave-Announces-Multi-Billion-Dollar-Commitment-to-AI-Infrastructure-in-Pennsylvania/default.aspx",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified_construction",
   },
   {
     "id": "meta-enbridge-clear-fork-solar",
@@ -1354,7 +1592,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Enbridge announced the $900 million, 600 MW Clear Fork Solar Project in Wilson County, Texas, with Meta contracting 100 percent of the output for its regional data centers. The project is targeted for service in summer 2027.",
     "sourceName": "Enbridge",
     "sourceUrl": "https://www.enbridge.com/media-center/news/details?id=123857&lang=en",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "stargate-oracle-4-5gw-partnership",
@@ -1375,7 +1616,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "OpenAI and Oracle agreed to develop up to 4.5 GW (4,500 MW) of additional Stargate data center capacity in the U.S., a partnership exceeding $300 billion over five years. Combined with Abilene, it brings OpenAI to over 5 GW of capacity under development.",
     "sourceName": "OpenAI",
     "sourceUrl": "https://openai.com/index/stargate-advances-with-partnership-with-oracle/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "program",
+    "counts": "no",
+    "bound": "up_to",
+    "parentId": "stargate-project-500b-announcement"
   },
   {
     "id": "holtec-palisades-restart",
@@ -1391,12 +1636,18 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 42.3225,
     "lng": -86.3147,
     "date": "2025-08",
-    "status": "construction",
-    "headline": "Palisades becomes first US plant to restart from decommissioning",
-    "summary": "Holtec's roughly 805 MW Palisades plant in Michigan became the first decommissioned US reactor to reach operations status in August 2025, though it is not yet generating power, with grid synchronization pushed to early 2026. The restart is backed by a 1.52 billion dollar DOE loan guarantee.",
+    "status": "announced",
+    "headline": "Palisades restart is in progress",
+    "summary": "Holtec's Palisades plant in Covert Township, Michigan, about 805 MW nameplate, is a restart in progress. It is not shown as operating, and energized MW is empty. The restart is backed by a DOE loan guarantee. This row is offtake from an existing plant and is not in the firm offtake total.",
     "sourceName": "Utility Dive",
     "sourceUrl": "https://www.utilitydive.com/news/palisades-nuclear-plant-holtec-nrc-operations/758845/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "restart",
+    "energizedMW": null,
+    "daysToCod": null
   },
   {
     "id": "google-kairos-tva-hermes2-oak-ridge",
@@ -1412,37 +1663,44 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 35.9301,
     "lng": -84.3123,
     "date": "2025-08-18",
-    "status": "construction",
+    "status": "permitted",
     "headline": "TVA buys nuclear from Kairos Hermes 2 for Google",
-    "summary": "Google, Kairos Power, and TVA announced a collaboration in which TVA signed a PPA to buy up to 50 MW from Kairos Power's Hermes 2 plant in Oak Ridge, Tennessee, delivering 24/7 energy to the grid serving Google data centers in Tennessee and Alabama. It is the first deployment under Google's 500 MW Kairos deal and the first US utility PPA for a Gen IV reactor, with operations targeted for 2030.",
+    "summary": "Google, Kairos Power, and TVA announced a collaboration in which TVA signed a PPA to buy up to 50 MW from Kairos Power's Hermes 2 plant in Oak Ridge, Tennessee, delivering 24/7 energy to the grid serving Google data centers in Tennessee and Alabama. It is the first deployment under Google's 500 MW Kairos deal and the first US utility PPA for a Gen IV reactor, with operations targeted for 2030. NRC construction permit, pending docket confirmation. It becomes construction only on evidence of work at Hermes 2 itself.",
     "sourceName": "Kairos Power",
     "sourceUrl": "https://kairospower.com/external_updates/google-kairos-power-tva-collaborate-to-meet-americas-growing-energy-needs",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "up_to",
+    "parentId": "google-kairos-power-500mw-fleet"
   },
   {
-    "id": "fluidstack-lake-mariner-it-360",
+    "id": "fluidstack-lake-mariner-it-378",
     "buyer": "Fluidstack",
     "counterparty": "TeraWulf",
     "project": "Lake Mariner AI hosting (CB-3/4 and CB-5)",
     "techType": "datacenter",
     "category": "datacenter",
-    "capacityMW": 360,
+    "capacityMW": 378,
     "city": "Somerset",
     "state": "New York",
     "country": "United States",
     "lat": 43.3472,
     "lng": -78.5553,
-    "date": "2025-08-18",
+    "date": "2026-03-31",
     "status": "construction",
-    "headline": "TeraWulf contracts 360 MW critical IT to Fluidstack at Lake Mariner",
-    "summary": "TeraWulf contracted about 360 MW of critical IT load to Fluidstack at Lake Mariner in Western New York (CB-3 and CB-4 about 200 MW plus CB-5 160 MW). The figure is contracted IT, not campus COD and not Fluidstack-owned generation. Google backstops Fluidstack lease obligations as credit support, not electrons. TeraWulf's Q2 2026 update says CB-5 is phased for early 2027. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
-    "sourceName": "TeraWulf",
-    "sourceUrl": "https://investors.terawulf.com/news-events/press-releases/detail/112/terawulf-signs-200-mw-10-year-ai-hosting-agreements-with-fluidstack",
+    "headline": "TeraWulf will provide 378 MW of critical IT at Lake Mariner",
+    "summary": "TeraWulf's Q1 2026 10-Q says \"we will provide 378 MW of critical IT load at the Lake Mariner Data Campus\" and \"construction having commenced in 2025\".",
+    "sourceName": "TeraWulf Q1 2026 10-Q",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1083301/000108330126000092/wulf-20260331.htm",
     "confidence": "high",
-    "numberKind": "contracted IT"
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact",
   },
   {
     "id": "meta-entergy-hyperion-gas-three",
+    // Grid card note is derived from this permitted, uncounted row. Change that note when this row counts.
     "buyer": "Meta",
     "counterparty": "Entergy Louisiana",
     "project": "Entergy combined-cycle gas plants for Hyperion (initial three)",
@@ -1455,12 +1713,16 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 32.4188,
     "lng": -91.7637,
     "date": "2025-08-20",
-    "status": "construction",
-    "headline": "Louisiana approves three Entergy gas plants for Meta",
-    "summary": "The Louisiana Public Service Commission approved Entergy Louisiana's plan to build three combined-cycle gas turbine facilities totaling about 2,262 MW to power Meta's Hyperion data center. Two units target 2028 and a third at the Waterford site targets late 2029. Meta funds the construction.",
-    "sourceName": "Data Center Dynamics",
-    "sourceUrl": "https://www.datacenterdynamics.com/en/news/entergy-obtains-approval-to-construct-three-gas-facilities-to-serve-metas-2gw-data-center-in-louisiana/",
-    "confidence": "high"
+    "status": "permitted",
+    "headline": "LPSC certified three Entergy gas plants for Meta, not yet under construction",
+    "summary": "LPSC certified. Entergy Louisiana application: https://s201.q4cdn.com/714390239/files/doc_downloads/2024/10/E-LA-application.pdf. Entergy news: https://www.entergy.com/news/entergy-louisiana-receives-lpsc-approval-for-major-infrastructure-investments-to-support-metas-data-center-and-improve-reliability. EIA 860M August 2026 (https://www.eia.gov/electricity/data/eia860m/xls/august_generator2026.xlsx) lists Franklin Farms 1560.6 MW as status L and Waterford 5 820 MW as status T, both not under construction. EIA nameplate is 2,380.6 MW. It counts when 860M shows U or V. Do not add the Richland Parish 1 to 4 or Waterford 6 plants to anything.",
+    "sourceName": "Entergy Louisiana LPSC application",
+    "sourceUrl": "https://s201.q4cdn.com/714390239/files/doc_downloads/2024/10/E-LA-application.pdf",
+    "confidence": "high",
+    "numberKind": "grid_gen_for_dc",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified"
   },
   {
     "id": "xai-macrohard",
@@ -1481,7 +1743,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Elon Musk announced Macrohard, a tongue-in-cheek named but real all-AI software venture under xAI meant to simulate software companies like Microsoft entirely with AI. xAI filed a Macrohard trademark on August 1, 2025. In March 2026 Musk unveiled a joint Tesla-xAI implementation pairing Grok as a navigator with a Tesla screen-watching agent, running on Tesla's AI4 chip plus xAI's Nvidia servers. A Southaven building tied to the Colossus 2 expansion is named MACROHARDRR.",
     "sourceName": "Yahoo Finance / Fortune",
     "sourceUrl": "https://finance.yahoo.com/news/elon-musk-announces-plans-macrohard-235500199.html",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "coreweave-applied-digital-ellendale",
@@ -1499,10 +1764,16 @@ export const COMMITMENTS: Commitment[] = [
     "date": "2025-08-29",
     "status": "construction",
     "headline": "CoreWeave leases 400 megawatts at Applied Digital North Dakota",
-    "summary": "CoreWeave signed three long-term leases totaling about 400 MW at Applied Digital's Polaris Forge 1 campus in Ellendale, North Dakota, including an additional 150 MW finalized in August 2025. The campus is engineered to scale up to 1 GW over time.",
-    "sourceName": "DatacenterDynamics",
-    "sourceUrl": "https://www.datacenterdynamics.com/en/news/coreweave-signs-on-for-another-150mw-of-capacity-at-applied-digital-data-center-campus/",
-    "confidence": "high"
+    "summary": "Applied Digital's 8-K is the source for the 400 MW CoreWeave lease at Polaris Forge 1 in Ellendale. The first phase was ready for service on 27 October 2025: https://ir.applieddigital.com/news-events/press-releases/detail/133/applied-digital-achieves-ready-for-service-for-phase-1-at. Energized MW is 50. Status is construction.",
+    "sourceName": "Applied Digital Form 8-K (SEC)",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1144879/000149315225012458/ex99-1.htm",
+    "sourceName2": "Applied Digital",
+    "sourceUrl2": "https://ir.applieddigital.com/news-events/press-releases/detail/133/applied-digital-achieves-ready-for-service-for-phase-1-at",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact",
+    "energizedMW": 50
   },
   {
     "id": "xai-colossus2-southaven-solaris",
@@ -1520,10 +1791,15 @@ export const COMMITMENTS: Commitment[] = [
     "date": "2025-09",
     "status": "construction",
     "headline": "xAI builds first gigawatt-scale AI data center near Memphis",
-    "summary": "Colossus 2 spans Shelby County, Tennessee and Southaven, Mississippi, targeting hundreds of thousands of Blackwell GPUs. Solaris owns about 600 MW of turbines (roughly 400 MW already serving xAI), with a 50.1/49.9 Solaris/xAI joint venture covering a further 900 MW. Solaris expects over 1.1 GW operating for xAI by Q2 2027.",
+    "summary": "This 1,100 MW figure is a turbine and grid-request range, not IT. It duplicates the Colossus II IT row, which counts the SpaceX filing's approximately 210 MW plus 220 MW of compute. This row does not count.",
     "sourceName": "SemiAnalysis",
     "sourceUrl": "https://newsletter.semianalysis.com/p/xais-colossus-2-first-gigawatt-datacenter",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "duplicate",
+    "parentId": "xai-colossus-2"
   },
   {
     "id": "microsoft-fairwater-mount-pleasant",
@@ -1544,7 +1820,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft's 3.3 billion dollar Fairwater AI datacenter in Mount Pleasant, Wisconsin, announced in September 2025 on a 315 acre site once intended for Foxconn, came online ahead of schedule in early 2026 housing hundreds of thousands of Nvidia GB200 GPUs. Microsoft describes it as the world's most powerful AI datacenter.",
     "sourceName": "Microsoft On the Issues",
     "sourceUrl": "https://blogs.microsoft.com/on-the-issues/2025/09/18/made-in-wisconsin-the-worlds-most-powerful-ai-datacenter/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "mw_null"
   },
   {
     "id": "microsoft-fairwater2-wisconsin-expansion",
@@ -1560,12 +1840,15 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 42.7233,
     "lng": -87.8898,
     "date": "2025-09-18",
-    "status": "construction",
+    "status": "announced",
     "headline": "Microsoft adds 4 billion dollar second Wisconsin AI datacenter",
     "summary": "Microsoft committed a further 4 billion dollars to build a second AI datacenter of similar scale adjacent to Fairwater in Mount Pleasant, Wisconsin, lifting total Wisconsin investment to more than 7 billion dollars. The expansion is expected to be completed by 2028.",
     "sourceName": "Data Center Dynamics",
     "sourceUrl": "https://www.datacenterdynamics.com/en/news/microsoft-increases-wisconsin-data-center-investment-to-73bn-says-fairwater-site-will-be-worlds-most-powerful-data-center/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "stargate-shackelford-county-oracle",
@@ -1586,7 +1869,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Among five new Stargate sites announced in September 2025, Shackelford County, Texas is an Oracle-developed campus. The three Oracle sites plus an Abilene expansion together targeted over 5.5 GW, but per-site capacity was not individually disclosed.",
     "sourceName": "OpenAI",
     "sourceUrl": "https://openai.com/index/five-new-stargate-sites/",
-    "confidence": "low"
+    "confidence": "low",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "stargate-oracle-4-5gw-partnership"
   },
   {
     "id": "stargate-dona-ana-new-mexico-oracle",
@@ -1607,7 +1894,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Dona Ana County, New Mexico is one of three new Oracle-developed Stargate campuses announced in September 2025. The three Oracle sites plus an Abilene expansion combine for over 5.5 GW, but per-site capacity was not individually disclosed.",
     "sourceName": "OpenAI",
     "sourceUrl": "https://openai.com/index/five-new-stargate-sites/",
-    "confidence": "low"
+    "confidence": "low",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "stargate-oracle-4-5gw-partnership"
   },
   {
     "id": "stargate-milam-county-sb-energy",
@@ -1624,11 +1915,18 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -96.9747,
     "date": "2025-09-23",
     "status": "construction",
-    "headline": "SB Energy to build 1.2 GW Stargate site in Milam County",
-    "summary": "SB Energy, SoftBank's power subsidiary, is building and operating an OpenAI Stargate data center in Milam County, Texas with about 1.2 GW (1,200 MW). With the Lordstown site, the two SoftBank-led projects can scale to a combined 1.5 GW.",
-    "sourceName": "Data Center Dynamics",
-    "sourceUrl": "https://www.datacenterdynamics.com/en/news/softbanks-sb-energy-to-build-and-operate-openais-12gw-stargate-data-center-in-milam-county-texas/",
-    "confidence": "high"
+    "headline": "Stargate Milam County site, no primary MW yet",
+    "summary": "The TDLR record TABS2026017746 (https://www.tdlr.texas.gov/TABS/Search/Project/TABS2026017746) shows new construction at the site, but no primary source yet gives Milam-specific MW. Pending review Monday.",
+    "sourceName": "OpenAI",
+    "sourceUrl": "https://openai.com/index/stargate-sb-energy-partnership/",
+    "sourceName2": "Texas TDLR",
+    "sourceUrl2": "https://www.tdlr.texas.gov/TABS/Search/Project/TABS2026017746",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified",
+    "parentId": "stargate-project-500b-announcement"
   },
   {
     "id": "stargate-lordstown-ohio-softbank",
@@ -1644,12 +1942,17 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 41.1656,
     "lng": -80.8543,
     "date": "2025-09-23",
-    "status": "construction",
+    "status": "announced",
     "headline": "SoftBank breaks ground on Lordstown Stargate site",
     "summary": "SoftBank broke ground on an advanced data center design in Lordstown, Ohio, on track to be operational in 2026, doubling as a SoftBank-Foxconn manufacturing hub for AI servers. Site capacity was not individually disclosed; Lordstown and Milam County together can scale to 1.5 GW.",
     "sourceName": "OpenAI",
     "sourceUrl": "https://openai.com/index/five-new-stargate-sites/",
-    "confidence": "low"
+    "confidence": "low",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "stargate-project-500b-announcement",
+    "excludeReason": "mw_null"
   },
   {
     "id": "vistra-comanche-peak-ppa",
@@ -1670,7 +1973,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "On September 29, 2025 Vistra announced a 20-year power purchase agreement, with options for up to 20 more years, to supply 1,200 MW of carbon-free power from its Comanche Peak nuclear plant in Texas to an unnamed investment-grade customer. Deliveries begin in Q4 2027 and ramp to full volume by 2032.",
     "sourceName": "Power Engineering",
     "sourceUrl": "https://www.power-eng.com/nuclear/vistra-secures-long-term-nuclear-ppa-from-comanche-peak-nuclear-plant/",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "bloom-brookfield-fuel-cells",
@@ -1691,7 +1997,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Brookfield Asset Management and Bloom Energy formed a partnership to deploy up to 1,000 MW of solid-oxide fuel cells as on-site power for AI data centers, providing fast-to-deploy firm electricity that bypasses long grid interconnection queues. San Jose reflects the Bloom Energy headquarters, not a single project site.",
     "sourceName": "Bloom Energy",
     "sourceUrl": "https://www.bloomenergy.com/news/bloom-energy-and-brookfield-asset-management-partner/",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "equipment_supply",
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "google-adani-airtel-visakhapatnam-ai-hub",
@@ -1700,19 +2009,23 @@ export const COMMITMENTS: Commitment[] = [
     "project": "Visakhapatnam AI Hub",
     "techType": "datacenter",
     "category": "datacenter",
-    "capacityMW": 5000,
+    "capacityMW": null,
     "city": "Visakhapatnam",
     "state": "Andhra Pradesh",
     "country": "India",
     "lat": 17.6868,
     "lng": 83.2185,
     "date": "2025-10-14",
-    "status": "construction",
+    "status": "announced",
     "headline": "Google commits 15 billion dollars to India AI hub",
-    "summary": "Google announced its first AI hub in India, a roughly 15 billion dollar investment from 2026 to 2030 in Visakhapatnam, partnering with AdaniConneX and Nxtra by Airtel. The campus is designed to scale to gigawatt-class compute (reported up to 5 GW) and broke ground in April 2026, combining new clean energy, data center capacity and subsea fiber.",
+    "summary": "Google, AdaniConneX, and Airtel announced a gigawatt-scale AI hub in Visakhapatnam. The release says gigawatt-scale and does not state a megawatt figure, so capacity is empty. This row does not count.",
     "sourceName": "Google Cloud Press Corner",
     "sourceUrl": "https://www.googlecloudpresscorner.com/2025-10-14-Google-Announces-First-AI-Hub-in-India,-Bringing-Companys-Full-AI-Stack-and-Consumer-Services-to-Country",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "mw_null"
   },
   {
     "id": "amazon-cascade-12-units-2025",
@@ -1733,7 +2046,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "In an October 2025 update, Amazon and Energy Northwest detailed plans to ultimately deploy 12 Xe-100 SMRs (about 960 MW) at the Cascade Advanced Energy Facility near Richland, starting with the first four units. A joint venture of Aecon, Kiewit Nuclear Solutions and Black and Veatch was selected for the first phase, with construction targeted by 2030.",
     "sourceName": "Utility Dive",
     "sourceUrl": "https://www.utilitydive.com/news/washington-nuclear-facility-smrs-cascade-amazon-modular/802967/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "stargate-port-washington-wisconsin-vantage",
@@ -1750,11 +2066,17 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -87.8756,
     "date": "2025-10-22",
     "status": "construction",
-    "headline": "Vantage breaks ground on $15B Wisconsin Stargate campus",
-    "summary": "OpenAI, Oracle, and Vantage Data Centers are developing the Lighthouse campus near Milwaukee, a 672-acre, roughly $15 billion site with four data centers delivering up to 902 MW of AI compute. Announced October 22, 2025 and broke ground December 18, 2025, with completion targeted in 2028.",
+    "headline": "Vantage is building 902 MW of critical IT at Port Washington",
+    "summary": "Vantage's 27 April 2026 release says the Port Washington campus is being built by Vantage for Oracle. The campus page says 902MW of critical IT load. The campus page is undated.",
     "sourceName": "Vantage Data Centers",
-    "sourceUrl": "https://vantage-dc.com/news/openai-oracle-and-vantage-data-centers-announce-stargate-data-center-site-in-wisconsin/",
-    "confidence": "high"
+    "sourceUrl": "https://vantage-dc.com/news/port-washington-saukville-education-foundation-finds-new-life-with-225000-commitment-from-vantage-data-centers-oracle-and-openai/",
+    "sourceName2": "Vantage Data Centers campus page",
+    "sourceUrl2": "https://vantage-dc.com/data-center-locations/north-america/port-washington-wisconsin/",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact",
+    "parentId": "stargate-oracle-4-5gw-partnership",
   },
   {
     "id": "anthropic-google-broadcom-tpu",
@@ -1775,7 +2097,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "In October 2025 Anthropic announced a major expansion of its use of Google Cloud TPUs, with well over a gigawatt of capacity coming online in 2026 and access to up to one million TPU chips. The broader Google Cloud deal is valued in the tens of billions of dollars.",
     "sourceName": "Google Cloud",
     "sourceUrl": "https://www.googlecloudpresscorner.com/2025-10-23-Anthropic-to-Expand-Use-of-Google-Cloud-TPUs-and-Services",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "at_least"
   },
   {
     "id": "meta-engie-swenson-ranch-solar",
@@ -1796,7 +2121,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta signed a PPA for 100 percent of the output of ENGIE's 600 MW Swenson Ranch Solar project in Stonewall County, Texas, the largest asset in ENGIE's US portfolio. The deal expanded the Meta-ENGIE partnership past 1.3 GW across four Texas solar projects. Operations begin in 2027.",
     "sourceName": "ENGIE Newsroom",
     "sourceUrl": "https://en.newsroom.engie.com/news/engie-and-meta-strengthen-their-partnership-with-a-major-renewable-power-purchase-agreement-in-the-united-states-a785e-314df.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-nextera-duane-arnold",
@@ -1817,7 +2145,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google signed a 25-year power purchase agreement with NextEra Energy to restart the 615 MW Duane Arnold Energy Center in Palo, Iowa, shuttered since 2020, to power its Iowa data centers. The restart targets the first quarter of 2029, with NextEra moving to full ownership.",
     "sourceName": "World Nuclear News",
     "sourceUrl": "https://www.world-nuclear-news.org/articles/duane-arnold-restart-underpins-nextera-energy-and-google-collaboration",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "fluidstack-abernathy-it-168",
@@ -1834,12 +2165,14 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -101.8427,
     "date": "2025-10-28",
     "status": "construction",
-    "headline": "TeraWulf and Fluidstack JV delivers 168 MW critical IT at Abernathy",
-    "summary": "TeraWulf and Fluidstack formed a joint venture to deliver 168 MW of critical IT load (240 MW gross) at Abernathy, Texas, under a long-term hosting commitment. Fluidstack later took a majority interest in July 2026. The figure is contracted IT, not generation. Google backstops Fluidstack lease obligations as credit support, not electrons. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
-    "sourceName": "TeraWulf",
-    "sourceUrl": "https://investors.terawulf.com/news-events/press-releases/detail/121/terawulf-expands-strategic-partnership-with-fluidstack-through-new-168-mw-ai-compute-joint-venture",
+    "headline": "Building 168 MW of critical IT at Abernathy",
+    "summary": "TeraWulf's Q1 2026 10-Q says the Abernathy site is designed for 168 MW critical IT load and that construction is proceeding in phases. TeraWulf sold its 50.1% stake on Jul 6 2026.",
+    "sourceName": "TeraWulf Q1 2026 10-Q",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1083301/000108330126000092/wulf-20260331.htm",
     "confidence": "high",
-    "numberKind": "contracted IT"
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact",
   },
   {
     "id": "stargate-saline-michigan-related",
@@ -1856,11 +2189,15 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -83.7813,
     "date": "2025-10-30",
     "status": "construction",
-    "headline": "Related Digital plans 1 GW Michigan Stargate campus",
-    "summary": "OpenAI, Oracle, and Related Digital announced a more than 1 GW (1,000 MW) Stargate data center campus in Saline Township, Michigan, a 250-acre site known as The Barn with three single-story buildings, part of the Oracle 4.5 GW expansion. DTE Energy is supplying the power.",
-    "sourceName": "Data Center Dynamics",
-    "sourceUrl": "https://www.datacenterdynamics.com/en/news/related-digitals-michigan-1gw-data-center-project-to-serve-openai-oracle/",
-    "confidence": "high"
+    "headline": "Stargate Saline campus under construction, counted at 1,000 MW",
+    "summary": "More than 1 GW per OpenAI, counted at 1,000 MW. Source does not state IT or grid draw. OpenAI: https://openai.com/index/expanding-stargate-to-michigan/",
+    "sourceName": "Oracle",
+    "sourceUrl": "https://www.oracle.com/news/announcement/related-digital-oracle-openai-walbridge-and-governor-whitmer-celebrate-construction-of-stargate-campus-in-saline-township-2026-06-01/",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact",
+    "parentId": "stargate-oracle-4-5gw-partnership"
   },
   {
     "id": "holtec-palisades-smr300",
@@ -1881,7 +2218,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Holtec received a DOE Tier 1 First Mover award of 400 million dollars to deploy its dual-unit SMR-300 plant (680 MWe total, 340 MWe per unit) named PIONEER 1&2 at the Palisades Energy site in Michigan, targeting the early 2030s. Holtec filed a Limited Work Authorization application with the NRC in December 2025.",
     "sourceName": "Holtec International",
     "sourceUrl": "https://holtecinternational.com/hh-40-24/",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-g42-khazna-uae-200mw",
@@ -1897,12 +2237,16 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 24.4539,
     "lng": 54.3773,
     "date": "2025-11-05",
-    "status": "construction",
+    "status": "announced",
     "headline": "Microsoft and G42 add 200 MW of UAE datacenter capacity",
-    "summary": "Microsoft and Abu Dhabi based G42 announced a 200 MW UAE data center expansion via G42 subsidiary Khazna, part of Microsoft's broader UAE investment framework exceeding 15 billion dollars. The new capacity is expected online before the end of 2026, with Khazna advancing clean energy supply.",
+    "summary": "Possible duplicate of stargate-uae-phase1-200, never counted alongside it.",
     "sourceName": "Microsoft Source EMEA",
     "sourceUrl": "https://news.microsoft.com/source/emea/2025/11/microsoft-and-g42-accelerate-uaes-digital-future-with-major-data-centre-expansion/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified_construction",
   },
   {
     "id": "google-germany-55bn-expansion",
@@ -1923,7 +2267,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google announced a 5.5 billion euro investment in Germany through 2029, including a new data center in Dietzenbach, continued buildout at the Hanau campus, and expanded offices, alongside ongoing 24/7 carbon-free energy commitments with ENGIE.",
     "sourceName": "Google Cloud Press Corner",
     "sourceUrl": "https://www.googlecloudpresscorner.com/2025-11-11-Google-Announces-EUR5-5-Billion-Investment-in-Germany,-including-AI-Infrastructure,-through-2029",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "anthropic-fluidstack-50b-tx-ny",
@@ -1939,12 +2286,16 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 35.222,
     "lng": -101.8313,
     "date": "2025-11-12",
-    "status": "construction",
+    "status": "announced",
     "headline": "Anthropic commits 50 billion dollars to US AI data centers",
     "summary": "Anthropic announced a 50 billion dollar plan to build custom US data centers with partner Fluidstack, starting in Texas and New York, with first sites going live in 2026. The build is projected to create about 800 permanent and 2,400 construction jobs.",
     "sourceName": "CNBC",
     "sourceUrl": "https://www.cnbc.com/2025/11/12/anthropic-ai-data-centers-texas-new-york.html",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "mw_null"
   },
   {
     "id": "microsoft-fairwater-atlanta-superfactory",
@@ -1965,16 +2316,20 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Microsoft launched its second Fairwater AI datacenter outside Atlanta, Georgia, a two story facility with hundreds of thousands of Nvidia GB200 and GB300 GPUs, directly networked to the Wisconsin site over a dedicated AI WAN to operate as a distributed AI superfactory. The Atlanta facility began operating in October 2025.",
     "sourceName": "Microsoft Source",
     "sourceUrl": "https://news.microsoft.com/source/features/ai/from-wisconsin-to-atlanta-microsoft-connects-datacenters-to-build-its-first-ai-superfactory/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "mw_null"
   },
   {
-    "id": "fluidstack-barber-lake-it-207",
+    "id": "fluidstack-barber-lake-it-168",
     "buyer": "Fluidstack",
     "counterparty": "Cipher Mining",
-    "project": "Barber Lake AI hosting (168 plus 39 MW critical IT)",
+    "project": "Barber Lake AI hosting",
     "techType": "datacenter",
     "category": "datacenter",
-    "capacityMW": 207,
+    "capacityMW": 168,
     "city": "Colorado City",
     "state": "Texas",
     "country": "United States",
@@ -1982,12 +2337,16 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -100.8621,
     "date": "2025-11-20",
     "status": "construction",
-    "headline": "Cipher leases Fluidstack 207 MW critical IT at Barber Lake",
-    "summary": "Cipher Mining leased Fluidstack 207 MW of critical IT load at Barber Lake, Texas (168 MW plus 39 MW), covering the entire 300 MW campus capacity. The figure is contracted IT, not generation. Google backstops Fluidstack lease obligations as credit support, not electrons. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
-    "sourceName": "SEC (Cipher Mining 8-K)",
-    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1819989/000095010325012168/dp234624_8k.htm",
+    "headline": "Cipher is building 168 MW of critical IT at Barber Lake",
+    "summary": "Cipher's Q2 2026 10-Q says it is in the process of building the Barber Lake Facility for Fluidstack. The 8-K says the facility is expected to provide 168 megawatts (MW) of critical IT load.",
+    "sourceName": "Cipher Mining Q2 2026 10-Q",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1819989/000181998926000041/cifr-20260630.htm",
+    "sourceName2": "Cipher Mining 8-K",
+    "sourceUrl2": "https://www.sec.gov/Archives/edgar/data/1819989/000095010325012168/dp234624_8k.htm",
     "confidence": "high",
-    "numberKind": "contracted IT"
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact",
   },
   {
     "id": "fluidstack-river-bend-it-245",
@@ -2004,12 +2363,14 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -91.3334,
     "date": "2025-12-17",
     "status": "construction",
-    "headline": "Hut 8 leases Fluidstack 245 MW IT capacity at River Bend",
-    "summary": "Hut 8 signed a 15-year lease with Fluidstack for 245 MW of IT capacity at the River Bend campus in Louisiana. Hut 8 secured 330 MW of utility capacity from Entergy for the campus (utility interconnection path, not a behind-the-meter mix). The figure is contracted IT, not generation. Google backstops Fluidstack lease obligations as credit support, not electrons. Behind-the-meter versus grid megawatt-hour mix is not disclosed in the primary.",
-    "sourceName": "Hut 8 (PR Newswire)",
-    "sourceUrl": "https://www.prnewswire.com/news-releases/hut-8-signs-15-year-245-mw-ai-data-center-lease-at-river-bend-campus-with-total-contract-value-of-7-0-billion-302644600.html",
+    "headline": "Hut 8 lists 245 MW of critical IT at River Bend",
+    "summary": "Hut 8's Q2 2026 10-Q says the River Bend lease is 245 megawatts of critical IT capacity. Hut 8 is the developer. The 330 MW figure is the site, not this IT row.",
+    "sourceName": "Hut 8 Q2 2026 10-Q",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1964789/000110465926090025/hut-20260630x10q.htm",
     "confidence": "high",
-    "numberKind": "contracted IT"
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact",
   },
   {
     "id": "alphabet-intersect-power-acquisition-4-75b",
@@ -2030,7 +2391,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Alphabet announced a definitive agreement to acquire clean energy and data center infrastructure developer Intersect Power for about $4.75 billion in cash plus assumed debt, deepening its strategy of pairing data center load with co-located clean generation. The deal, expected to close in the first half of 2026, brings Intersect's renewables and storage development portfolio in-house.",
     "sourceName": "Axios",
     "sourceUrl": "https://www.axios.com/2025/12/22/google-alphabet-data-center-intersect-power-deal",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "xai-colossus-2",
@@ -2039,19 +2403,24 @@ export const COMMITMENTS: Commitment[] = [
     "project": "Colossus 2 (Southaven / greater Memphis expansion)",
     "techType": "datacenter",
     "category": "datacenter",
-    "capacityMW": 1000,
+    "capacityMW": 430,
     "city": "Southaven",
     "state": "MS",
     "country": "United States",
     "lat": 34.9701,
     "lng": -90.0126,
-    "date": "2026-01-01",
+    "locationApprox": true,
+    "date": "2026-06-12",
     "status": "operational",
-    "headline": "Colossus 2: first gigawatt-scale AI datacenter, target 555,000+ GPUs toward 1 million",
-    "summary": "Colossus 2 is xAI's expansion in the greater Memphis area, with facilities spilling into Southaven, DeSoto County, Mississippi to ease power constraints. It came online in January 2026 and is being built toward 555,000+ Nvidia GB200 and GB300 GPUs, roughly an $18 billion GPU purchase, as part of xAI's stated goal of 1 million GPUs and a roughly 2 GW total Colossus complex.",
-    "sourceName": "SemiAnalysis",
-    "sourceUrl": "https://newsletter.semianalysis.com/p/xais-colossus-2-first-gigawatt-datacenter",
-    "confidence": "high"
+    "headline": "Colossus II: about 210 MW plus 220 MW of compute power, brought online",
+    "summary": "SpaceX's 12 June 2026 Form 424B4 says the first cluster has approximately 210 megawatts of compute power and the second cluster has 220 megawatts of compute power, and that both were brought online. The filing names Tulane Road in Memphis, Tennessee and Stateline Road in Southaven, Mississippi, and does not say which cluster is where. The pin is not an exact site. Energized MW is empty. The 1,100 MW Southaven row is a duplicate of this IT figure and is not counted.",
+    "sourceName": "SpaceX Form 424B4 (SEC)",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1181412/000162828026042639/spaceexplorationtechnologi.htm",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "approx_filing",
+    "energizedMW": null
   },
   {
     "id": "meta-vistra-nuclear-pjm",
@@ -2072,7 +2441,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "As part of Meta's January 2026 nuclear announcement, Vistra signed 20-year PPAs to supply 2,609 MW of nuclear power in PJM, including 2,176 MW from the operating Perry and Davis-Besse plants plus uprates across Perry, Davis-Besse, and Beaver Valley, phasing in through 2034. Irving reflects Vistra headquarters; the plants are in Ohio and Pennsylvania.",
     "sourceName": "Utility Dive",
     "sourceUrl": "https://www.utilitydive.com/news/meta-nuclear-deal-oklo-vistra-terrapower-ai-data-centers/809215/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_existing",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "meta-nuclear-rfp-2024"
   },
   {
     "id": "meta-terrapower-natrium-smr",
@@ -2093,7 +2466,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta's agreement funds development of up to eight 345 MW Natrium sodium fast reactors providing up to 2.8 GW of baseload power, with built-in storage able to boost output toward 4 GW. Two initial units of about 690 MW are targeted for delivery as early as 2032, with the remaining units targeted by 2035.",
     "sourceName": "World Nuclear News",
     "sourceUrl": "https://www.world-nuclear-news.org/articles/meta-announces-landmark-agreements-for-new-nuclear",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "up_to",
+    "parentId": "meta-nuclear-rfp-2024"
   },
   {
     "id": "meta-oklo-pike-county-ohio",
@@ -2114,7 +2491,11 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta agreed with Oklo to help develop a 1.2 GW nuclear power campus in Pike County, Ohio, using Aurora Powerhouse reactors to support Meta data centers in the region. Pre-construction and site characterization begin in 2026, with the first phase targeted as early as 2030 and full capacity by 2034.",
     "sourceName": "Utility Dive",
     "sourceUrl": "https://www.utilitydive.com/news/meta-nuclear-deal-oklo-vistra-terrapower-ai-data-centers/809215/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "up_to",
+    "parentId": "meta-nuclear-rfp-2024"
   },
   {
     "id": "google-clearway-1170mw-ppa",
@@ -2135,7 +2516,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Google signed PPAs totaling about 1.17 GW of solar and wind capacity with Clearway Energy Group across Missouri, Texas, and West Virginia, representing roughly $2.4 billion in clean energy investment. The projects span the SPP, ERCOT, and PJM markets under agreements of up to 20 years, with initial sites coming online in 2027 and 2028.",
     "sourceName": "DatacenterDynamics",
     "sourceUrl": "https://www.datacenterdynamics.com/en/news/google-signs-117gw-worth-of-ppas-with-clearway-across-us-market/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-fervo-cape-station-utah",
@@ -2149,14 +2533,19 @@ export const COMMITMENTS: Commitment[] = [
     "state": "UT",
     "country": "United States",
     "lat": 38.2833,
-    "lng": -113.0,
+    "lng": -113,
     "date": "2026-02",
-    "status": "construction",
+    "status": "announced",
     "headline": "Google scales Fervo geothermal at Cape Station in Utah",
-    "summary": "Google expanded its work with Fervo Energy at the Cape Station enhanced geothermal project in Beaver County, Utah, adding roughly 100 MW toward a flagship development that Fervo is building out in phases through the late 2020s. Cape Station is among the largest next-generation geothermal projects in development.",
+    "summary": "Earlier Cape Station pin of about 100 MW. The cited link is the company homepage and shows no site detail.",
     "sourceName": "Fervo Energy",
     "sourceUrl": "https://fervoenergy.com/",
-    "confidence": "medium"
+    "confidence": "medium",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact",
+    "parentId": "google-fervo-cape-station-ppa-396",
+    "excludeReason": "duplicate"
   },
   {
     "id": "xai-colossus-2-southaven-turbines",
@@ -2165,19 +2554,24 @@ export const COMMITMENTS: Commitment[] = [
     "project": "Colossus 2 Southaven gas turbine fleet and MACROHARDRR building",
     "techType": "gas",
     "category": "energy",
-    "capacityMW": 495,
+    "capacityMW": 1200,
     "city": "Southaven",
     "state": "MS",
     "country": "United States",
     "lat": 34.9701,
     "lng": -90.0126,
-    "date": "2026-03-01",
-    "status": "construction",
-    "headline": "xAI deploys dozens of gas turbines in Southaven near former Duke Energy plant",
-    "summary": "In Southaven, Mississippi, xAI acquired a former Duke Energy power plant site and installed a growing fleet of portable natural gas turbines. By early 2026 reports counted dozens of turbines onsite, with 19 added between late March and early May 2026 adding over 500 MW, drawing an environmental lawsuit over permitting. A retrofitted building there is named MACROHARDRR. Mississippi calls the over $20 billion project the largest in state history.",
-    "sourceName": "Data Center Dynamics",
-    "sourceUrl": "https://www.datacenterdynamics.com/en/news/xai-deploys-19-natural-gas-turbines-at-colossus-2-data-center-in-southaven-mississippi-report/",
-    "confidence": "high"
+    "date": "2026-03-11",
+    "status": "permitted",
+    "headline": "MDEQ permit for about 1.2 GW at 2875 Stanton Road",
+    "summary": "MDEQ Air Construction PSD permit 0680-00119, issued 11 March 2026 to MZX Tech LLC at 2875 Stanton Road, Southaven, is the source for about 1.2 GW. An issued permit is not evidence of construction, and the 1,200 MW figure has not been verified against the permit text, so this row does not count. The Solaris 900 MW 8-K is a subset of the same plant and is not a second row. MDEQ Agreed Order 7739 26 is not added. Lawsuits allege operation without required permits. Those are allegations only. Energized MW is empty.",
+    "sourceName": "MDEQ Air Construction PSD permit 0680-00119",
+    "sourceUrl": "https://opcgis.deq.state.ms.us/ensearchonline/get_doc.aspx?dt=dpermit&id=1825411",
+    "confidence": "high",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "approx_filing",
+    "excludeReason": "unverified",
+    "energizedMW": null
   },
   {
     "id": "softbank-portsmouth-ohio-gas-plant",
@@ -2198,7 +2592,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "SoftBank plans a roughly 10 GW AI data center on a former DOE uranium enrichment site near Piketon, Ohio, backed by up to 10 GW of new power generation including about 9.2 GW of natural gas, with a reported $33 billion power investment. Sources describe it as part of a U.S.-Japan investment program and not formally part of Stargate. Capacity and siting remain early.",
     "sourceName": "Data Center Dynamics",
     "sourceUrl": "https://www.datacenterdynamics.com/en/news/softbank-eyes-10gw-data-center-at-former-doe-nuclear-enrichment-site-in-ohio/",
-    "confidence": "low"
+    "confidence": "low",
+    "numberKind": "grid_gen_for_dc",
+    "counts": "no",
+    "bound": "at_least"
   },
   {
     "id": "meta-entergy-hyperion-gas-seven",
@@ -2219,7 +2616,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta and Entergy announced an agreement for seven additional gas plants totaling about 5.2 GW on top of the initial three, bringing the Hyperion campus to 10 plants and roughly 7.5 GW. Meta also committed to fund up to 2.5 GW of renewables and storage plus 240 miles of transmission. The LPSC adopted a fast-track review schedule in April 2026; approval pending.",
     "sourceName": "Fortune",
     "sourceUrl": "https://fortune.com/2026/03/27/meta-hyperion-10-gas-power-plants-louisiana-entergy/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "unresolved",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "fluidstack-meridian-arc-indiana-it-430",
@@ -2241,28 +2641,35 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Latham & Watkins",
     "sourceUrl": "https://www.lw.com/en/news/2026/04/latham-advises-on-meridian-arc-holdco-senior-secured-notes-offering-to-finance-ai-data-center",
     "confidence": "high",
-    "numberKind": "contracted IT"
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-chevron-west-texas-gas",
     "buyer": "Microsoft",
-    "counterparty": "Chevron",
-    "project": "West Texas gas-to-power exclusivity",
+    "counterparty": "Energy Forge One (Chevron / Joulent JV)",
+    "project": "Project Kilby (Energy Forge One)",
     "techType": "gas",
     "category": "energy",
-    "capacityMW": 2500,
-    "city": "Midland",
-    "state": "TX",
+    "capacityMW": 2670,
+    "city": "Reeves County",
+    "state": "Texas",
     "country": "United States",
-    "lat": 31.9974,
-    "lng": -102.0779,
-    "date": "2026-04",
+    "lat": 31.308366,
+    "lng": -103.712706,
+    "date": "2026-06-22",
     "status": "announced",
-    "headline": "Microsoft and Chevron line up 2.5 GW of West Texas gas",
-    "summary": "Microsoft and Chevron entered an exclusivity arrangement to develop roughly 2,500 MW of natural-gas-fired power in West Texas to supply AI data centers, pairing Chevron upstream gas with on-site generation. Midland reflects the Permian Basin focus area, not a confirmed single plant site.",
-    "sourceName": "Fortune",
-    "sourceUrl": "https://fortune.com/",
-    "confidence": "low"
+    "headline": "Chevron signs a 20-year PPA for about 2.67 GW at Project Kilby",
+    "summary": "On 22 June 2026 Chevron said Energy Forge One signed a 20-year power purchase agreement with Microsoft for Project Kilby, a co-located gas plant expected to deliver approximately 2.67 gigawatts. The project page describes generation behind the meter in Reeves County, Texas. ERCOT GIS for August 2026 lists Kilby with no interconnection agreement. The 2,377 MW gas figure is a studied maximum net export, not plant size. The map pin is the U.S. Census internal point for Reeves County (31.308366 N, 103.712706 W), a county reference point, not a surveyed plant site. Energized MW and COD are empty. This row is announced on-site generation and is not in the firm on-site total.",
+    "sourceName": "Chevron",
+    "sourceUrl": "https://www.chevron.com/newsroom/2026/q2/chevron-signs-20-year-power-agreement-with-microsoft-for-west-texas-data-center",
+    "confidence": "high",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "exact",
+    "energizedMW": null,
+    "daysToCod": null
   },
   {
     "id": "anthropic-amazon-5gw-trainium",
@@ -2283,7 +2690,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Anthropic and Amazon expanded their collaboration for up to 5 GW of new AWS compute to train and serve Claude, including significant Trainium2 and Trainium3 capacity through 2026. Amazon is investing 5 billion dollars now plus up to 20 billion more, on top of 8 billion previously invested.",
     "sourceName": "Anthropic",
     "sourceUrl": "https://www.anthropic.com/news/anthropic-amazon-compute",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "meta-rwe-rabbits-foot-solar",
@@ -2304,7 +2714,10 @@ export const COMMITMENTS: Commitment[] = [
     "summary": "Meta signed a long-term PPA for the 298 MW Rabbit's Foot Solar project in Bowie County, northeast Texas, the fourth PPA between Meta and RWE. Construction began in 2026 with commissioning expected by the end of 2027.",
     "sourceName": "Data Center Dynamics",
     "sourceUrl": "https://www.datacenterdynamics.com/en/news/meta-inks-298mw-solar-ppa-with-rwe-in-bowie-county-texas/",
-    "confidence": "high"
+    "confidence": "high",
+    "numberKind": "offtake_new",
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "meta-sturgeon-alberta-dc-1000",
@@ -2326,9 +2739,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Meta Newsroom",
     "sourceUrl": "https://about.fb.com/news/2026/07/breaking-ground-on-metas-first-data-center-in-canada/",
     "confidence": "high",
-    "numberKind": "DC",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "anthropic-justified-kentucky-it-401",
@@ -2350,9 +2765,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "TeraWulf",
     "sourceUrl": "https://investors.terawulf.com/news-events/press-releases/detail/142/terawulf-announces-anthropic-lease-at-justified-data-campus-and-sale-of-majority-interest-in-abernathy-joint-venture-to-fluidstack",
     "confidence": "high",
-    "numberKind": "contracted IT",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "hut8-beacon-point-phase2-it-352",
@@ -2374,9 +2791,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Hut 8 (PR Newswire)",
     "sourceUrl": "https://www.prnewswire.com/news-releases/hut-8-fully-commercializes-1-gw-beacon-point-ai-data-center-campus-with-second-352-mw-it-lease-bringing-campus-level-base-term-contract-value-to-19-6-billion-302829514.html",
     "confidence": "high",
-    "numberKind": "contracted IT",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "openai-ports-pike-it-8000",
@@ -2398,9 +2817,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "NVIDIA",
     "sourceUrl": "https://nvidianews.nvidia.com/news/nvidia-guarantees-sb-energy-s-ports-pike-technology-campus-in-ohio-to-exclusively-host-nvidia-ai-compute",
     "confidence": "high",
-    "numberKind": "contracted IT",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "openai-camellia-effingham-demand-3200",
@@ -2422,9 +2843,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Georgia Power",
     "sourceUrl": "https://www.georgiapower.com/news-hub/press-releases/contract-openai-approved-part-portfolio-delivering-950-million-annual-savings.html",
     "confidence": "high",
-    "numberKind": "contracted demand",
+    "numberKind": "utility_load",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-fervo-cape-station-ppa-396",
@@ -2438,7 +2861,7 @@ export const COMMITMENTS: Commitment[] = [
     "state": "UT",
     "country": "United States",
     "lat": 38.2833,
-    "lng": -113.0,
+    "lng": -113,
     "date": "2026-09-01",
     "status": "ppa-signed",
     "headline": "Google signs 396 MW firm geothermal PPA at Cape Station",
@@ -2446,9 +2869,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Fervo Energy (GlobeNewswire)",
     "sourceUrl": "https://www.globenewswire.com/news-release/2026/09/01/3354109/0/en/fervo-energy-and-google-sign-396-mw-ppa.html",
     "confidence": "high",
-    "numberKind": "firm geothermal offtake",
+    "numberKind": "offtake_new",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-fortum-loviisa-nuclear-offtake-507",
@@ -2470,9 +2895,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Fortum",
     "sourceUrl": "https://www.fortum.com/en/media/2026/09/inside-information-fortum-and-google-partner-drive-sustainable-growth-finland-sign-nuclear-power-purchase-agreement",
     "confidence": "medium",
-    "numberKind": "nuclear offtake share (derived)",
+    "numberKind": "offtake_existing",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "google-kajaani-bess-94",
@@ -2496,7 +2923,9 @@ export const COMMITMENTS: Commitment[] = [
     "confidence": "high",
     "numberKind": "storage",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "google-finland-wind-portfolio-629",
@@ -2518,9 +2947,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Google The Keyword",
     "sourceUrl": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/clean-energy-finland/",
     "confidence": "high",
-    "numberKind": "portfolio offtake",
+    "numberKind": "offtake_new",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "aligned-phoenix-shippingport-dc-2000",
@@ -2542,9 +2973,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Aligned Data Centers",
     "sourceUrl": "https://aligneddc.com/press-release/project-phoenix-data-center-shippingport-pa/",
     "confidence": "medium",
-    "numberKind": "DC",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "newera-tcdc-vistra-offtake-207",
@@ -2566,9 +2999,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "SEC Form 8-K",
     "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2028336/000121390026101642/ea0305716-8k_newera.htm",
     "confidence": "high",
-    "numberKind": "firm contracted utility offtake",
+    "numberKind": "offtake_existing",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "oracle-rwe-panther-creek-vppa-433",
@@ -2590,9 +3025,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "RWE",
     "sourceUrl": "https://www.rwe.com/en/press/rwe-americas/2026-09-17-rwe-signs-433-mw-virtual-power-purchase-agreement-with-oracle/",
     "confidence": "high",
-    "numberKind": "renewable matching",
+    "numberKind": "offtake_existing",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "oracle-engie-texas-matching-568",
@@ -2614,9 +3051,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "ENGIE North America (PR Newswire)",
     "sourceUrl": "https://www.prnewswire.com/news-releases/engie-to-supply-more-than-500-mw-of-renewable-energy-for-oracles-texas-operations-302882188.html",
     "confidence": "high",
-    "numberKind": "renewable matching (up to)",
+    "numberKind": "offtake_new",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "meta-apex-starling-solar-144",
@@ -2638,9 +3077,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Power Magazine (Apex Clean Energy)",
     "sourceUrl": "https://www.powermag.com/apex-clean-energy-signs-ppa-with-meta-for-solar-power-from-texas-project/",
     "confidence": "high",
-    "numberKind": "renewable matching",
+    "numberKind": "offtake_new",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "meta-socrates-south-btm-200",
@@ -2656,15 +3097,17 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 40.0817,
     "lng": -82.7846,
     "date": "2025-06-09",
-    "status": "construction",
-    "headline": "OPSB approves 200 MW Socrates South behind-the-meter plant",
-    "summary": "The Ohio Power Siting Board authorized the Socrates South Power Generation Project on 9 June 2025 under case 25-0185-EL-BLN. Will-Power OH, LLC, a subsidiary of the Williams Companies, will construct and operate a 200 MW natural gas plant behind the meter in New Albany, Licking County. Sidecat, LLC, an affiliate of Meta Platforms, is the electric load on the adjacent campus. The plant will not connect to the grid. This figure is behind-the-meter generation, not IT load, and it is not the Prometheus AI cluster capacity. Energized MW and days to COD are empty.",
-    "sourceName": "Ohio Power Siting Board",
-    "sourceUrl": "https://opsb.ohio.gov/news/opsb-approves-construction-of-licking-county-natural-gas-fired-power-plant",
+    "status": "operational",
+    "headline": "Williams placed Socrates South into service in late July 2026",
+    "summary": "Williams's Q2 2026 10-Q says Socrates South was placed into service in late July 2026. The customer is Meta's affiliate Sidecat LLC. This 200 MW is on-site generation and is not added to Meta's IT.",
+    "sourceName": "Williams Q2 2026 10-Q",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/107263/000010726326000026/wmb-20260630.htm",
     "confidence": "high",
-    "numberKind": "BTM generation",
+    "numberKind": "btm_gen",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "yes",
+    "bound": "exact",
   },
   {
     "id": "meta-socrates-north-btm-200",
@@ -2681,14 +3124,16 @@ export const COMMITMENTS: Commitment[] = [
     "lng": -82.7846,
     "date": "2025-09-18",
     "status": "construction",
-    "headline": "OPSB authorizes 200 MW Socrates North behind-the-meter plant",
-    "summary": "The Ohio Power Siting Board authorized the Socrates North Power Generation Facility on 18 September 2025 under case 25-188-EL-BGN. Will-Power OH, LLC will construct and operate a 200 MW natural gas plant behind the meter on 20 acres in the New Albany International Business Park. Sidecat, an affiliate of Meta Platforms, is the electric load. Ownership matches Socrates South: Williams, through Will-Power OH, owns generation and Sidecat is the load. The plant will not connect to the grid. This figure is behind-the-meter generation, not IT load, and it is not the Prometheus AI cluster capacity. Energized MW and days to COD are empty.",
-    "sourceName": "Ohio Power Siting Board (GovDelivery)",
-    "sourceUrl": "https://content.govdelivery.com/accounts/OHPUC/bulletins/3f348f9",
+    "headline": "Williams says Socrates North remains under construction",
+    "summary": "Williams's Q2 2026 10-Q says Socrates North remains under construction. The customer is Meta's affiliate Sidecat LLC. This 200 MW is on-site generation and is not added to Meta's IT.",
+    "sourceName": "Williams Q2 2026 10-Q",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/107263/000010726326000026/wmb-20260630.htm",
     "confidence": "high",
-    "numberKind": "BTM generation",
+    "numberKind": "btm_gen",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "yes",
+    "bound": "exact",
   },
   {
     "id": "meta-prometheus-new-albany-1000",
@@ -2704,15 +3149,18 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 40.0817,
     "lng": -82.7846,
     "date": "2025-09-29",
-    "status": "construction",
+    "status": "announced",
     "headline": "Meta pins Prometheus at 1 GW of AI cluster capacity",
     "summary": "Engineering at Meta pinned the next AI cluster, Prometheus, at 1 gigawatt on 29 September 2025. The 1,000 MW figure is AI cluster capacity across multiple data center buildings. Meta's 9 January 2026 nuclear newsroom places the Prometheus supercluster in New Albany, Ohio. This row is not behind-the-meter generation and not IT load. Socrates South and Socrates North stay on their own rows. Oklo and Vistra nuclear matching stay on their existing rows. Energized MW and days to COD are empty.",
     "sourceName": "Engineering at Meta",
     "sourceUrl": "https://engineering.fb.com/2025/09/29/data-infrastructure/metas-infrastructure-evolution-and-the-advent-of-ai/",
     "confidence": "high",
-    "numberKind": "AI cluster capacity",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "target_not_firm"
   },
   {
     "id": "microsoft-crusoe-abilene-2-it-672",
@@ -2728,15 +3176,18 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 32.4487,
     "lng": -99.7331,
     "date": "2026-03-27",
-    "status": "construction",
+    "status": "announced",
     "headline": "Crusoe designs 672 MW critical IT for Microsoft at Abilene campus 2",
-    "summary": "On 27 March 2026 Crusoe announced a new Abilene campus for Microsoft, adjacent to its existing Abilene AI factory. Each of the two new buildings is designed for 336 MW of critical IT load, 672 MW combined. This row is that critical IT figure. It is not the 900 MW on-site plant, not the 2.1 GW full-site projection, and not the Stargate 1.2 GW campus already on Atlas. Land clearing is underway. Energized MW and days to COD are empty.",
+    "summary": "Site prep and plan-review building records that don't name Crusoe are not construction.",
     "sourceName": "Crusoe",
     "sourceUrl": "https://www.crusoe.ai/resources/newsroom/crusoe-announces-new-900-mw-ai-factory-campus-in-abilene-texas-to-support-microsoft-ai-infrastructure",
     "confidence": "high",
-    "numberKind": "contracted IT",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified_construction",
   },
   {
     "id": "microsoft-crusoe-abilene-2-btm-900",
@@ -2752,15 +3203,18 @@ export const COMMITMENTS: Commitment[] = [
     "lat": 32.4487,
     "lng": -99.7331,
     "date": "2026-03-27",
-    "status": "construction",
-    "headline": "Crusoe pairs the Microsoft Abilene campus with a 900 MW on-site plant",
-    "summary": "The same 27 March 2026 Crusoe release describes a 900 MW behind-the-meter on-site power plant for the new Microsoft campus, paired with a medium-voltage battery system. Chase Lochmiller called it 900 MW of new on-site power generation. This row is that plant. It is not the 672 MW critical IT load, not the 2.1 GW full-site projection, and not the Stargate 1.2 GW pin. The release does not name the plant fuel. Energized MW and days to COD are empty.",
+    "status": "announced",
+    "headline": "900 MW of on-site generation announced at Abilene campus 2",
+    "summary": "On 27 March 2026 Crusoe said the new Microsoft campus in Abilene includes 900 megawatts of new on-site power generation and a 900 MW on-site power plant. The only construction line in that release is land clearing and site preparation for the campus, which is not plant construction. Status is announced. Energized MW and COD are empty. The 672 MW critical IT row is separate and unchanged.",
     "sourceName": "Crusoe",
     "sourceUrl": "https://www.crusoe.ai/resources/newsroom/crusoe-announces-new-900-mw-ai-factory-campus-in-abilene-texas-to-support-microsoft-ai-infrastructure",
     "confidence": "high",
-    "numberKind": "BTM generation",
+    "numberKind": "btm_gen",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "status_flip_pending"
   },
   {
     "id": "coreweave-related-cheyenne-it-88",
@@ -2782,9 +3236,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Related Digital",
     "sourceUrl": "https://www.related.com/press-releases/2025-10-07/related-digital-breaks-ground-302-mw-data-center-campus-cheyenne-wyoming",
     "confidence": "high",
-    "numberKind": "contracted IT",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "coreweave-galaxy-helios-phase1-it-133",
@@ -2806,9 +3262,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Galaxy",
     "sourceUrl": "https://www.galaxy.com/newsroom/galaxy-completes-phase-i-of-its-helios-data-center-campus",
     "confidence": "high",
-    "numberKind": "contracted IT",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "lambda-kansas-city-phase-24",
@@ -2830,9 +3288,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Lambda",
     "sourceUrl": "https://lambda.ai/blog/lambda-to-build-a-100mw-ai-factory-in-kansas-city-mo",
     "confidence": "high",
-    "numberKind": "DC",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "microsoft-iren-childress-it-200",
@@ -2854,9 +3314,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "IREN",
     "sourceUrl": "https://iren.com/resources/blog/iren-signs97-billion-agreement-with-microsoft-to-deploy-ai-cloud-infrastructure",
     "confidence": "high",
-    "numberKind": "contracted IT",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "yes",
+    "bound": "exact"
   },
   {
     "id": "tensorwave-fermi-matador-facility-222",
@@ -2878,9 +3340,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Fermi America",
     "sourceUrl": "https://investor.fermiamerica.com/fermi-announces-binding-lease-agreement-with-tensorwave",
     "confidence": "high",
-    "numberKind": "facility power",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "nebius-highridge-pa-phase-260",
@@ -2902,9 +3366,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "Nebius",
     "sourceUrl": "https://nebius.com/schuylkillcountypa",
     "confidence": "high",
-    "numberKind": "DC",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "fluidstack-cameron-county-tx-1500",
@@ -2922,13 +3388,15 @@ export const COMMITMENTS: Commitment[] = [
     "date": "2026-09-21",
     "status": "construction",
     "headline": "Fluidstack begins Cameron County first phase, planned up to 1.5 GW",
-    "summary": "Fluidstack said on 21 September 2026 that construction has begun on the $4 billion first phase of its AI data center campus in Cameron County, Texas, in the Rio Grande Valley, planned to support up to 1.5 GW of capacity. This row is that announcement: 1,500 MW of campus design capacity (up to). Up to is not a contracted floor. First-phase design capacity is not a landlord IT pin. Do not add this 1,500 MW to the Fluidstack contracted IT rows at Lake Mariner (360 MW), Abernathy (168 MW), Barber Lake (207 MW), River Bend (245 MW), or Meridian Arc (430 MW). Those five rows stay at 1,410 MW of contracted IT and are not summed with this campus. This row is not the Anthropic $50 billion Texas and New York plan, which has no megawatt pin. The page says the project is expected to create more than 2,500 construction jobs and several hundred permanent jobs, that Fluidstack will pay for campus energy, infrastructure, and water, and that it requested and received no local property tax abatements. The map pin is the Cameron County centroid at 26.15 N, 97.45 W. The page does not publish a parcel. Atlas status is construction. The page says construction has begun, and no commercial operation date is given. The construction claim is high confidence. The 1,500 MW remains planned campus design capacity of up to 1.5 GW. Energized MW and days to COD are empty.",
+    "summary": "Fluidstack said on 21 September 2026 that construction has begun on the first phase of its AI data center campus in Cameron County, Texas, planned to support up to 1.5 GW. Do not add this campus to the separate Fluidstack campuses at Lake Mariner, Abernathy, Barber Lake, River Bend, or Meridian Arc. Those five campuses are not summed with this one. This row is not the Anthropic Texas and New York plan. The page does not publish a parcel. The page says construction has begun, and no commercial operation date is given.",
     "sourceName": "Fluidstack",
     "sourceUrl": "https://fluidstack.io/community/building-compute-in-cameron-county",
     "confidence": "high",
-    "numberKind": "campus design capacity (up to)",
+    "numberKind": "it_capacity",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "up_to"
   },
   {
     "id": "meta-lebanon-lcp-btm-134",
@@ -2947,13 +3415,15 @@ export const COMMITMENTS: Commitment[] = [
     "date": "2026-02-20",
     "status": "announced",
     "headline": "Life Cycle Power proposes 134 MW bridge gas for Meta Orla in Lebanon",
-    "summary": "Life Cycle Power proposes up to 134 MW of temporary natural-gas generators as bridge power solely for Meta's Orla LLC data center in Lebanon, Boone County, until permanent utility interconnection. The 20 February 2026 application (011-50087-00094) places the plant at 3602 West SR 32, next to Orla at 3062 West SR 32, and specifies 65 Caterpillar G3516H engines. IDEM treats LCP and Orla as a combined source for NSR and Title V, with separate permits (Orla T011-50034-00093, LCP 011-50087-00094). A public hearing is set for August 2026. This row is behind-the-meter generation, not IT load, and it is not the Fluidstack Meridian Arc campus in Sullivan County. The pin is the application coordinate for 3602 West SR 32. Energized MW and days to COD are empty.",
+    "summary": "Life Cycle Power proposes up to 134 MW of temporary natural-gas generators as bridge power solely for Meta's Orla LLC data center in Lebanon, Boone County, until permanent utility interconnection. The 20 February 2026 application (011-50087-00094) places the plant on West SR 32, next to Orla, also on West SR 32, and specifies 65 Caterpillar G3516H engines. IDEM treats LCP and Orla as a combined source for NSR and Title V, with separate permits (Orla T011-50034-00093, LCP 011-50087-00094). A public hearing is set for August 2026. This row is behind-the-meter generation, not IT load, and it is not the Fluidstack Meridian Arc campus in Sullivan County. The pin is the application coordinate on West SR 32. Energized MW and days to COD are empty.",
     "sourceName": "Indiana Department of Environmental Management",
     "sourceUrl": "https://www.in.gov/idem/files/notice_20260810_air_50034ph-js.pdf",
     "confidence": "high",
-    "numberKind": "BTM generation",
+    "numberKind": "btm_gen",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "fleet-peru-ridge-btm-218",
@@ -2976,9 +3446,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "PUCN docket 26-04027",
     "sourceUrl": "https://pucweb1.state.nv.us/puc2/DktInfo.aspx?Util=Electric",
     "confidence": "high",
-    "numberKind": "BTM generation",
+    "numberKind": "btm_gen",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "fleet-south-valley-btm-144",
@@ -3001,9 +3473,11 @@ export const COMMITMENTS: Commitment[] = [
     "sourceName": "PUCN docket 26-04026",
     "sourceUrl": "https://pucweb1.state.nv.us/puc2/DktInfo.aspx?Util=Electric",
     "confidence": "high",
-    "numberKind": "BTM generation",
+    "numberKind": "btm_gen",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "exact"
   },
   {
     "id": "edgeconnex-pcx-ii-new-albany-216",
@@ -3022,13 +3496,321 @@ export const COMMITMENTS: Commitment[] = [
     "date": "2025-11-20",
     "constructionStart": "2025-11",
     "status": "construction",
-    "headline": "EdgeConneX starts the 216 MW PowerConneX II New Albany plant",
-    "summary": "EdgeConneX affiliate PowerConneX is building the PowerConneX II New Albany Energy Center, a natural-gas plant of up to 216 MW on about 48.9 acres in New Albany, Licking County, Ohio. The plant is behind the meter for a data center on the same site. Ohio Power Siting Board minutes for 20 November 2025 record case 25-302-EL-BGN approved 7-0. EdgeConneX says construction started in November 2025. This row is behind-the-meter generation, not IT load. It is not the Meta Socrates North or South plants (Will-Power / Williams, 200 MW each) and it is not the Prometheus AI cluster. The pin is east of the Socrates coordinates so those pins stay put. Energized MW and days to COD are empty.",
+    "headline": "EdgeConneX started PowerConneX II in November 2025",
+    "summary": "EdgeConneX says construction started in November 2025. The only figure is up to 216 MW, so this row does not count.",
     "sourceName": "OPSB minutes Nov 20 2025, case 25-302-EL-BGN (approved 7-0)",
     "sourceUrl": "https://dam.assets.ohio.gov/image/upload/puco.ohio.gov/OPSB/minutes/2025/November_20_2025.pdf",
     "confidence": "high",
-    "numberKind": "BTM generation",
+    "numberKind": "btm_gen",
     "energizedMW": null,
-    "daysToCod": null
+    "daysToCod": null,
+    "counts": "no",
+    "bound": "up_to",
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "high",
+    "id": "coreweave-cs-denton-262",
+    "buyer": "CoreWeave",
+    "counterparty": "Core Scientific",
+    "project": "Denton critical IT (Core Scientific)",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 262,
+    "city": "Denton",
+    "state": "Texas",
+    "country": "United States",
+    "date": "2026-04",
+    "status": "construction",
+    "headline": "Core Scientific lists 262 MW critical IT at Denton",
+    "summary": "Core Scientific Exhibit 99.2 lists Denton, Texas at 262 MW critical IT capacity contracted with CoreWeave. The filing says 132 MW were billable as of March 2026, which is not an energized figure. Energized MW and COD are empty. Grid capacity on the same line is not on this row. Do not add this site to the 1,300 MW Core Scientific row.",
+    "sourceName": "Core Scientific Exhibit 99.2",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1839341/000119312526165121/d149019dex992.htm",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "high",
+    "id": "coreweave-cs-dalton-175",
+    "buyer": "CoreWeave",
+    "counterparty": "Core Scientific",
+    "project": "Dalton 1 critical IT (Core Scientific)",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 30,
+    "city": "Dalton",
+    "state": "Georgia",
+    "country": "United States",
+    "date": "2026-04",
+    "status": "construction",
+    "headline": "Core Scientific lists 30 MW critical IT at Dalton 1",
+    "summary": "Dalton 1 is 30 MW critical IT. Exhibit 99.2 says work has commenced, so this row counts. Dalton 4 is a separate row. Energized MW and COD are empty. Do not add this site to the 1,300 MW Core Scientific row.",
+    "sourceName": "Core Scientific Exhibit 99.2",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1839341/000119312526165121/d149019dex992.htm",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact"
+  },
+  {
+    "id": "coreweave-cs-dalton-4-145",
+    "parentId": "coreweave-cs-dalton-175",
+    "buyer": "CoreWeave",
+    "counterparty": "Core Scientific",
+    "project": "Dalton 4 critical IT (Core Scientific)",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 145,
+    "city": "Dalton",
+    "state": "Georgia",
+    "country": "United States",
+    "lat": null,
+    "lng": null,
+    "date": "2026-04",
+    "status": "announced",
+    "headline": "Core Scientific lists 145 MW critical IT at Dalton 4",
+    "summary": "Dalton 4 will feature a 145 MW data center and is a greenfield development.",
+    "sourceName": "Core Scientific Exhibit 99.2",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1839341/000119312526165121/d149019dex992.htm",
+    "confidence": "high",
+    "numberKind": "it_capacity",
+    "counts": "no",
+    "bound": "exact",
+    "excludeReason": "unverified_construction"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "high",
+    "id": "coreweave-cs-muskogee-70",
+    "buyer": "CoreWeave",
+    "counterparty": "Core Scientific",
+    "project": "Muskogee critical IT (Core Scientific)",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 70,
+    "city": "Muskogee",
+    "state": "Oklahoma",
+    "country": "United States",
+    "date": "2026-04",
+    "status": "construction",
+    "headline": "Core Scientific lists 70 MW critical IT at Muskogee",
+    "summary": "Core Scientific Exhibit 99.2 lists Muskogee, Oklahoma at 70 MW critical IT capacity contracted with CoreWeave. Status is construction from the filing. Energized MW and COD are empty. Grid capacity on the same line is not on this row. Do not add this site to the 1,300 MW Core Scientific row.",
+    "sourceName": "Core Scientific Exhibit 99.2",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1839341/000119312526165121/d149019dex992.htm",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "high",
+    "id": "coreweave-cs-marble-65",
+    "buyer": "CoreWeave",
+    "counterparty": "Core Scientific",
+    "project": "Marble critical IT (Core Scientific)",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 65,
+    "city": "Marble",
+    "state": "North Carolina",
+    "country": "United States",
+    "date": "2026-04",
+    "status": "construction",
+    "headline": "Core Scientific lists 65 MW critical IT at Marble",
+    "summary": "Core Scientific Exhibit 99.2 lists Marble, North Carolina at 65 MW critical IT capacity contracted with CoreWeave. Status is construction from the filing. Energized MW and COD are empty. Grid capacity on the same line is not on this row. Do not add this site to the 1,300 MW Core Scientific row.",
+    "sourceName": "Core Scientific Exhibit 99.2",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1839341/000119312526165121/d149019dex992.htm",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "high",
+    "id": "coreweave-cs-austin-16-5",
+    "buyer": "CoreWeave",
+    "counterparty": "Core Scientific",
+    "project": "Austin critical IT (Core Scientific)",
+    "techType": "datacenter",
+    "category": "datacenter",
+    "capacityMW": 16.5,
+    "city": "Austin",
+    "state": "Texas",
+    "country": "United States",
+    "date": "2026-04",
+    "status": "operational",
+    "headline": "Core Scientific lists 16.5 MW critical IT at Austin",
+    "summary": "Core Scientific Exhibit 99.2 lists Austin, Texas at 16.5 MW critical IT capacity contracted with CoreWeave. The filing says the Austin campus was completed in 2024, so status is operational. Energized MW and COD are empty because the filing does not state delivered MW. Do not add this site to the 1,300 MW Core Scientific row.",
+    "sourceName": "Core Scientific Exhibit 99.2",
+    "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1839341/000119312526165121/d149019dex992.htm",
+    "numberKind": "it_capacity",
+    "counts": "yes",
+    "bound": "exact"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "medium",
+    "id": "fermi-matador-gas-6000",
+    "buyer": "Fermi",
+    "counterparty": "",
+    "project": "Matador gas plant (TCEQ nameplate)",
+    "techType": "gas",
+    "category": "energy",
+    "capacityMW": 6000,
+    "city": "Carson County",
+    "state": "Texas",
+    "country": "United States",
+    "date": "",
+    "status": "announced",
+    "headline": "TCEQ review lists about 6,000 MW at Matador",
+    "summary": "A TCEQ technical review says the project's nominal generation capacity will be approximately 6,000 MW, solely onsite. Status is announced. The permit is not construction. Energized MW and COD are empty. No map pin: the filing does not give a site coordinate. Do not add this plant to the TensorWave 222 MW facility row.",
+    "sourceName": "TCEQ technical review",
+    "sourceUrl": "https://records.tceq.texas.gov/cs/idcplg?allowInterrupt=1&dDocName=8281238&dID=9562398&IdcService=GET_FILE",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "exact"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "medium",
+    "id": "amazon-gw-ranch-gas-5000",
+    "buyer": "Pacifico GW LLC",
+    "counterparty": "",
+    "project": "GW Ranch Energy Center gas plant",
+    "techType": "gas",
+    "category": "energy",
+    "capacityMW": 5000,
+    "city": "Pecos County",
+    "state": "Texas",
+    "country": "United States",
+    "date": "",
+    "status": "announced",
+    "headline": "Air permit lists 5,000 MW at GW Ranch",
+    "summary": "The air permit technical review says Pacifico GW LLC proposes 35 natural gas-fired simple-cycle turbines at the GW Ranch Energy Center in Pecos County, with a nominal output of 5,000 megawatts. The plant is described as off-grid. This is not an Amazon IT row. Status is announced. Energized MW and COD are empty. No map pin: the filing does not give a site coordinate.",
+    "sourceName": "TCEQ air permit technical review",
+    "sourceUrl": "https://ukozvhzgrcnkcatjqfoo.supabase.co/storage/v1/object/public/03-00-air-construction/2026_01_21_GW_Ranch_Energy_Center_181033__PSDTX167_f6c9943f.pdf",
+    "numberKind": "btm_gen",
+    "counts": "no",
+    "bound": "exact"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "high",
+    "id": "goodnight-one-crusoe-265-5",
+    "buyer": "Crusoe",
+    "counterparty": "GOODNIT1",
+    "project": "Goodnight One large load",
+    "techType": "grid",
+    "category": "energy",
+    "capacityMW": 265.5,
+    "city": "",
+    "state": "Texas",
+    "country": "United States",
+    "date": "",
+    "status": "announced",
+    "headline": "PUCT study lists a 265.5 MW large load at Goodnight One",
+    "summary": "A PUCT and ERCOT study describes the net metering arrangement between GOODNIT1 and the 265.5 MW large load. This is utility load for Crusoe One, on hold, and announced. It is not IT capacity and it is not the 265.5 MW wind nameplate in the same report. Energized MW and COD are empty. No map pin: the study does not give a site coordinate in the cited line.",
+    "sourceName": "PUCT docket 59220",
+    "sourceUrl": "https://interchange.puc.texas.gov/Documents/59220_16_1650244.PDF",
+    "numberKind": "utility_load",
+    "counts": "no",
+    "bound": "exact"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "high",
+    "id": "goodnight-two-ensign-260",
+    "buyer": "Ensign",
+    "counterparty": "Crusoe",
+    "project": "Goodnight Two large load",
+    "techType": "grid",
+    "category": "energy",
+    "capacityMW": 260,
+    "city": "",
+    "state": "Texas",
+    "country": "United States",
+    "date": "",
+    "status": "announced",
+    "headline": "PUCT study lists a 260 MW data center load at Goodnight Two",
+    "summary": "A PUCT and ERCOT study describes a new 260 MW artificial-intelligence data-center complex. This is utility load for Ensign and Crusoe Two, on hold, and announced. It is not IT capacity and it is not a wind nameplate. Energized MW and COD are empty. No map pin: the study does not give a site coordinate in the cited line.",
+    "sourceName": "PUCT docket 59220",
+    "sourceUrl": "https://interchange.puc.texas.gov/Documents/59220_16_1650244.PDF",
+    "numberKind": "utility_load",
+    "counts": "no",
+    "bound": "exact"
+  },
+  {
+    "constructionStart": null,
+    "onlineDate": null,
+    "energizedMW": null,
+    "daysToCod": null,
+    "lat": null,
+    "lng": null,
+    "confidence": "high",
+    "id": "nebius-independence-200",
+    "buyer": "Nebius",
+    "counterparty": "Independence Power and Light",
+    "project": "Independence utility delivery",
+    "techType": "grid",
+    "category": "energy",
+    "capacityMW": 200,
+    "city": "Independence",
+    "state": "Missouri",
+    "country": "United States",
+    "date": "",
+    "status": "announced",
+    "headline": "Independence plans for IPL to deliver 200 MW",
+    "summary": "The City of Independence deck says IPL is to deliver 200 MW in late Q3 2026. This is utility delivery, on hold, and announced. It is not IT capacity and it is not the 1.2 GW design held separately. Energized MW and COD are empty. No map pin: the deck does not give a site coordinate in the cited line.",
+    "sourceName": "City of Independence",
+    "sourceUrl": "https://www.independencemo.gov/sites/default/files/2026-02/Nebius%20x%20Independence%2C%20MO.cleaned.pdf",
+    "numberKind": "utility_load",
+    "counts": "no",
+    "bound": "exact"
   }
 ];

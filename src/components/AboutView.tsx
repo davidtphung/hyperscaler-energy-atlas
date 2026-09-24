@@ -1,11 +1,11 @@
 import { ERA, ERA_ORDER } from "../lib/era";
+import DonateView from "./DonateView";
 
 interface Props {
   total: number;
-  totalGW: string;
 }
 
-export default function AboutView({ total, totalGW }: Props) {
+export default function AboutView({ total }: Props) {
   return (
     <div className="page page--about">
       <header className="page__head">
@@ -13,12 +13,24 @@ export default function AboutView({ total, totalGW }: Props) {
         <h1 className="page__title">How this atlas is built</h1>
         <p className="page__lead">
           HYPERGRID maps the energy and datacenter commitments behind the AI build. It tracks {total} source-backed
-          commitments totaling about {totalGW} GW of committed capacity, across time, space, and energy source.
+          commitments. Capacity is shown as a separate total for each kind. Those totals are not added together.
         </p>
       </header>
 
       <div className="about-grid">
         <section className="prose">
+          <h2>What counts in a firm total</h2>
+          <p>
+            A row counts only when its own cited link shows that site being built or running. A contract with
+            a plant also counts. An issued permit is not evidence of construction. A permitted row stays out
+            until a link shows the capacity under construction or operating. An exact figure counts. A public
+            filing also counts when it says approximately and it shows that built or running capacity, and the
+            atlas marks that figure with a tilde. A public filing means an SEC filing, a state or federal
+            regulator order or docket, or a utility or grid filing. Figures that say up to, as much as, over,
+            or at least stay out, as do goals, slogans, press releases, news articles, and newsletters. The
+            five kinds stay separate and are not added together.
+          </p>
+
           <h2>What counts as a commitment</h2>
           <p>
             A commitment is a publicly announced agreement, filing, or pledge that ties a hyperscaler or AI compute
@@ -45,8 +57,8 @@ export default function AboutView({ total, totalGW }: Props) {
           <p>
             Confidence reflects how well the reported figures are sourced, from high (company release or filing with a
             clear capacity) to low (early or estimated). Firmness is separate: it reflects contract maturity, from
-            operational and under construction through signed PPA, announced, and exploratory. A deal can be real but
-            still speculative on capacity, and the interface keeps those two ideas distinct.
+            operational and under construction through permitted, contracted, signed PPA, announced, and exploratory. A deal can
+            be real but still speculative on capacity, and the interface keeps those two ideas distinct.
           </p>
 
           <h2>Live grid input</h2>
@@ -63,9 +75,9 @@ export default function AboutView({ total, totalGW }: Props) {
           <ul className="schema-list">
             {[
               "buyer", "actorKind", "counterparty", "project", "category", "techType (energy source)",
-              "capacityMW", "numberKind", "energizedMW", "daysToCod", "status", "era",
+              "capacityMW", "numberKind", "counts", "bound", "excludeReason", "parentId", "energizedMW", "daysToCod", "status", "era",
               "confidence", "date", "constructionStart (empty unless sourced)", "onlineDate (empty unless sourced)", "city / state / country",
-              "lat / lng", "summary", "sourceName", "sourceUrl",
+              "lat / lng", "locationApprox (pin is not an exact site)", "summary", "sourceName", "sourceUrl",
             ].map((f) => (
               <li key={f}><code>{f}</code></li>
             ))}
@@ -91,6 +103,7 @@ export default function AboutView({ total, totalGW }: Props) {
           </p>
         </aside>
       </div>
+      <DonateView />
     </div>
   );
 }

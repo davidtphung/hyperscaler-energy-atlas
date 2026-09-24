@@ -101,10 +101,12 @@ export function sourceGroup(t: TechType): SourceGroup {
 export const STATUS: Record<Status, { label: string; rank: number }> = {
   operational: { label: "Operational", rank: 0 },
   construction: { label: "Under construction", rank: 1 },
-  "ppa-signed": { label: "PPA signed", rank: 2 },
-  announced: { label: "Announced", rank: 3 },
-  exploratory: { label: "Exploratory", rank: 4 },
-  cancelled: { label: "Cancelled", rank: 5 },
+  permitted: { label: "Permitted", rank: 2 },
+  contracted: { label: "Contracted", rank: 3 },
+  "ppa-signed": { label: "PPA signed", rank: 4 },
+  announced: { label: "Announced", rank: 5 },
+  exploratory: { label: "Exploratory", rank: 6 },
+  cancelled: { label: "Cancelled", rank: 7 },
 };
 
 export const CATEGORY: Record<Category, { label: string }> = {

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
-import { formatCapacity, formatFullDate, formatGW, formatLocation, formatNumberKind, formatNumberKindNote, formatSourcedDate } from "../lib/format";
-import { isNonGenerationUnit, sumMW } from "../lib/select";
+import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
+import { announcedCount, firmKindTotals, kindHeroNote } from "../lib/select";
 
 interface Props {
   selected: PreparedCommitment | null;
@@ -37,17 +37,12 @@ function Overview({
   onSelect: (id: string) => void;
 }) {
   const stats = useMemo(() => {
-    const totalGW = sumMW(visible);
-    const buyers = new Set(visible.map((c) => c.buyer));
-    const opGW = sumMW(visible.filter((c) => c.status === "operational"));
-    const byBuyer = new Map<string, number>();
-    for (const c of visible) {
-      if (isNonGenerationUnit(c)) continue;
-      byBuyer.set(c.buyer, (byBuyer.get(c.buyer) ?? 0) + (c.capacityMW ?? 0));
-    }
-    const bars = [...byBuyer.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6);
-    const maxBar = Math.max(1, ...bars.map((b) => b[1]));
-    return { totalGW, buyers: buyers.size, opGW, bars, maxBar };
+    const actors = new Set(visible.map((c) => c.buyer));
+    return {
+      kinds: firmKindTotals(visible),
+      actors: actors.size,
+      announced: announcedCount(visible),
+    };
   }, [visible]);
 
   const recent = useMemo(() => [...visible].sort((a, b) => b.t - a.t).slice(0, 40), [visible]);
@@ -59,52 +54,34 @@ function Overview({
         The hyperscalers are buying the <em>future of energy</em> to feed the AI era.
       </h2>
 
-      <div className="stat-grid">
-        <div className="stat">
-          <div className="stat__val">
-            {formatGW(stats.totalGW)}
-            <small>GW</small>
+      <div className="kind-totals" aria-label="Firm totals by kind">
+        {stats.kinds.map((k) => (
+          <div className="kind-total" key={k.kind}>
+            <div className="kind-total__val">
+              {formatPower(k.mw, k.approx)}
+              {k.mw >= 1000 && <small className="kind-total__mw">{formatExactMW(k.mw)}</small>}
+            </div>
+            <div className="kind-total__label">{formatNumberKind(k.kind)}</div>
+            <div className="kind-total__meta">{k.rows} {k.rows === 1 ? "row" : "rows"} counted</div>
+            {kindHeroNote(k.kind, visible) && (
+              <p className="kind-note">{kindHeroNote(k.kind, visible)}</p>
+            )}
           </div>
-          <div className="stat__label">Capacity committed</div>
-        </div>
+        ))}
+      </div>
+      <p className="kind-note">These totals are separate. They are not added together.</p>
+      <p className="kind-note">Announced: {stats.announced} {stats.announced === 1 ? "row" : "rows"}. Not included in the totals above.</p>
+
+      <div className="stat-grid">
         <div className="stat">
           <div className="stat__val">{visible.length}</div>
           <div className="stat__label">Commitments in view</div>
         </div>
         <div className="stat">
-          <div className="stat__val">{stats.buyers}</div>
+          <div className="stat__val">{stats.actors}</div>
           <div className="stat__label">Actors</div>
         </div>
-        <div className="stat">
-          <div className="stat__val">
-            {formatGW(stats.opGW)}
-            <small>GW</small>
-          </div>
-          <div className="stat__label">Already operational</div>
-        </div>
       </div>
-
-      {stats.bars.length > 0 && (
-        <div className="rail__group" style={{ marginBottom: 22 }}>
-          <div className="rail__head">
-            <h3 className="rail__title">Capacity by actor</h3>
-          </div>
-          <div className="bars">
-            {stats.bars.map(([name, mw]) => (
-              <div className="bar__row" key={name}>
-                <span className="bar__name">{name}</span>
-                <span className="bar__track">
-                  <span
-                    className="bar__fill"
-                    style={{ width: `${(mw / stats.maxBar) * 100}%`, background: buyerAccent(name) }}
-                  />
-                </span>
-                <span className="bar__val">{mw ? `${formatGW(mw)} GW` : "n/a"}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       <div className="rail__group">
         <div className="rail__head">
@@ -123,7 +100,7 @@ function Overview({
                   {c.buyer} · {formatFullDate(c.date)}
                 </span>
               </span>
-              <span className="legend__val">{formatCapacity(c.capacityMW)}</span>
+              <span className="legend__val">{formatBoundPower(c.capacityMW, c.bound)}</span>
             </button>
           ))}
         </div>
@@ -148,9 +125,12 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
           <span className="detail__buyer-kind">{c.actorKind}</span>
         </div>
         <h2 className="detail__title">{c.project}</h2>
-        <div className="detail__loc">{formatLocation(c.city, c.state, c.country) || c.country}</div>
+        <div className="detail__loc">
+          {formatLocation(c.city, c.state, c.country) || c.country}
+          {c.locationApprox && <span className="detail__loc-note">Approximate pin. Not an exact site.</span>}
+        </div>
         <div className="detail__capten">
-          <span className="detail__cap">{formatCapacity(c.capacityMW)}</span>
+          <span className="detail__cap">{formatBoundPower(c.capacityMW, c.bound)}</span>
           <span className="detail__cap-label">
             {formatNumberKind(c.numberKind) ?? (c.capacityMW ? "committed capacity" : "capacity undisclosed")}
           </span>
@@ -165,12 +145,12 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
             <span className="kv__k">Technology</span>
             <span className="kv__v" style={{ display: "inline-flex", alignItems: "center", gap: 7 }}>
               <span style={{ width: 8, height: 8, borderRadius: 2, background: techColor(c.techType) }} />
-              {c.numberKind === "BTM generation" && c.techType === "datacenter" ? "On-site generation" : TECH[c.techType].label}
+              {c.numberKind === "btm_gen" ? "On-site generation" : TECH[c.techType].label}
             </span>
           </div>
           <div className="kv__row">
             <span className="kv__k">Status</span>
-            <span className="kv__v">{STATUS[c.status].label}</span>
+            <span className="kv__v">{c.excludeReason === "restart" ? "Restart in progress" : STATUS[c.status].label}</span>
           </div>
           <div className="kv__row">
             <span className="kv__k">Category</span>
@@ -206,8 +186,8 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
           )}
           {"energizedMW" in c && (
             <div className="kv__row">
-              <span className="kv__k">Energized MW</span>
-              <span className="kv__v">{c.energizedMW == null ? "empty" : formatCapacity(c.energizedMW)}</span>
+              <span className="kv__k">Energized</span>
+              <span className="kv__v">{c.energizedMW == null ? "empty" : formatPower(c.energizedMW)}</span>
             </div>
           )}
           {"daysToCod" in c && (
@@ -225,10 +205,15 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
           </svg>
           Source: {c.sourceName}
         </a>
+        {c.sourceUrl2 && (
+          <a className="detail__source" href={c.sourceUrl2} target="_blank" rel="noopener noreferrer">
+            Source: {c.sourceName2 ?? c.sourceUrl2}
+          </a>
+        )}
 
         <p style={{ fontSize: 11, color: "var(--text-4)", marginTop: 2 }}>
           {formatNumberKindNote(c.numberKind) ??
-            `${formatGW(c.capacityMW ?? 0)} GW equivalent. Figures reflect publicly reported headline capacity.`}
+            `${formatBoundPower(c.capacityMW, c.bound)}. Figures reflect publicly reported headline capacity.`}
         </p>
       </div>
     </div>

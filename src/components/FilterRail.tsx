@@ -20,7 +20,7 @@ interface Props {
   onClose: () => void;
 }
 
-const STATUS_ORDER: Status[] = ["operational", "construction", "ppa-signed", "announced", "exploratory"];
+const STATUS_ORDER: Status[] = ["operational", "construction", "permitted", "contracted", "ppa-signed", "announced", "exploratory"];
 const CAT_ORDER: Category[] = ["energy", "datacenter"];
 
 function groupActors(buyers: string[]): { kind: ActorKind; buyers: string[] }[] {
