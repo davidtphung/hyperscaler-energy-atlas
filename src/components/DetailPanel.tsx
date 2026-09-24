@@ -73,7 +73,7 @@ function Overview({
         </div>
         <div className="stat">
           <div className="stat__val">{stats.buyers}</div>
-          <div className="stat__label">Buyers active</div>
+          <div className="stat__label">Actors</div>
         </div>
         <div className="stat">
           <div className="stat__val">
@@ -87,7 +87,7 @@ function Overview({
       {stats.bars.length > 0 && (
         <div className="rail__group" style={{ marginBottom: 22 }}>
           <div className="rail__head">
-            <h3 className="rail__title">Capacity by buyer</h3>
+            <h3 className="rail__title">Capacity by actor</h3>
           </div>
           <div className="bars">
             {stats.bars.map(([name, mw]) => (
@@ -145,6 +145,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
         <div className="detail__buyer">
           <span className="detail__buyer-dot" style={{ background: buyerAccent(c.buyer) }} />
           <span className="detail__buyer-name">{c.buyer}</span>
+          <span className="detail__buyer-kind">{c.actorKind}</span>
         </div>
         <h2 className="detail__title">{c.project}</h2>
         <div className="detail__loc">{formatLocation(c.city, c.state, c.country) || c.country}</div>

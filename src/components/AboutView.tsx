@@ -62,7 +62,7 @@ export default function AboutView({ total, totalGW }: Props) {
           <p>Each record is normalized to these fields:</p>
           <ul className="schema-list">
             {[
-              "buyer", "counterparty", "project", "category", "techType (energy source)",
+              "buyer", "actorKind", "counterparty", "project", "category", "techType (energy source)",
               "capacityMW", "numberKind", "energizedMW", "daysToCod", "status", "era",
               "confidence", "date", "constructionStart (empty unless sourced)", "onlineDate (empty unless sourced)", "city / state / country",
               "lat / lng", "summary", "sourceName", "sourceUrl",

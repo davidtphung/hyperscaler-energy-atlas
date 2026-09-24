@@ -122,6 +122,7 @@ export const BUYER_ACCENT: Record<string, string> = {
   "Amazon / AWS": "#f2a93b",
   AWS: "#f2a93b",
   Meta: "#a78bfa",
+  "Meta (Orla LLC load)": "#a78bfa",
   OpenAI: "#6ee7b7",
   Oracle: "#ef6f53",
   xAI: "#c0c7d0",
@@ -140,6 +141,8 @@ export const BUYER_ACCENT: Record<string, string> = {
   GDS: "#e0916b",
   Chindata: "#9ad17a",
   "New Era Energy & Digital": "#5ec8c5",
+  "Fleet Data Centers (Tract Capital)": "#8fb89a",
+  "EdgeConneX (PowerConneX New Albany 2)": "#6cb4c9",
 };
 
 export function buyerAccent(buyer: string): string {

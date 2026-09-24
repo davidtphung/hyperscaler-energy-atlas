@@ -1,6 +1,7 @@
 import type { Commitment, PreparedCommitment, TechType, Status, Category, Era } from "../types";
 import { parseDate } from "./format";
 import { classifyEra } from "./era";
+import { resolveActorKind } from "./actors";
 
 export interface FilterState {
   buyers: Set<string>;
@@ -15,7 +16,14 @@ export function prepare(commitments: Commitment[]): PreparedCommitment[] {
   return commitments
     .map((c) => {
       const t = parseDate(c.date);
-      return { ...c, t, year: new Date(t).getUTCFullYear(), era: classifyEra(t), point: null };
+      return {
+        ...c,
+        actorKind: resolveActorKind(c.buyer, c.actorKind),
+        t,
+        year: new Date(t).getUTCFullYear(),
+        era: classifyEra(t),
+        point: null,
+      };
     })
     .sort((a, b) => a.t - b.t);
 }
@@ -44,7 +52,8 @@ export function domainOf(prepared: PreparedCommitment[]): Domain {
 
 function matchesQuery(c: Commitment, q: string): boolean {
   if (!q) return true;
-  const hay = `${c.buyer} ${c.counterparty} ${c.project} ${c.city} ${c.state} ${c.country} ${c.summary}`.toLowerCase();
+  const kind = "actorKind" in c && c.actorKind ? c.actorKind : "";
+  const hay = `${c.buyer} ${kind} ${c.counterparty} ${c.project} ${c.city} ${c.state} ${c.country} ${c.summary}`.toLowerCase();
   return q
     .toLowerCase()
     .split(/\s+/)

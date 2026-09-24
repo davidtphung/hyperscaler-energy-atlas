@@ -242,7 +242,7 @@ export default function TopBar({ page, onPageChange, query, onQuery, onToggleRai
             type="search"
             value={query}
             onChange={(e) => onQuery(e.target.value)}
-            placeholder="Search projects, buyers, places"
+            placeholder="Search projects, actors, places"
             aria-label="Search commitments"
           />
           {query && (
