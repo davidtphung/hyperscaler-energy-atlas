@@ -31,6 +31,21 @@ export type Status =
 
 export type Confidence = "high" | "medium" | "low";
 
+/**
+ * Who the named actor is. The buyer string stays the display name.
+ * Kinds keep hyperscalers, labs, neoclouds, landlords, and capital from
+ * sitting in one Buyer list.
+ */
+export type ActorKind =
+  | "Hyperscaler"
+  | "AI lab"
+  | "Neocloud"
+  | "Colocation/landlord"
+  | "Capital/JV"
+  | "China hyperscale"
+  | "Vendor/developer"
+  | "Undisclosed";
+
 /** How capacityMW should be read. Omitted on legacy headline-MW rows. */
 export type NumberKind =
   | "contracted IT"
@@ -51,8 +66,13 @@ export type NumberKind =
 
 export interface Commitment {
   id: string;
-  /** The hyperscaler or AI compute buyer. */
+  /** Display name of the actor (hyperscaler, lab, landlord, or other). */
   buyer: string;
+  /**
+   * Actor kind. Omitted on legacy rows; resolved from the buyer string.
+   * Set explicitly when the display name would not map on its own.
+   */
+  actorKind?: ActorKind;
   /** Energy provider, developer, or partner. Empty string when none. */
   counterparty: string;
   project: string;
@@ -279,6 +299,8 @@ export interface HistoryMilestone {
 
 /** A commitment with derived, render-ready fields attached. */
 export interface PreparedCommitment extends Commitment {
+  /** Resolved actor kind. Always set, even when the source row omits it. */
+  actorKind: ActorKind;
   /** Parsed timestamp (ms) of the commitment date. */
   t: number;
   year: number;

@@ -1,7 +1,8 @@
 import type { FilterState, FacetCounts } from "../lib/select";
-import type { TechType, Status, Category, Era } from "../types";
+import type { TechType, Status, Category, Era, ActorKind } from "../types";
 import { TECH, TECH_ORDER, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { ERA, ERA_ORDER } from "../lib/era";
+import { ACTOR_KIND_ORDER, actorKindForBuyer } from "../lib/actors";
 
 interface Props {
   filters: FilterState;
@@ -21,6 +22,20 @@ interface Props {
 
 const STATUS_ORDER: Status[] = ["operational", "construction", "ppa-signed", "announced", "exploratory"];
 const CAT_ORDER: Category[] = ["energy", "datacenter"];
+
+function groupActors(buyers: string[]): { kind: ActorKind; buyers: string[] }[] {
+  const groups = new Map<ActorKind, string[]>();
+  for (const buyer of buyers) {
+    const kind = actorKindForBuyer(buyer);
+    const list = groups.get(kind);
+    if (list) list.push(buyer);
+    else groups.set(kind, [buyer]);
+  }
+  return ACTOR_KIND_ORDER.filter((kind) => groups.has(kind)).map((kind) => ({
+    kind,
+    buyers: groups.get(kind) ?? [],
+  }));
+}
 
 export default function FilterRail({
   filters,
@@ -69,20 +84,27 @@ export default function FilterRail({
 
       <div className="rail__group">
         <div className="rail__head">
-          <h3 className="rail__title">Buyer</h3>
+          <h3 className="rail__title">Actor</h3>
         </div>
-        <div className="chips">
-          {buyers.map((b) => {
-            const on = filters.buyers.has(b);
-            const n = counts.buyers[b] ?? 0;
-            return (
-              <button key={b} className="chip" aria-pressed={on} onClick={() => onToggleBuyer(b)}>
-                <span className="chip__dot" style={{ background: buyerAccent(b) }} />
-                {b}
-                <span className="chip__count">{n}</span>
-              </button>
-            );
-          })}
+        <div className="chip-groups">
+          {groupActors(buyers).map((group) => (
+            <div key={group.kind}>
+              <div className="chip-group__label">{group.kind}</div>
+              <div className="chips">
+                {group.buyers.map((b) => {
+                  const on = filters.buyers.has(b);
+                  const n = counts.buyers[b] ?? 0;
+                  return (
+                    <button key={b} className="chip" aria-pressed={on} onClick={() => onToggleBuyer(b)}>
+                      <span className="chip__dot" style={{ background: buyerAccent(b) }} />
+                      {b}
+                      <span className="chip__count">{n}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
