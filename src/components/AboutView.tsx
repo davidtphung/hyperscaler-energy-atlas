@@ -21,14 +21,14 @@ export default function AboutView({ total }: Props) {
         <section className="prose">
           <h2>What counts in a firm total</h2>
           <p>
-            A row counts only when it is under construction or operating, the figure is for that built capacity,
-            and a primary source states it. An issued permit is not evidence of construction. A permitted row
-            stays out until a primary source shows the capacity under construction or operating. An exact figure
-            counts. A public filing also counts when it says approximately, and the atlas marks that figure with
-            a tilde. A public filing means an SEC filing, a state or federal regulator permit or order, or a
-            utility or grid filing. Figures that say up to, as much as, over, or at least stay out, as do goals,
-            slogans, press releases, news articles, and newsletters. The five kinds stay separate and are not
-            added together.
+            A row counts only when its own cited link shows that site being built or running. A contract with
+            a plant also counts. An issued permit is not evidence of construction. A permitted row stays out
+            until a link shows the capacity under construction or operating. An exact figure counts. A public
+            filing also counts when it says approximately and it shows that built or running capacity, and the
+            atlas marks that figure with a tilde. A public filing means an SEC filing, a state or federal
+            regulator order or docket, or a utility or grid filing. Figures that say up to, as much as, over,
+            or at least stay out, as do goals, slogans, press releases, news articles, and newsletters. The
+            five kinds stay separate and are not added together.
           </p>
 
           <h2>What counts as a commitment</h2>
@@ -57,7 +57,7 @@ export default function AboutView({ total }: Props) {
           <p>
             Confidence reflects how well the reported figures are sourced, from high (company release or filing with a
             clear capacity) to low (early or estimated). Firmness is separate: it reflects contract maturity, from
-            operational and under construction through permitted, signed PPA, announced, and exploratory. A deal can
+            operational and under construction through permitted, contracted, signed PPA, announced, and exploratory. A deal can
             be real but still speculative on capacity, and the interface keeps those two ideas distinct.
           </p>
 

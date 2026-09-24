@@ -25,6 +25,7 @@ export type Status =
   | "operational"
   | "construction"
   | "permitted"
+  | "contracted"
   | "ppa-signed"
   | "announced"
   | "exploratory"
@@ -75,7 +76,8 @@ export type ExcludeReason =
   | "target_not_firm"
   | "restart"
   | "status_flip_pending"
-  | "remove_candidate";
+  | "remove_candidate"
+  | "unverified_construction";
 
 export interface Commitment {
   id: string;
@@ -117,6 +119,9 @@ export interface Commitment {
   summary: string;
   sourceName: string;
   sourceUrl: string;
+  /** Second cited link. Omitted when the row has one source. */
+  sourceName2?: string;
+  sourceUrl2?: string;
   confidence: Confidence;
   /** What capacityMW measures. Required on every row. */
   numberKind: NumberKind;

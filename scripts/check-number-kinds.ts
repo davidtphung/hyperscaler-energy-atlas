@@ -28,6 +28,7 @@ const REASONS = new Set<ExcludeReason>([
   "restart",
   "status_flip_pending",
   "remove_candidate",
+  "unverified_construction",
 ]);
 const NEVER = new Set<NumberKind>(["program", "equipment_supply", "storage", "utility_load", "unresolved"]);
 const COUNTABLE = new Set<NumberKind>(["it_capacity", "grid_gen_for_dc", "btm_gen", "offtake_new", "offtake_existing"]);
@@ -37,6 +38,7 @@ const ids = new Set(COMMITMENTS.map((c) => c.id));
 const byId = new Map(COMMITMENTS.map((c) => [c.id, c]));
 
 if (ids.size !== COMMITMENTS.length) errors.push("duplicate commitment ids");
+if (COMMITMENTS.length !== 150) errors.push(`expected 150 rows, got ${COMMITMENTS.length}`);
 
 for (const c of COMMITMENTS) {
   if (!c.numberKind || !KINDS.has(c.numberKind)) errors.push(`${c.id}: missing or illegal numberKind`);
@@ -51,8 +53,9 @@ for (const c of COMMITMENTS) {
     errors.push(`${c.id}: exact countable construction or operational row has counts=no and no excludeReason`);
   }
   if (c.counts === "yes" && c.excludeReason) errors.push(`${c.id}: counted row has an excludeReason`);
-  if (c.counts === "yes" && c.status !== "construction" && c.status !== "operational") {
-    errors.push(`${c.id}: counted row is not under construction or operating`);
+  const countableStatus = c.status === "construction" || c.status === "operational" || c.status === "contracted";
+  if (c.counts === "yes" && !countableStatus) {
+    errors.push(`${c.id}: counted row is not under construction, operating, or contracted`);
   }
   if (c.status === "permitted" && c.counts === "yes") {
     errors.push(`${c.id}: an issued permit is not construction evidence`);
@@ -76,11 +79,11 @@ for (const c of COMMITMENTS) {
 }
 
 const EXPECTED: Record<string, { rows: number; mw: number; rendered: string }> = {
-  it_capacity: { rows: 24, mw: 11223.5, rendered: "11.22 GW (11,223.5 MW)" },
+  it_capacity: { rows: 15, mw: 7024.5, rendered: "7.02 GW (7,024.5 MW)" },
   grid_gen_for_dc: { rows: 0, mw: 0, rendered: "0 MW" },
-  btm_gen: { rows: 3, mw: 616, rendered: "616 MW" },
+  btm_gen: { rows: 0, mw: 0, rendered: "0 MW" },
   offtake_new: { rows: 3, mw: 1188, rendered: "1.19 GW (1,188 MW)" },
-  offtake_existing: { rows: 1, mw: 140, rendered: "140 MW" },
+  offtake_existing: { rows: 0, mw: 0, rendered: "0 MW" },
 };
 
 const POWER_CASES: [number, string][] = [

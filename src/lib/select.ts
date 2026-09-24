@@ -136,6 +136,21 @@ export function gridHeroNote(
   return null;
 }
 
+/** Extra line on a zero hero card, built from the rows in view. */
+export function kindHeroNote(
+  kind: NumberKind,
+  list: Pick<Commitment, "id" | "numberKind" | "counts" | "status">[],
+): string | null {
+  if (kind === "grid_gen_for_dc") return gridHeroNote(list);
+  const rows = list.filter((c) => c.numberKind === kind);
+  if (rows.some((c) => c.counts === "yes")) return null;
+  const permitted = rows.filter((c) => c.status === "permitted" && c.counts !== "yes");
+  if (permitted.length === 0) return null;
+  const n = permitted.length === 1 ? "One" : String(permitted.length);
+  const word = permitted.length === 1 ? "project" : "projects";
+  return `0 MW counted. ${n} permitted ${word}, no construction shown.`;
+}
+
 /** Rows with a number kind are not mixed into a single generation total. */
 export function isNonGenerationUnit(c: { numberKind?: string }): boolean {
   return Boolean(c.numberKind);

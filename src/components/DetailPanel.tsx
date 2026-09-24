@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
-import { announcedCount, firmKindTotals, gridHeroNote } from "../lib/select";
+import { announcedCount, firmKindTotals, kindHeroNote } from "../lib/select";
 
 interface Props {
   selected: PreparedCommitment | null;
@@ -42,7 +42,6 @@ function Overview({
       kinds: firmKindTotals(visible),
       actors: actors.size,
       announced: announcedCount(visible),
-      gridNote: gridHeroNote(visible),
     };
   }, [visible]);
 
@@ -64,8 +63,8 @@ function Overview({
             </div>
             <div className="kind-total__label">{formatNumberKind(k.kind)}</div>
             <div className="kind-total__meta">{k.rows} {k.rows === 1 ? "row" : "rows"} counted</div>
-            {k.kind === "grid_gen_for_dc" && stats.gridNote && (
-              <p className="kind-note">{stats.gridNote}</p>
+            {kindHeroNote(k.kind, visible) && (
+              <p className="kind-note">{kindHeroNote(k.kind, visible)}</p>
             )}
           </div>
         ))}
@@ -206,6 +205,11 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
           </svg>
           Source: {c.sourceName}
         </a>
+        {c.sourceUrl2 && (
+          <a className="detail__source" href={c.sourceUrl2} target="_blank" rel="noopener noreferrer">
+            Source: {c.sourceName2 ?? c.sourceUrl2}
+          </a>
+        )}
 
         <p style={{ fontSize: 11, color: "var(--text-4)", marginTop: 2 }}>
           {formatNumberKindNote(c.numberKind) ??
