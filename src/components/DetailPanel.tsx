@@ -63,6 +63,9 @@ function Overview({
             </div>
             <div className="kind-total__label">{formatNumberKind(k.kind)}</div>
             <div className="kind-total__meta">{k.rows} {k.rows === 1 ? "row" : "rows"} counted</div>
+            {k.kind === "grid_gen_for_dc" && (
+              <p className="kind-note">0 MW counted. One approved project (three gas plants), no construction shown.</p>
+            )}
           </div>
         ))}
       </div>
