@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
-import { announcedCount, firmKindTotals } from "../lib/select";
+import { announcedCount, firmKindTotals, gridHeroNote } from "../lib/select";
 
 interface Props {
   selected: PreparedCommitment | null;
@@ -42,6 +42,7 @@ function Overview({
       kinds: firmKindTotals(visible),
       actors: actors.size,
       announced: announcedCount(visible),
+      gridNote: gridHeroNote(visible),
     };
   }, [visible]);
 
@@ -63,8 +64,8 @@ function Overview({
             </div>
             <div className="kind-total__label">{formatNumberKind(k.kind)}</div>
             <div className="kind-total__meta">{k.rows} {k.rows === 1 ? "row" : "rows"} counted</div>
-            {k.kind === "grid_gen_for_dc" && (
-              <p className="kind-note">0 MW counted. One approved project (three gas plants), no construction shown.</p>
+            {k.kind === "grid_gen_for_dc" && stats.gridNote && (
+              <p className="kind-note">{stats.gridNote}</p>
             )}
           </div>
         ))}

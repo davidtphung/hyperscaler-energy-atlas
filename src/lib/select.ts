@@ -118,6 +118,24 @@ export function announcedCount(list: Pick<Commitment, "status">[]): number {
   return list.filter((c) => c.status === "announced").length;
 }
 
+/**
+ * Grid card note. Derived from the rows in view.
+ * The sentence below matches the current data: meta-entergy-hyperion-gas-three
+ * is the one permitted grid row and it does not count. When that row counts,
+ * this function returns null and must not say "no construction shown."
+ */
+export function gridHeroNote(
+  list: Pick<Commitment, "id" | "numberKind" | "counts" | "status">[],
+): string | null {
+  const grid = list.filter((c) => c.numberKind === "grid_gen_for_dc");
+  if (grid.some((c) => c.counts === "yes")) return null;
+  const approved = grid.filter((c) => c.status === "permitted" && c.counts !== "yes");
+  if (approved.length === 1 && approved[0].id === "meta-entergy-hyperion-gas-three") {
+    return "0 MW counted. One approved project (three gas plants), no construction shown.";
+  }
+  return null;
+}
+
 /** Rows with a number kind are not mixed into a single generation total. */
 export function isNonGenerationUnit(c: { numberKind?: string }): boolean {
   return Boolean(c.numberKind);
