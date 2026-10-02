@@ -1,7 +1,8 @@
 import type { Commitment, PreparedCommitment, TechType, Status, Category, Era, NumberKind } from "../types";
-import { formatExactMW, parseDate } from "./format";
-import { classifyEra } from "./era";
-import { resolveActorKind } from "./actors";
+import { formatExactMW, parseDate } from "./format.ts";
+import { classifyEra } from "./era.ts";
+import { resolveActorKind } from "./actors.ts";
+import { rankRows } from "./search.ts";
 
 export interface FilterState {
   buyers: Set<string>;
@@ -60,8 +61,7 @@ export function domainOf(prepared: PreparedCommitment[]): Domain {
   return { minT, maxT, buyers: ordered, totalMW };
 }
 
-function matchesQuery(c: Commitment, q: string): boolean {
-  if (!q) return true;
+function legacyQuery(c: Commitment, q: string): boolean {
   const kind = "actorKind" in c && c.actorKind ? c.actorKind : "";
   const hay = `${c.buyer} ${kind} ${c.counterparty} ${c.project} ${c.city} ${c.state} ${c.country} ${c.summary}`.toLowerCase();
   return q
@@ -69,6 +69,12 @@ function matchesQuery(c: Commitment, q: string): boolean {
     .split(/\s+/)
     .filter(Boolean)
     .every((term) => hay.includes(term));
+}
+
+function matchesQuery(c: Commitment, q: string): boolean {
+  if (!q.trim()) return true;
+  if (legacyQuery(c, q)) return true;
+  return rankRows(q, [c]).some((hit) => hit.score > 0);
 }
 
 /** Apply every facet filter (buyer, technology, status, category, query). The

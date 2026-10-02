@@ -1,0 +1,53 @@
+import type { Commitment } from "../types";
+
+export type EvidenceMark = "FACT" | "EMPTY PRIMARY" | "CLAIM";
+
+export interface FieldEvidence {
+  mark: EvidenceMark;
+  reason: string;
+}
+
+export interface RowEvidence {
+  status: FieldEvidence;
+  mw: FieldEvidence;
+}
+
+/**
+ * Allowlist of rows whose cited link states no per-plant MW.
+ * meta-socrates-south-btm-200: Cited filing gives 556 MW combined for both plants, no per-plant MW, and does not name the customer.
+ * meta-socrates-north-btm-200: Cited filing gives 556 MW combined for both plants, no per-plant MW, and does not name the customer.
+ */
+const EMPTY_PRIMARY_MW_REASON: Record<string, string> = {
+  "meta-socrates-south-btm-200":
+    "Cited filing gives 556 MW combined for both plants, no per-plant MW, and does not name the customer",
+  "meta-socrates-north-btm-200":
+    "Cited filing gives 556 MW combined for both plants, no per-plant MW, and does not name the customer",
+};
+
+export function emptyPrimaryMwIds(): string[] {
+  return Object.keys(EMPTY_PRIMARY_MW_REASON);
+}
+
+/** Status and MW evidence from the row and the allowlist. No new facts. */
+export function evidenceFor(
+  row: Pick<Commitment, "id" | "counts" | "capacityMW">,
+): RowEvidence {
+  const emptyMw = EMPTY_PRIMARY_MW_REASON[row.id];
+  const status: FieldEvidence =
+    row.counts === "yes"
+      ? { mark: "FACT", reason: "This row counts, so its cited link supports the status." }
+      : { mark: "CLAIM", reason: "Status is stored on the row and is not treated as cited status evidence here." };
+
+  let mw: FieldEvidence;
+  if (emptyMw) {
+    mw = { mark: "EMPTY PRIMARY", reason: emptyMw };
+  } else if (row.capacityMW == null) {
+    mw = { mark: "CLAIM", reason: "No MW is stored on this row." };
+  } else if (row.counts === "yes") {
+    mw = { mark: "FACT", reason: "MW is the figure stored on this counted row." };
+  } else {
+    mw = { mark: "CLAIM", reason: "MW is stored on the row and is not in a counted total." };
+  }
+
+  return { status, mw };
+}

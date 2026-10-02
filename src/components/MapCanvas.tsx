@@ -31,6 +31,9 @@ interface Props {
   /** Ids within the current timeline range (bright); others render as "future". */
   inRange: Set<string>;
   selectedId: string | null;
+  /** Rows drawn with a second ring. Does not change which rows are on the map. */
+  highlightIds?: Set<string>;
+  limitNote?: { label: string; onClear: () => void } | null;
   onSelect: (id: string | null) => void;
   view: MapView;
   onViewChange: (v: MapView) => void;
@@ -40,6 +43,8 @@ export default function MapCanvas({
   commitments,
   inRange,
   selectedId,
+  highlightIds,
+  limitNote,
   onSelect,
   view,
   onViewChange,
@@ -270,11 +275,12 @@ export default function MapCanvas({
               {markers.map((m) => {
                 const color = techColor(m.c.techType);
                 const isSel = m.c.id === selectedId;
+                const isHi = highlightIds?.has(m.c.id) ?? false;
                 const operational = m.c.status === "operational" && !m.future;
                 return (
                   <g
                     key={m.c.id}
-                    className={`marker${isSel ? " marker--selected" : ""}${m.future ? " marker--future" : ""}${m.c.locationApprox ? " marker--approx" : ""}`}
+                    className={`marker${isSel ? " marker--selected" : ""}${isHi ? " marker--highlight" : ""}${m.future ? " marker--future" : ""}${m.c.locationApprox ? " marker--approx" : ""}`}
                     transform={`translate(${m.x},${m.y})`}
                     role="button"
                     tabIndex={m.future ? -1 : 0}
@@ -312,6 +318,7 @@ export default function MapCanvas({
                     {m.c.locationApprox && (
                       <circle className="marker__approx" r={m.r + 7} fill="none" stroke={color} strokeWidth={1.4} strokeDasharray="3 2" />
                     )}
+                    {isHi && <circle className="marker__focus" r={m.r + (isSel ? 10 : 7)} />}
                     {isSel && <circle className="marker__ring" r={m.r + 5} />}
                     <circle className="marker__hit" r={Math.max(m.r + 8, 22)} />
                   </g>
@@ -363,6 +370,15 @@ export default function MapCanvas({
           </svg>
         </button>
       </div>
+
+      {limitNote && (
+        <div className="map__limit">
+          <span>{limitNote.label}</span>
+          <button type="button" onClick={limitNote.onClear}>
+            Clear
+          </button>
+        </div>
+      )}
 
       <div className="map__count" aria-hidden="true">
         <b>{onMapCount}</b> of {commitments.length} on map
