@@ -3,7 +3,7 @@ import { REAL_ESTATE } from "../data/realestate";
 import { CONSTRUCTION } from "../data/construction";
 import type { RealEstateDeal } from "../types";
 import { DEAL_TYPE, DEAL_TYPE_ORDER } from "../lib/theme";
-import { formatUSD, formatSqft, formatMonthYear } from "../lib/format";
+import { formatUSD, formatSqft, formatMonthYear, formatPower } from "../lib/format";
 import { useElementSize } from "../lib/hooks";
 import ScatterMap, { type ScatterPoint } from "./ScatterMap";
 
@@ -173,7 +173,7 @@ export default function EconomicsView() {
           <span className="dc-th" style={{ cursor: "default" }}>Type</span>
           <button className={`dc-th dc-num${sort.key === "price" ? " is-active" : ""}`} onClick={() => onSort("price")}>Price <Arrow on={sort.key === "price"} dir={sort.dir} /></button>
           <button className={`dc-th dc-num${sort.key === "psf" ? " is-active" : ""}`} onClick={() => onSort("psf")}>$/sqft <Arrow on={sort.key === "psf"} dir={sort.dir} /></button>
-          <button className={`dc-th dc-num${sort.key === "mw" ? " is-active" : ""}`} onClick={() => onSort("mw")}>MW <Arrow on={sort.key === "mw"} dir={sort.dir} /></button>
+          <button className={`dc-th dc-num${sort.key === "mw" ? " is-active" : ""}`} onClick={() => onSort("mw")}>Power <Arrow on={sort.key === "mw"} dir={sort.dir} /></button>
           <button className={`dc-th dc-num${sort.key === "date" ? " is-active" : ""}`} onClick={() => onSort("date")}>Date <Arrow on={sort.key === "date"} dir={sort.dir} /></button>
         </div>
         <ul className="dc-table" role="list">
@@ -213,7 +213,7 @@ function DealRow({ d, open, onToggle }: { d: RealEstateDeal; open: boolean; onTo
         </span>
         <span className="dc-num dc-mw">{formatUSD(d.priceUSD)}</span>
         <span className="dc-num dc-mw">{d.pricePerSqft != null ? `$${Math.round(d.pricePerSqft)}` : "n/a"}</span>
-        <span className="dc-num dc-mw">{d.sizeMW != null ? d.sizeMW : "n/a"}</span>
+        <span className="dc-num dc-mw">{d.sizeMW != null ? formatPower(d.sizeMW) : "n/a"}</span>
         <span className="dc-num dc-mw">{formatMonthYear(d.dealDate)}</span>
       </button>
       {open && (
@@ -250,7 +250,7 @@ function DealCard({ d, onClose }: { d: RealEstateDeal; onClose: () => void }) {
         <span>{[d.city, d.region, d.country].filter(Boolean).join(", ")}</span>
         <span>{formatUSD(d.priceUSD)}</span>
         {d.pricePerSqft != null && <span>${Math.round(d.pricePerSqft)}/sqft</span>}
-        {d.sizeMW != null && <span>{d.sizeMW} MW</span>}
+        {d.sizeMW != null && <span>{formatPower(d.sizeMW)}</span>}
         {d.grossSqft != null && <span>{formatSqft(d.grossSqft)}</span>}
         {d.capRatePct != null && <span>Cap rate {d.capRatePct}%</span>}
         <a href={d.sourceUrl} target="_blank" rel="noopener noreferrer">Source: {d.sourceName} ↗</a>

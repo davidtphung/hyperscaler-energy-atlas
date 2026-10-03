@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import type { PreparedCommitment } from "../types";
 import { techColor } from "../lib/theme";
 import { radiusForCapacity } from "../lib/scales";
-import { formatGW, formatMonthYear } from "../lib/format";
+import { formatMonthYear } from "../lib/format";
 import { useElementSize } from "../lib/hooks";
 
 interface Props {
@@ -21,7 +21,6 @@ interface Props {
   atLive: boolean;
   selectedId: string | null;
   onSelect: (id: string) => void;
-  cumulativeGW: number;
   countInRange: number;
   /** Phone layouts start collapsed so the map keeps the vertical space. */
   collapsed?: boolean;
@@ -54,7 +53,6 @@ export default function Timeline({
   atLive,
   selectedId,
   onSelect,
-  cumulativeGW,
   countInRange,
   collapsed = false,
   onToggleCollapsed,
@@ -79,7 +77,8 @@ export default function Timeline({
     let acc = 0;
     const steps: { t: number; v: number }[] = [{ t: minT, v: 0 }];
     for (const c of sorted) {
-      acc += c.numberKind ? 0 : (c.capacityMW ?? 0);
+      if (!Number.isFinite(c.t)) continue;
+      acc += 1;
       steps.push({ t: c.t, v: acc });
     }
     steps.push({ t: maxT, v: acc });
@@ -158,9 +157,9 @@ export default function Timeline({
           </button>
           <div className="timeline__spacer" />
           <div className="tl-stat">
-            <b>{formatGW(cumulativeGW)}</b> GW committed
+            <b>{countInRange}</b> commitments
             <span className="tl-stat__sep">·</span>
-            <span className="tl-stat__count">{countInRange} sites</span>
+            <span className="tl-stat__count">kinds are not added</span>
           </div>
         </div>
       </section>
@@ -234,9 +233,9 @@ export default function Timeline({
         <div className="timeline__spacer" />
 
         <div className="tl-stat" aria-hidden="true">
-          <b>{formatGW(cumulativeGW)}</b> GW committed
+          <b>{countInRange}</b> commitments
           <span className="tl-stat__sep">·</span>
-          <span className="tl-stat__count">{countInRange} sites</span>
+          <span className="tl-stat__count">kinds are not added</span>
         </div>
       </div>
 
@@ -249,7 +248,7 @@ export default function Timeline({
         aria-valuemin={minT}
         aria-valuemax={maxT}
         aria-valuenow={scrubT}
-        aria-valuetext={`${formatMonthYear(new Date(scrubT).toISOString().slice(0, 7))}, ${formatGW(cumulativeGW)} gigawatts committed`}
+        aria-valuetext={`${formatMonthYear(new Date(scrubT).toISOString().slice(0, 7))}, ${countInRange} commitments`}
         onKeyDown={onKeyDown}
         onPointerDown={startDrag}
         onPointerMove={moveDrag}
@@ -281,6 +280,7 @@ export default function Timeline({
             <rect x={PAD_L} y={areaTop} width={Math.max(0, scrubX - PAD_L)} height={baselineY - areaTop} fill="rgba(200,241,53,0.05)" />
 
             {commitments.map((c) => {
+              if (!Number.isFinite(c.t)) return null;
               const future = c.t > scrubT;
               const r = Math.max(2.5, radiusForCapacity(c.capacityMW) * 0.5);
               return (

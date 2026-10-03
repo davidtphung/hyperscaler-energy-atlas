@@ -101,10 +101,12 @@ export function sourceGroup(t: TechType): SourceGroup {
 export const STATUS: Record<Status, { label: string; rank: number }> = {
   operational: { label: "Operational", rank: 0 },
   construction: { label: "Under construction", rank: 1 },
-  "ppa-signed": { label: "PPA signed", rank: 2 },
-  announced: { label: "Announced", rank: 3 },
-  exploratory: { label: "Exploratory", rank: 4 },
-  cancelled: { label: "Cancelled", rank: 5 },
+  permitted: { label: "Permitted", rank: 2 },
+  contracted: { label: "Contracted", rank: 3 },
+  "ppa-signed": { label: "PPA signed", rank: 4 },
+  announced: { label: "Announced", rank: 5 },
+  exploratory: { label: "Exploratory", rank: 6 },
+  cancelled: { label: "Cancelled", rank: 7 },
 };
 
 export const CATEGORY: Record<Category, { label: string }> = {
@@ -122,6 +124,7 @@ export const BUYER_ACCENT: Record<string, string> = {
   "Amazon / AWS": "#f2a93b",
   AWS: "#f2a93b",
   Meta: "#a78bfa",
+  "Meta (Orla LLC load)": "#a78bfa",
   OpenAI: "#6ee7b7",
   Oracle: "#ef6f53",
   xAI: "#c0c7d0",
@@ -140,6 +143,8 @@ export const BUYER_ACCENT: Record<string, string> = {
   GDS: "#e0916b",
   Chindata: "#9ad17a",
   "New Era Energy & Digital": "#5ec8c5",
+  "Fleet Data Centers (Tract Capital)": "#8fb89a",
+  "EdgeConneX (PowerConneX New Albany 2)": "#6cb4c9",
 };
 
 export function buyerAccent(buyer: string): string {
