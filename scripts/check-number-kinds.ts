@@ -38,7 +38,7 @@ const ids = new Set(COMMITMENTS.map((c) => c.id));
 const byId = new Map(COMMITMENTS.map((c) => [c.id, c]));
 
 if (ids.size !== COMMITMENTS.length) errors.push("duplicate commitment ids");
-if (COMMITMENTS.length !== 151) errors.push(`expected 151 rows, got ${COMMITMENTS.length}`);
+if (COMMITMENTS.length !== 153) errors.push(`expected 153 rows, got ${COMMITMENTS.length}`);
 
 for (const c of COMMITMENTS) {
   if (!c.numberKind || !KINDS.has(c.numberKind)) errors.push(`${c.id}: missing or illegal numberKind`);
@@ -79,7 +79,7 @@ for (const c of COMMITMENTS) {
 }
 
 const EXPECTED: Record<string, { rows: number; mw: number; rendered: string }> = {
-  it_capacity: { rows: 21, mw: 9085.5, rendered: "9.09 GW (9,085.5 MW)" },
+  it_capacity: { rows: 20, mw: 8085.5, rendered: "8.09 GW (8,085.5 MW)" },
   grid_gen_for_dc: { rows: 0, mw: 0, rendered: "0 MW" },
   btm_gen: { rows: 2, mw: 400, rendered: "400 MW" },
   offtake_new: { rows: 3, mw: 1188, rendered: "1.19 GW (1,188 MW)" },
