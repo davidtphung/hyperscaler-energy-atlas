@@ -1,27 +1,67 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
 import { announcedCount, firmKindTotals, kindHeroNote } from "../lib/select";
+import { emptyPrimaryMwIds, evidenceFor } from "../lib/evidence";
 
 interface Props {
   selected: PreparedCommitment | null;
   /** Facet + time filtered commitments currently in view. */
   visible: PreparedCommitment[];
+  /** Full loaded catalog. Holder list reads from this, not from the facet view. */
+  catalog: PreparedCommitment[];
   totalAll: number;
   open: boolean;
   onSelect: (id: string) => void;
   onClose: () => void;
+  onToggleBuyer: (buyer: string) => void;
+  buyersOn: Set<string>;
+  onsiteOpen: boolean;
+  onOnsiteOpen: (open: boolean) => void;
+  onsiteOnly: boolean;
+  onOnsiteOnly: (on: boolean) => void;
+  onClearOnsite: () => void;
+  ledgerFocusId: string | null;
 }
 
-export default function DetailPanel({ selected, visible, totalAll, open, onSelect, onClose }: Props) {
+export default function DetailPanel({
+  selected,
+  visible,
+  catalog,
+  totalAll,
+  open,
+  onSelect,
+  onClose,
+  onToggleBuyer,
+  buyersOn,
+  onsiteOpen,
+  onOnsiteOpen,
+  onsiteOnly,
+  onOnsiteOnly,
+  onClearOnsite,
+  ledgerFocusId,
+}: Props) {
   return (
     <aside className={`detail${open ? " detail--open" : ""}`} aria-label={selected ? "Commitment detail" : "Overview"}>
       <div className="sheet-handle" aria-hidden="true" />
       {selected ? (
         <DetailCard c={selected} onClose={onClose} />
       ) : (
-        <Overview visible={visible} totalAll={totalAll} onSelect={onSelect} />
+        <Overview
+          visible={visible}
+          catalog={catalog}
+          totalAll={totalAll}
+          onSelect={onSelect}
+          onToggleBuyer={onToggleBuyer}
+          buyersOn={buyersOn}
+          onsiteOpen={onsiteOpen}
+          onOnsiteOpen={onOnsiteOpen}
+          onsiteOnly={onsiteOnly}
+          onOnsiteOnly={onOnsiteOnly}
+          onClearOnsite={onClearOnsite}
+          ledgerFocusId={ledgerFocusId}
+        />
       )}
     </aside>
   );
@@ -29,12 +69,30 @@ export default function DetailPanel({ selected, visible, totalAll, open, onSelec
 
 function Overview({
   visible,
+  catalog,
   totalAll,
   onSelect,
+  onToggleBuyer,
+  buyersOn,
+  onsiteOpen,
+  onOnsiteOpen,
+  onsiteOnly,
+  onOnsiteOnly,
+  onClearOnsite,
+  ledgerFocusId,
 }: {
   visible: PreparedCommitment[];
+  catalog: PreparedCommitment[];
   totalAll: number;
   onSelect: (id: string) => void;
+  onToggleBuyer: (buyer: string) => void;
+  buyersOn: Set<string>;
+  onsiteOpen: boolean;
+  onOnsiteOpen: (open: boolean) => void;
+  onsiteOnly: boolean;
+  onOnsiteOnly: (on: boolean) => void;
+  onClearOnsite: () => void;
+  ledgerFocusId: string | null;
 }) {
   const stats = useMemo(() => {
     const actors = new Set(visible.map((c) => c.buyer));
@@ -45,7 +103,27 @@ function Overview({
     };
   }, [visible]);
 
-  const recent = useMemo(() => [...visible].sort((a, b) => b.t - a.t).slice(0, 40), [visible]);
+  const holders = useMemo(
+    () => catalog.filter((c) => c.numberKind === "btm_gen" && c.counts === "yes"),
+    [catalog],
+  );
+  const holderIds = useMemo(() => new Set(holders.map((c) => c.id)), [holders]);
+
+  const recent = useMemo(() => {
+    const base = onsiteOnly
+      ? catalog.filter((c) => holderIds.has(c.id))
+      : [...visible].sort((a, b) => b.t - a.t).slice(0, 40);
+    if (ledgerFocusId && !base.some((c) => c.id === ledgerFocusId)) {
+      const extra = catalog.find((c) => c.id === ledgerFocusId);
+      if (extra) return [extra, ...base];
+    }
+    return base;
+  }, [onsiteOnly, catalog, holderIds, visible, ledgerFocusId]);
+
+  useEffect(() => {
+    if (!ledgerFocusId) return;
+    document.getElementById(`ledger-${ledgerFocusId}`)?.scrollIntoView({ block: "nearest" });
+  }, [ledgerFocusId, recent]);
 
   return (
     <div className="overview">
@@ -55,19 +133,54 @@ function Overview({
       </h2>
 
       <div className="kind-totals" aria-label="Firm totals by kind">
-        {stats.kinds.map((k) => (
-          <div className="kind-total" key={k.kind}>
-            <div className="kind-total__val">
-              {formatPower(k.mw, k.approx)}
-              {k.mw >= 1000 && <small className="kind-total__mw">{formatExactMW(k.mw)}</small>}
+        {stats.kinds.map((k) => {
+          const note = kindHeroNote(k.kind, visible);
+          const head = (
+            <>
+              <span className="kind-total__val">
+                {formatPower(k.mw, k.approx)}
+                {k.mw >= 1000 && <small className="kind-total__mw">{formatExactMW(k.mw)}</small>}
+              </span>
+              <span className="kind-total__label">{formatNumberKind(k.kind)}</span>
+              <span className="kind-total__meta">{k.rows} {k.rows === 1 ? "row" : "rows"} counted</span>
+            </>
+          );
+          if (k.kind !== "btm_gen") {
+            return (
+              <div className="kind-total" key={k.kind}>
+                {head}
+                {note && <p className="kind-note">{note}</p>}
+              </div>
+            );
+          }
+          return (
+            <div className="kind-total kind-total--onsite" key={k.kind}>
+              <button
+                type="button"
+                id="onsite-tile"
+                className="kind-total__toggle"
+                aria-expanded={onsiteOpen}
+                aria-controls="onsite-panel"
+                onClick={() => onOnsiteOpen(!onsiteOpen)}
+              >
+                {head}
+              </button>
+              {note && <p className="kind-note">{note}</p>}
+              {onsiteOpen && (
+                <OnsiteHolders
+                  holders={holders}
+                  catalog={catalog}
+                  buyersOn={buyersOn}
+                  onToggleBuyer={onToggleBuyer}
+                  onsiteOnly={onsiteOnly}
+                  onOnsiteOnly={onOnsiteOnly}
+                  onClear={onClearOnsite}
+                  onSelect={onSelect}
+                />
+              )}
             </div>
-            <div className="kind-total__label">{formatNumberKind(k.kind)}</div>
-            <div className="kind-total__meta">{k.rows} {k.rows === 1 ? "row" : "rows"} counted</div>
-            {kindHeroNote(k.kind, visible) && (
-              <p className="kind-note">{kindHeroNote(k.kind, visible)}</p>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
       <p className="kind-note">These totals are separate. They are not added together.</p>
       <p className="kind-note">Announced: {stats.announced} {stats.announced === 1 ? "row" : "rows"}. Not included in the totals above.</p>
@@ -87,12 +200,21 @@ function Overview({
         <div className="rail__head">
           <h3 className="rail__title">Ledger</h3>
           <span className="rail__reset" style={{ pointerEvents: "none" }}>
-            {visible.length} of {totalAll}
+            {onsiteOnly ? recent.length : visible.length} of {totalAll}
           </span>
         </div>
+        {onsiteOnly && (
+          <p className="kind-note">List limited to counted on-site holders. Totals above stay on the rows in view.</p>
+        )}
         <div className="legend" role="list">
           {recent.map((c) => (
-            <button key={c.id} className="legend__row" role="listitem" onClick={() => onSelect(c.id)}>
+            <button
+              key={c.id}
+              id={`ledger-${c.id}`}
+              className={`legend__row${c.id === ledgerFocusId ? " legend__row--focus" : ""}`}
+              role="listitem"
+              onClick={() => onSelect(c.id)}
+            >
               <span className="legend__swatch" style={{ background: techColor(c.techType), borderRadius: 999 }} />
               <span className="legend__label" style={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 <span style={{ color: "var(--text)" }}>{c.project}</span>
@@ -105,6 +227,119 @@ function Overview({
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+const ALSO_PUBLIC = [
+  {
+    href: "https://opsb.ohio.gov/news/opsb-approves-construction-of-licking-county-natural-gas-fired-power-plant",
+    label: "Ohio Power Siting Board release, 9 Jun 2025",
+  },
+  {
+    href: "https://www.williams.com/wp-content/uploads/sites/14/2026/02/Socrates-North-and-South-Fact-Sheet-1.pdf",
+    label: "Williams fact sheet",
+  },
+];
+
+function OnsiteHolders({
+  holders,
+  catalog,
+  buyersOn,
+  onToggleBuyer,
+  onsiteOnly,
+  onOnsiteOnly,
+  onClear,
+  onSelect,
+}: {
+  holders: PreparedCommitment[];
+  catalog: PreparedCommitment[];
+  buyersOn: Set<string>;
+  onToggleBuyer: (buyer: string) => void;
+  onsiteOnly: boolean;
+  onOnsiteOnly: (on: boolean) => void;
+  onClear: () => void;
+  onSelect: (id: string) => void;
+}) {
+  const loaded = firmKindTotals(catalog).find((k) => k.kind === "btm_gen");
+  const extraIds = new Set(emptyPrimaryMwIds());
+  const showAlso = holders.some((row) => extraIds.has(row.id));
+
+  return (
+    <div className="onsite-panel" id="onsite-panel">
+      <div className="onsite-panel__head">
+        <h3>Who holds the on-site generation</h3>
+        <button type="button" onClick={onClear}>
+          Clear
+        </button>
+      </div>
+      <p className="kind-note">The five totals are separate and are not added together.</p>
+      {loaded && (
+        <p className="kind-note">
+          Counted on-site total in the loaded rows: {formatPower(loaded.mw, loaded.approx)}, {loaded.rows}{" "}
+          {loaded.rows === 1 ? "row" : "rows"}.
+        </p>
+      )}
+      <button
+        type="button"
+        className="onsite-panel__only"
+        aria-pressed={onsiteOnly}
+        onClick={() => onOnsiteOnly(!onsiteOnly)}
+      >
+        Show only these on the map and list
+      </button>
+      <ul className="onsite-list">
+        {holders.map((row) => {
+          const ev = evidenceFor(row);
+          return (
+            <li key={row.id} className="onsite-card">
+              <div className="onsite-card__who">
+                <button
+                  type="button"
+                  className="onsite-card__buyer"
+                  aria-pressed={buyersOn.has(row.buyer)}
+                  onClick={() => onToggleBuyer(row.buyer)}
+                >
+                  {row.buyer}
+                </button>
+                {row.counterparty && <span className="onsite-card__party">{row.counterparty}</span>}
+              </div>
+              <button type="button" className="onsite-card__main" onClick={() => onSelect(row.id)}>
+                <span className="onsite-card__project">{row.project}</span>
+                <span className="onsite-card__place">{formatLocation(row.city, row.state, row.country)}</span>
+                <span className="onsite-card__mw">{formatBoundPower(row.capacityMW, row.bound)}</span>
+                <span className="onsite-card__status">{STATUS[row.status].label}</span>
+              </button>
+              <div className="onsite-card__ev">
+                <span className="ev-chip">Status: {ev.status.mark}</span>
+                <span className="ev-chip">MW: {ev.mw.mark}</span>
+              </div>
+              {ev.mw.mark === "EMPTY PRIMARY" && <p className="onsite-card__reason">{ev.mw.reason}</p>}
+              <a className="onsite-card__source" href={row.sourceUrl} target="_blank" rel="noopener noreferrer">
+                {row.sourceName}
+              </a>
+              {row.sourceUrl2 && (
+                <a className="onsite-card__source" href={row.sourceUrl2} target="_blank" rel="noopener noreferrer">
+                  {row.sourceName2 ?? row.sourceUrl2}
+                </a>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      {showAlso && (
+        <div className="onsite-also">
+          <p>
+            Also public (not the row's cited link). CLAIM for the holder and the per-plant MW. Not the cited
+            source and not used for counting.
+          </p>
+          {ALSO_PUBLIC.map((link) => (
+            <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

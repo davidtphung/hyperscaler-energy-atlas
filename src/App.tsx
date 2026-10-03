@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { COMMITMENTS } from "./data/commitments";
 import { prepare, domainOf, applyFacets, facetCounts } from "./lib/select";
+import { rankRows } from "./lib/search";
 import type { FilterState } from "./lib/select";
 import type { TechType, Status, Category, Era } from "./types";
 import { formatBoundPower } from "./lib/format";
@@ -61,6 +62,10 @@ export default function App() {
   const [detailOpen, setDetailOpen] = useState(false);
   const [booted, setBooted] = useState(false);
   const [announce, setAnnounce] = useState("");
+  const [onsiteOpen, setOnsiteOpen] = useState(false);
+  const [onsiteOnly, setOnsiteOnly] = useState(false);
+  const [askHighlightIds, setAskHighlightIds] = useState<Set<string>>(new Set());
+  const [ledgerFocusId, setLedgerFocusId] = useState<string | null>(null);
 
   const isCompact = useMediaQuery("(max-width: 1180px)");
   const phoneLayout = useMediaQuery(PHONE_LAYOUT_QUERY);
@@ -118,6 +123,40 @@ export default function App() {
   const inRange = useMemo(() => new Set(shown.map((c) => c.id)), [shown]);
   const counts = useMemo(() => facetCounts(prepared, filters), [prepared, filters]);
   const selected = useMemo(() => prepared.find((c) => c.id === selectedId) ?? null, [prepared, selectedId]);
+  const onsiteIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const c of prepared) {
+      if (c.numberKind === "btm_gen" && c.counts === "yes") ids.add(c.id);
+    }
+    return ids;
+  }, [prepared]);
+  const rankedMatches = useMemo(() => {
+    const q = filters.query.trim();
+    if (!q) return [];
+    const base = applyFacets(prepared, { ...filters, query: "" });
+    return rankRows(q, base).filter((hit) => hit.score > 0);
+  }, [prepared, filters]);
+  const highlightIds = useMemo(() => {
+    const ids = new Set<string>();
+    if (onsiteOpen || onsiteOnly) {
+      for (const id of onsiteIds) ids.add(id);
+    }
+    for (const hit of rankedMatches) ids.add(hit.row.id);
+    for (const id of askHighlightIds) ids.add(id);
+    return ids;
+  }, [onsiteOpen, onsiteOnly, onsiteIds, rankedMatches, askHighlightIds]);
+  const mapRows = useMemo(
+    () => (onsiteOnly ? prepared.filter((c) => onsiteIds.has(c.id)) : facetFiltered),
+    [onsiteOnly, prepared, onsiteIds, facetFiltered],
+  );
+  const mapInRange = useMemo(() => {
+    if (!onsiteOnly) return inRange;
+    const ids = new Set<string>();
+    for (const c of mapRows) {
+      if (!Number.isFinite(c.t) || c.t <= scrubT) ids.add(c.id);
+    }
+    return ids;
+  }, [onsiteOnly, inRange, mapRows, scrubT]);
   // Announce filter results.
   useEffect(() => {
     setAnnounce(`${facetFiltered.length} commitment${facetFiltered.length === 1 ? "" : "s"} match the current filters.`);
@@ -199,6 +238,7 @@ export default function App() {
     (id: string | null) => {
       setSelectedId(id);
       if (id) {
+        setLedgerFocusId(id);
         const c = prepared.find((x) => x.id === id);
         if (c) setAnnounce(`Selected ${c.project} by ${c.buyer}, ${formatBoundPower(c.capacityMW, c.bound)}.`);
       }
@@ -212,6 +252,15 @@ export default function App() {
     []
   );
 
+  const onAskHighlight = useCallback((ids: string[]) => {
+    setAskHighlightIds(new Set(ids));
+  }, []);
+
+  const clearOnsite = useCallback(() => {
+    setOnsiteOnly(false);
+    setOnsiteOpen(false);
+  }, []);
+
   const onPageChange = useCallback((p: Page) => {
     setPage(p);
     setRailOpen(false);
@@ -222,17 +271,27 @@ export default function App() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
+      if (onsiteOnly) {
+        setOnsiteOnly(false);
+        return;
+      }
       if (selectedId) {
         setSelectedId(null);
         if (isCompact) setDetailOpen(false);
-      } else if (railOpen || detailOpen) {
+        return;
+      }
+      if (onsiteOpen) {
+        setOnsiteOpen(false);
+        return;
+      }
+      if (railOpen || detailOpen) {
         setRailOpen(false);
         setDetailOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [selectedId, railOpen, detailOpen, isCompact]);
+  }, [selectedId, railOpen, detailOpen, isCompact, onsiteOnly, onsiteOpen]);
 
   const showScrim = page === "atlas" && isCompact && (railOpen || detailOpen);
 
@@ -274,12 +333,22 @@ export default function App() {
               onToggleEra={(v: Era) => setFilters((f) => ({ ...f, eras: toggle(f.eras, v) }))}
               onClear={clearFilters}
               onClose={() => setRailOpen(false)}
+              ranked={rankedMatches}
+              rows={prepared}
+              onSelect={onSelect}
+              onAskHighlight={onAskHighlight}
             />
 
             <MapCanvas
-              commitments={facetFiltered}
-              inRange={inRange}
+              commitments={mapRows}
+              inRange={mapInRange}
               selectedId={selectedId}
+              highlightIds={highlightIds}
+              limitNote={
+                onsiteOnly
+                  ? { label: "Showing counted on-site holders only", onClear: clearOnsite }
+                  : null
+              }
               onSelect={onSelect}
               view={view}
               onViewChange={setView}
@@ -288,6 +357,7 @@ export default function App() {
             <DetailPanel
               selected={selected}
               visible={shown}
+              catalog={prepared}
               totalAll={prepared.length}
               open={isCompact ? detailOpen : true}
               onSelect={onSelect}
@@ -295,6 +365,14 @@ export default function App() {
                 setSelectedId(null);
                 setDetailOpen(false);
               }}
+              onToggleBuyer={(v) => setFilters((f) => ({ ...f, buyers: toggle(f.buyers, v) }))}
+              buyersOn={filters.buyers}
+              onsiteOpen={onsiteOpen}
+              onOnsiteOpen={setOnsiteOpen}
+              onsiteOnly={onsiteOnly}
+              onOnsiteOnly={setOnsiteOnly}
+              onClearOnsite={clearOnsite}
+              ledgerFocusId={ledgerFocusId}
             />
 
             <Timeline

@@ -1,8 +1,11 @@
 import type { FilterState, FacetCounts } from "../lib/select";
-import type { TechType, Status, Category, Era, ActorKind } from "../types";
+import type { Ranked } from "../lib/search";
+import type { TechType, Status, Category, Era, ActorKind, PreparedCommitment } from "../types";
 import { TECH, TECH_ORDER, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { ERA, ERA_ORDER } from "../lib/era";
 import { ACTOR_KIND_ORDER, actorKindForBuyer } from "../lib/actors";
+import { formatBoundPower } from "../lib/format";
+import AskAtlas from "./AskAtlas";
 
 interface Props {
   filters: FilterState;
@@ -18,6 +21,10 @@ interface Props {
   onToggleEra: (v: Era) => void;
   onClear: () => void;
   onClose: () => void;
+  ranked: Ranked<PreparedCommitment>[];
+  rows: PreparedCommitment[];
+  onSelect: (id: string) => void;
+  onAskHighlight: (ids: string[]) => void;
 }
 
 const STATUS_ORDER: Status[] = ["operational", "construction", "permitted", "contracted", "ppa-signed", "announced", "exploratory"];
@@ -51,6 +58,10 @@ export default function FilterRail({
   onToggleEra,
   onClear,
   onClose,
+  ranked,
+  rows,
+  onSelect,
+  onAskHighlight,
 }: Props) {
   const anyActive =
     filters.buyers.size + filters.techs.size + filters.statuses.size + filters.categories.size + filters.eras.size > 0;
@@ -70,8 +81,40 @@ export default function FilterRail({
           onChange={(e) => onQuery(e.target.value)}
           placeholder="Search commitments"
           aria-label="Search commitments"
+          aria-controls="search-results"
+          aria-expanded={query.trim().length > 0}
         />
       </div>
+
+      {query.trim().length > 0 && (
+        <div className="search-results" id="search-results">
+          <div className="search-results__bar">
+            <span>
+              {ranked.length} ranked {ranked.length === 1 ? "match" : "matches"}
+            </span>
+            <button type="button" onClick={() => onQuery("")}>
+              Clear
+            </button>
+          </div>
+          <ol className="search-results__list">
+            {ranked.slice(0, 8).map((hit) => (
+              <li key={hit.row.id}>
+                <button type="button" className="search-hit" onClick={() => onSelect(hit.row.id)}>
+                  <span className="search-hit__buyer">{hit.row.buyer}</span>
+                  <span className="search-hit__project">{hit.row.project}</span>
+                  <span className="search-hit__meta">
+                    {formatBoundPower(hit.row.capacityMW, hit.row.bound)}
+                    {" · "}
+                    {STATUS[hit.row.status].label}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      <AskAtlas rows={rows} onSelect={onSelect} onHighlight={onAskHighlight} />
 
       <div className="rail__group">
         <div className="rail__head">
