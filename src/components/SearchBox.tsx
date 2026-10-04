@@ -3,6 +3,7 @@ import type { PreparedCommitment } from "../types";
 import { formatBoundPower, formatNumberKindShort } from "../lib/format";
 import {
   highlightParts,
+  matchSnippet,
   parseSearchQuery,
   queryTerms,
   withoutChip,
@@ -132,6 +133,7 @@ export default function SearchBox({ label, placeholder, query, onQuery, results,
             <ul className="search-results__list" role="listbox" aria-label={label}>
               {shown.map((hit, index) => {
                 const kind = formatNumberKindShort(hit.row.numberKind);
+                const why = matchSnippet(hit.row, terms, hit.matchedFields);
                 return (
                   <li key={hit.row.id} role="presentation">
                     <button
@@ -157,6 +159,11 @@ export default function SearchBox({ label, placeholder, query, onQuery, results,
                         {STATUS[hit.row.status].label}
                         {hit.row.state ? ` · ${hit.row.state}` : ""}
                       </span>
+                      {why && (
+                        <span className="search-hit__why">
+                          <Mark text={why} terms={terms} />
+                        </span>
+                      )}
                     </button>
                   </li>
                 );

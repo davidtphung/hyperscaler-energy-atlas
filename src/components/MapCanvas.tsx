@@ -279,7 +279,6 @@ export default function MapCanvas({
           className="map__svg"
           width={width}
           height={height}
-          aria-hidden="true"
         >
           {projection && (
             <>

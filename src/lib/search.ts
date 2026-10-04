@@ -465,6 +465,36 @@ export function queryTerms(query: string): string[] {
   return termsOf(parseSearchQuery(query).text);
 }
 
+/** A short slice of a matched field that is not already shown on the result row. */
+export function matchSnippet(row: Searchable, terms: readonly string[], matchedFields: readonly string[]): string {
+  const needles = terms.map((term) => term.toLowerCase()).filter((term) => term.length >= 2);
+  if (needles.length === 0) return "";
+  const visible = `${row.project} ${row.buyer} ${row.state} ${row.city}`.toLowerCase();
+  if (needles.every((needle) => visible.includes(needle))) return "";
+  const shown = new Set([row.project, row.buyer, row.state, row.city].filter(Boolean).map((value) => value.toLowerCase()));
+  const fields = fieldsOf(row).filter((field) => matchedFields.includes(field.name));
+  for (const field of fields) {
+    for (const value of field.values) {
+      if (!value || shown.has(value.toLowerCase())) continue;
+      if (value === row.numberKind) continue;
+      if (!value.includes(" ") && value.length < 24) continue;
+      const lower = value.toLowerCase();
+      let at = -1;
+      for (const needle of needles) {
+        const found = lower.indexOf(needle);
+        if (found >= 0 && (at < 0 || found < at)) at = found;
+      }
+      if (at < 0) continue;
+      const start = Math.max(0, at - 28);
+      const end = Math.min(value.length, at + 52);
+      const lead = start > 0 ? "..." : "";
+      const tail = end < value.length ? "..." : "";
+      return `${lead}${value.slice(start, end).trim()}${tail}`;
+    }
+  }
+  return "";
+}
+
 /** Case-insensitive highlight spans for the free-text part of a query. */
 export function highlightParts(text: string, terms: readonly string[]): TextPart[] {
   if (!text) return [{ text: "", hit: false }];
