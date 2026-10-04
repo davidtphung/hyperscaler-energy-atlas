@@ -51,13 +51,13 @@ Coverage spans 1945 to 2031 (forecast). Every record carries `sourceUrl` and `co
 
 ## 4. Core entities
 
-- **Commitment** — buyer, counterparty, project, technology, category, capacity (MW), location, date, status, era, confidence, source.
-- **DataCenter** — facility, operator, parent, country/region/city, lat/lng, status, facility type, capacity, AI orientation, year operational, power source, source.
-- **RealEstateDeal** — project, buyer, seller, operator, location, deal date, deal type, gross sqft, land acres, price, price per sqft, size MW, cap rate, source.
-- **ConstructionRecord** — kind (material or cost), category, market, lead time range (weeks), unit cost, cost per MW, cost per sqft, source.
-- **HistoryMilestone** — year, era, title, description, type, source.
-- **ContestedProject** — project, company, location, status, contestation types, opposition actors, government body, capex, severity, source.
-- **PolicyRecord** — title, jurisdiction, level, stance (for/against/mixed), category, date, source.
+- **Commitment**: buyer, counterparty, project, technology, category, capacity (MW), location, date, status, era, confidence, source.
+- **DataCenter**: facility, operator, parent, country/region/city, lat/lng, status, facility type, capacity, AI orientation, year operational, power source, source.
+- **RealEstateDeal**: project, buyer, seller, operator, location, deal date, deal type, gross sqft, land acres, price, price per sqft, size MW, cap rate, source.
+- **ConstructionRecord**: kind (material or cost), category, market, lead time range (weeks), unit cost, cost per MW, cost per sqft, source.
+- **HistoryMilestone**: year, era, title, description, type, source.
+- **ContestedProject**: project, company, location, status, contestation types, opposition actors, government body, capex, severity, source.
+- **PolicyRecord**: title, jurisdiction, level, stance (for/against/mixed), category, date, source.
 
 ---
 
@@ -105,7 +105,7 @@ DNS: GoDaddy CNAME `hypergrid` to `davidtphung.github.io` (GitHub Pages, not the
 
 ## 9. Changelog
 
-### v1.2 — 2026-06-29
+### v1.2, 2026-06-29
 - Added **Economics** view: 25 real estate deals, deal map, $/sqft scatter, construction cost benchmarks, long-lead equipment lead-time chart.
 - Added **History** view: 28 milestones from the mainframe era to AI factories.
 - Added a **China map view** to the Atlas and Data Centers, with a facility info card on click and click-to-sort table columns.

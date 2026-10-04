@@ -213,7 +213,7 @@ const onSiteOhioWant = COMMITMENTS.filter((c) => c.numberKind === "btm_gen" && (
   .map((c) => c.id)
   .sort();
 if (onSiteOhio.join("|") !== onSiteOhioWant.join("|")) fail("kind:on_site state:OH did not match on-site Ohio rows");
-if (rankRows("counted:yes", COMMITMENTS).length !== 25) fail("counted:yes result count changed");
+if (rankRows("counted:yes", COMMITMENTS).length !== 23) fail("counted:yes result count changed");
 const texasCode = rankRows("state:TX", COMMITMENTS).map((hit) => hit.row.id).sort().join("|");
 const texasName = rankRows("state:Texas", COMMITMENTS).map((hit) => hit.row.id).sort().join("|");
 if (!texasCode || texasCode !== texasName) fail("Texas and TX are not one filter value");

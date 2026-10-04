@@ -270,7 +270,7 @@ export function claimChecks(): ClaimCheck[] {
       id: "gen-level",
       claim: "general office $46B",
       census: formatBillions(genNow.value),
-      formula: `${formatMillions(genNow.value)} million dollars is ${formatBillions(genNow.value)}. General is the Census office subcategory, not the Office total.`,
+      formula: `${formatMillions(genNow.value)} million dollars is ${formatBillions(genNow.value)}. General office is a subcategory of Census Office, not the Census Office total.`,
       basis: genBasis,
       matched: roundsToBillion(genNow.value, 46),
     });

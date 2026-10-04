@@ -48,7 +48,7 @@ export function signalCatalog(): CatalogHit[] {
   const claim: CatalogHit = {
     id: "kobeissi-2026-10-03",
     group: "signal",
-    title: "Third party claim on data center and office construction spending",
+    title: "Third party claim on data center and general office construction spending",
     detail: "Kobeissi Letter post from 3 Oct 2026. Compared with Census on the Signals tab. Not a counted row.",
     evidence: "THIRD-PARTY CLAIM",
     anchor: "signal-claims",

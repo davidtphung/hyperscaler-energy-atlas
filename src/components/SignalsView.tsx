@@ -72,6 +72,13 @@ export default function SignalsView({ anchor }: Props) {
         </p>
       </header>
 
+      <p className="sig-note">
+        Data center is counted inside Census Office. The comparison here is against general office only.
+      </p>
+      <p className="sig-note">
+        Nominal dollars mix cost inflation with real building. These figures are not volume, build rate or capacity.
+      </p>
+
       <section className="sig-stats" aria-label="Latest Census readings">
         <Stat
           tag="MEASUREMENT"
@@ -87,7 +94,7 @@ export default function SignalsView({ anchor }: Props) {
           label="Private general office"
           value={formatBillions(genEnd.value)}
           basis={genBasis}
-          formula={`${formatMillions(genEnd.value)} million dollars, read from the stored series. General is an Office subcategory, not the Office total.`}
+          formula={`${formatMillions(genEnd.value)} million dollars, read from the stored series. General office is a subcategory of Census Office, not the Census Office total.`}
         />
         {yoy && (
           <Stat
@@ -133,7 +140,7 @@ export default function SignalsView({ anchor }: Props) {
         <h2>Data center and general office</h2>
         <p className="sig-copy">
           Private construction, seasonally adjusted annual rate, nominal dollars, January 2021 through{" "}
-          {formatMonthYear(end.month)}. General office is not the Office total. The two lines are different categories.
+          {formatMonthYear(end.month)}. General office is not the Census Office total. The two lines are different categories.
         </p>
         <SpendingChart rows={rows} />
         <details className="sig-fold">
