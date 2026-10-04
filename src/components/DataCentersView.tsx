@@ -140,12 +140,16 @@ export default function DataCentersView() {
 
       <div className="dc-stats">
         <Stat v={String(stats.facilities)} l="Facilities" />
-        <Stat v={formatPower(stats.mw)} l="Mapped capacity" />
+        <Stat v={formatPower(stats.mw)} l="Mixed-status sum" />
         <Stat v={String(stats.countries)} l="Countries" />
         <Stat v={String(stats.operators)} l="Operators" />
         <Stat v={String(stats.hyperscale)} l="Hyperscale" />
         <Stat v={String(stats.china)} l="In China" />
       </div>
+      <p className="dc-mixnote">
+        Mixed-status sum of directory rows that have a megawatt figure. Operating, construction, announced, and other
+        statuses are added together here. This is not counted load, and it is not one of the five atlas totals.
+      </p>
 
       <div className="dc-maprow">
         <ScatterMap points={points} view={view} selectedId={selected} onSelect={setSelected} height={380} />

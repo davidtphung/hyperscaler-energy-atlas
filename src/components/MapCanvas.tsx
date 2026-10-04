@@ -60,6 +60,8 @@ export default function MapCanvas({
   );
   const [transform, setTransform] = useState<MapTransform>(IDENTITY_TRANSFORM);
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const [rovingId, setRovingId] = useState<string | null>(null);
+  const rovingMoved = useRef(false);
 
   // Native, non-passive listeners so we can preventDefault and own every zoom
   // gesture. Two distinct paths have to be covered or the browser zooms the
@@ -237,6 +239,22 @@ export default function MapCanvas({
     return out;
   }, [commitments, project, width, height, inRange, selectedId]);
 
+  const tabbableIds = markers.filter((m) => !m.future).map((m) => m.c.id);
+  const activeRoving = tabbableIds.includes(rovingId ?? "") ? rovingId : (tabbableIds[0] ?? null);
+
+  useEffect(() => {
+    if (!rovingMoved.current || !activeRoving) return;
+    rovingMoved.current = false;
+    document.getElementById("map-marker")?.focus();
+  }, [activeRoving, markers]);
+
+  const moveRoving = (nextIndex: number) => {
+    if (tabbableIds.length === 0) return;
+    const id = tabbableIds[(nextIndex + tabbableIds.length) % tabbableIds.length];
+    rovingMoved.current = true;
+    setRovingId(id);
+  };
+
   const hover = hoverId ? markers.find((m) => m.c.id === hoverId) : null;
   const onMapCount = markers.filter((m) => !m.future).length;
 
@@ -261,8 +279,6 @@ export default function MapCanvas({
           className="map__svg"
           width={width}
           height={height}
-          role="img"
-          aria-label={`Map of ${commitments.length} hyperscaler energy and datacenter commitments. A screen-reader-friendly list is available in the overview panel.`}
         >
           {projection && (
             <>
@@ -282,8 +298,9 @@ export default function MapCanvas({
                     key={m.c.id}
                     className={`marker${isSel ? " marker--selected" : ""}${isHi ? " marker--highlight" : ""}${m.future ? " marker--future" : ""}${m.c.locationApprox ? " marker--approx" : ""}`}
                     transform={`translate(${m.x},${m.y})`}
+                    id={m.c.id === activeRoving ? "map-marker" : undefined}
                     role="button"
-                    tabIndex={m.future ? -1 : 0}
+                    tabIndex={m.c.id === activeRoving ? 0 : -1}
                     aria-label={`${m.c.buyer}, ${m.c.project}. ${formatBoundPower(m.c.capacityMW, m.c.bound)} ${formatNumberKind(m.c.numberKind) ?? TECH[m.c.techType].label}. ${formatLocation(m.c.city, m.c.state, m.c.country)}${m.c.locationApprox ? ". Approximate pin, not an exact site." : "."}`}
                     aria-pressed={isSel}
                     onClick={(e) => {
@@ -295,7 +312,20 @@ export default function MapCanvas({
                     onFocus={() => setHoverId(m.c.id)}
                     onBlur={() => setHoverId((h) => (h === m.c.id ? null : h))}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
+                      const index = tabbableIds.indexOf(activeRoving ?? "");
+                      if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+                        e.preventDefault();
+                        moveRoving(index + 1);
+                      } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+                        e.preventDefault();
+                        moveRoving(index - 1);
+                      } else if (e.key === "Home") {
+                        e.preventDefault();
+                        moveRoving(0);
+                      } else if (e.key === "End") {
+                        e.preventDefault();
+                        moveRoving(tabbableIds.length - 1);
+                      } else if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
                         onSelect(isSel ? null : m.c.id);
                       }
@@ -337,7 +367,7 @@ export default function MapCanvas({
             <div className="tooltip__title">{hover.c.project}</div>
             <div className="tooltip__meta">
               <span className="tooltip__cap">{formatBoundPower(hover.c.capacityMW, hover.c.bound)}</span>
-              <span>{hover.c.numberKind ?? TECH[hover.c.techType].short}</span>
+              <span>{formatNumberKind(hover.c.numberKind) ?? TECH[hover.c.techType].short}</span>
               <span>{formatLocation(hover.c.city, hover.c.state, hover.c.country)}{hover.c.locationApprox ? " · Approximate pin" : ""}</span>
             </div>
           </div>

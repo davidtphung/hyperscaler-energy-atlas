@@ -4,6 +4,7 @@ import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
 import { announcedCount, firmKindTotals, kindHeroNote } from "../lib/select";
 import { emptyPrimaryMwIds, evidenceFor } from "../lib/evidence";
+import { recordMeta } from "../lib/recordMeta";
 
 interface Props {
   selected: PreparedCommitment | null;
@@ -128,9 +129,9 @@ function Overview({
   return (
     <div className="overview">
       <p className="overview__eyebrow">The buildout</p>
-      <h2 className="overview__lead">
+      <h1 className="overview__lead">
         The hyperscalers are buying the <em>future of energy</em> to feed the AI era.
-      </h2>
+      </h1>
 
       <div className="kind-totals" aria-label="Firm totals by kind">
         {stats.kinds.map((k) => {
@@ -196,9 +197,9 @@ function Overview({
         </div>
       </div>
 
-      <div className="rail__group">
-        <div className="rail__head">
-          <h3 className="rail__title">Ledger</h3>
+        <div className="rail__group" id="ledger">
+          <div className="rail__head">
+            <h2 className="rail__title">Ledger</h2>
           <span className="rail__reset" style={{ pointerEvents: "none" }}>
             {onsiteOnly ? recent.length : visible.length} of {totalAll}
           </span>
@@ -206,13 +207,12 @@ function Overview({
         {onsiteOnly && (
           <p className="kind-note">List limited to counted on-site holders. Totals above stay on the rows in view.</p>
         )}
-        <div className="legend" role="list">
+        <div className="legend">
           {recent.map((c) => (
             <button
               key={c.id}
               id={`ledger-${c.id}`}
               className={`legend__row${c.id === ledgerFocusId ? " legend__row--focus" : ""}`}
-              role="listitem"
               onClick={() => onSelect(c.id)}
             >
               <span className="legend__swatch" style={{ background: techColor(c.techType), borderRadius: 999 }} />
@@ -344,6 +344,41 @@ function OnsiteHolders({
   );
 }
 
+function RecordBlock({ c }: { c: PreparedCommitment }) {
+  const meta = recordMeta(c);
+  const evidence = evidenceFor(c);
+  const rows: [string, string][] = [
+    ["Id", meta.id],
+    ["Kind", meta.kind],
+    ["Status", meta.status],
+    ["Counts", `${meta.counts}. ${meta.countsWhy}`],
+    ["Basis", meta.basis],
+    ["Figure type", meta.figureType],
+    ["Source domain", meta.sourceDomain],
+    ["Checked", meta.checked],
+    ["Evidence", meta.evidence],
+  ];
+  return (
+    <div className="record">
+      <h2 className="record__title">Record</h2>
+      <div className="kv">
+        {rows.map(([label, value]) => (
+          <div className="kv__row" key={label}>
+            <span className="kv__k">{label}</span>
+            <span className="kv__v">{value}</span>
+          </div>
+        ))}
+      </div>
+      <p className="kind-note">
+        Status {evidence.status.mark}. {evidence.status.reason}
+      </p>
+      <p className="kind-note">
+        MW {evidence.mw.mark}. {evidence.mw.reason}
+      </p>
+    </div>
+  );
+}
+
 function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void }) {
   return (
     <div className="detail__card">
@@ -359,7 +394,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
           <span className="detail__buyer-name">{c.buyer}</span>
           <span className="detail__buyer-kind">{c.actorKind}</span>
         </div>
-        <h2 className="detail__title">{c.project}</h2>
+        <h1 className="detail__title">{c.project}</h1>
         <div className="detail__loc">
           {formatLocation(c.city, c.state, c.country) || c.country}
           {c.locationApprox && <span className="detail__loc-note">Approximate pin. Not an exact site.</span>}
@@ -432,6 +467,8 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
             </div>
           )}
         </div>
+
+        <RecordBlock c={c} />
 
         <a className="detail__source" href={c.sourceUrl} target="_blank" rel="noopener noreferrer">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

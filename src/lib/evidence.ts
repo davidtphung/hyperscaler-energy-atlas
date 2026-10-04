@@ -24,6 +24,15 @@ const EMPTY_PRIMARY_MW_REASON: Record<string, string> = {
     "Cited filing gives 556 MW combined for both plants, no per-plant MW, and does not name the customer",
 };
 
+/**
+ * google-van-buren-dte-u22058: the 1 Oct 2026 MPSC release does not state a megawatt size.
+ * A 1.0 GW facility figure is a CLAIM and is not stored on the row.
+ */
+const CLAIM_MW_REASON: Record<string, string> = {
+  "google-van-buren-dte-u22058":
+    "The 1 Oct 2026 MPSC release does not state a megawatt size. A 1.0 GW facility figure is a CLAIM and is not stored on this row.",
+};
+
 export function emptyPrimaryMwIds(): string[] {
   return Object.keys(EMPTY_PRIMARY_MW_REASON);
 }
@@ -33,6 +42,7 @@ export function evidenceFor(
   row: Pick<Commitment, "id" | "counts" | "capacityMW">,
 ): RowEvidence {
   const emptyMw = EMPTY_PRIMARY_MW_REASON[row.id];
+  const claimMw = CLAIM_MW_REASON[row.id];
   const status: FieldEvidence =
     row.counts === "yes"
       ? { mark: "FACT", reason: "This row counts, so its cited link supports the status." }
@@ -41,6 +51,8 @@ export function evidenceFor(
   let mw: FieldEvidence;
   if (emptyMw) {
     mw = { mark: "EMPTY PRIMARY", reason: emptyMw };
+  } else if (claimMw) {
+    mw = { mark: "CLAIM", reason: claimMw };
   } else if (row.capacityMW == null) {
     mw = { mark: "CLAIM", reason: "No MW is stored on this row." };
   } else if (row.counts === "yes") {

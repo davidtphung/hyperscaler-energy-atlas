@@ -1,11 +1,13 @@
 import type { FilterState, FacetCounts } from "../lib/select";
+import { FIRM_KIND_ORDER, stateFacets } from "../lib/select";
 import type { Ranked } from "../lib/search";
-import type { TechType, Status, Category, Era, ActorKind, PreparedCommitment } from "../types";
+import type { CountsFlag, NumberKind, TechType, Status, Category, Era, ActorKind, PreparedCommitment } from "../types";
 import { TECH, TECH_ORDER, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { ERA, ERA_ORDER } from "../lib/era";
 import { ACTOR_KIND_ORDER, actorKindForBuyer } from "../lib/actors";
-import { formatBoundPower } from "../lib/format";
+import { formatNumberKindShort } from "../lib/format";
 import AskAtlas from "./AskAtlas";
+import SearchBox from "./SearchBox";
 
 interface Props {
   filters: FilterState;
@@ -19,13 +21,27 @@ interface Props {
   onToggleStatus: (v: Status) => void;
   onToggleCategory: (v: Category) => void;
   onToggleEra: (v: Era) => void;
+  onToggleKind: (v: NumberKind) => void;
+  onToggleCounted: (v: CountsFlag) => void;
+  onToggleState: (v: string) => void;
   onClear: () => void;
   onClose: () => void;
   ranked: Ranked<PreparedCommitment>[];
   rows: PreparedCommitment[];
   onSelect: (id: string) => void;
+  askQuestion: string;
+  onAskQuestion: (q: string) => void;
   onAskHighlight: (ids: string[]) => void;
 }
+
+const KIND_FILTERS: NumberKind[] = [
+  ...FIRM_KIND_ORDER,
+  "utility_load",
+  "program",
+  "equipment_supply",
+  "storage",
+  "unresolved",
+];
 
 const STATUS_ORDER: Status[] = ["operational", "construction", "permitted", "contracted", "ppa-signed", "announced", "exploratory"];
 const CAT_ORDER: Category[] = ["energy", "datacenter"];
@@ -56,65 +72,49 @@ export default function FilterRail({
   onToggleStatus,
   onToggleCategory,
   onToggleEra,
+  onToggleKind,
+  onToggleCounted,
+  onToggleState,
   onClear,
   onClose,
   ranked,
   rows,
   onSelect,
+  askQuestion,
+  onAskQuestion,
   onAskHighlight,
 }: Props) {
+  const places = stateFacets(rows);
   const anyActive =
-    filters.buyers.size + filters.techs.size + filters.statuses.size + filters.categories.size + filters.eras.size > 0;
+    filters.buyers.size +
+      filters.techs.size +
+      filters.statuses.size +
+      filters.categories.size +
+      filters.eras.size +
+      filters.kinds.size +
+      filters.counted.size +
+      filters.states.size >
+    0;
 
   return (
     <nav className={`rail${open ? " rail--open" : ""}`} aria-label="Filters" id="filters">
-      <div className="rail__search" role="search">
-        <span className="search__icon" aria-hidden="true">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="7" />
-            <line x1="21" y1="21" x2="16.5" y2="16.5" />
-          </svg>
-        </span>
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => onQuery(e.target.value)}
-          placeholder="Search commitments"
-          aria-label="Search commitments"
-          aria-controls="search-results"
-          aria-expanded={query.trim().length > 0}
-        />
-      </div>
+      <SearchBox
+        variant="rail"
+        label="Search atlas rows in the filter list"
+        placeholder="Search rows, or kind:on_site state:OH"
+        query={query}
+        onQuery={onQuery}
+        results={ranked}
+        onSelect={onSelect}
+      />
 
-      {query.trim().length > 0 && (
-        <div className="search-results" id="search-results">
-          <div className="search-results__bar">
-            <span>
-              {ranked.length} ranked {ranked.length === 1 ? "match" : "matches"}
-            </span>
-            <button type="button" onClick={() => onQuery("")}>
-              Clear
-            </button>
-          </div>
-          <ol className="search-results__list">
-            {ranked.slice(0, 8).map((hit) => (
-              <li key={hit.row.id}>
-                <button type="button" className="search-hit" onClick={() => onSelect(hit.row.id)}>
-                  <span className="search-hit__buyer">{hit.row.buyer}</span>
-                  <span className="search-hit__project">{hit.row.project}</span>
-                  <span className="search-hit__meta">
-                    {formatBoundPower(hit.row.capacityMW, hit.row.bound)}
-                    {" · "}
-                    {STATUS[hit.row.status].label}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
-
-      <AskAtlas rows={rows} onSelect={onSelect} onHighlight={onAskHighlight} />
+      <AskAtlas
+        rows={rows}
+        question={askQuestion}
+        onQuestion={onAskQuestion}
+        onSelect={onSelect}
+        onHighlight={onAskHighlight}
+      />
 
       <div className="rail__group">
         <div className="rail__head">
@@ -122,6 +122,60 @@ export default function FilterRail({
           <button className="rail__reset" onClick={onClear} disabled={!anyActive} style={{ opacity: anyActive ? 1 : 0.4 }}>
             Reset all
           </button>
+        </div>
+      </div>
+
+      <div className="rail__group">
+        <div className="rail__head">
+          <h3 className="rail__title">Kind</h3>
+        </div>
+        <div className="chips">
+          {KIND_FILTERS.map((kind) => {
+            const on = filters.kinds.has(kind);
+            const n = counts.kinds[kind] ?? 0;
+            return (
+              <button key={kind} className="chip" aria-pressed={on} onClick={() => onToggleKind(kind)}>
+                {formatNumberKindShort(kind)}
+                <span className="chip__count">{n}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="rail__group">
+        <div className="rail__head">
+          <h3 className="rail__title">Counted</h3>
+        </div>
+        <div className="chips">
+          {(["yes", "no"] as CountsFlag[]).map((flag) => {
+            const on = filters.counted.has(flag);
+            const n = counts.counted[flag] ?? 0;
+            return (
+              <button key={flag} className="chip" aria-pressed={on} onClick={() => onToggleCounted(flag)}>
+                {flag === "yes" ? "Counted" : "Not counted"}
+                <span className="chip__count">{n}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="rail__group">
+        <div className="rail__head">
+          <h3 className="rail__title">State</h3>
+        </div>
+        <div className="chips">
+          {places.filter((place) => (counts.states[place.key] ?? 0) > 0 || filters.states.has(place.key)).map((place) => {
+            const on = filters.states.has(place.key);
+            const n = counts.states[place.key] ?? 0;
+            return (
+              <button key={place.key} className="chip" aria-pressed={on} onClick={() => onToggleState(place.key)}>
+                {place.label}
+                <span className="chip__count">{n}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

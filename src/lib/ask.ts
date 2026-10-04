@@ -3,6 +3,7 @@ import { evidenceFor } from "./evidence.ts";
 import { formatBoundPower, formatKindTotal, formatLocation, formatNumberKind, formatPower } from "./format.ts";
 import { firmKindTotals, FIRM_KIND_ORDER } from "./select.ts";
 import {
+  indexCommitments,
   KIND_PHRASES,
   norm,
   parseStateQuery,
@@ -255,14 +256,16 @@ export function ask(question: string, rows: readonly Commitment[]): AskResult {
     };
   }
 
-  const matched = rows.filter((row) => {
-    if (parsed.kinds.length > 0 && !parsed.kinds.includes(row.numberKind)) return false;
-    if (parsed.state && !rowMatchesState(row.state, parsed.state)) return false;
-    if (parsed.status && row.status !== parsed.status) return false;
-    if (parsed.buyer && !buyerMatches(row.buyer, parsed.buyer)) return false;
-    if (parsed.cmp && !passesMw(row.capacityMW, parsed.cmp)) return false;
-    return true;
-  });
+  const matched = indexCommitments(rows)
+    .filter(({ row }) => {
+      if (parsed.kinds.length > 0 && !parsed.kinds.includes(row.numberKind)) return false;
+      if (parsed.state && !rowMatchesState(row.state, parsed.state)) return false;
+      if (parsed.status && row.status !== parsed.status) return false;
+      if (parsed.buyer && !buyerMatches(row.buyer, parsed.buyer)) return false;
+      if (parsed.cmp && !passesMw(row.capacityMW, parsed.cmp)) return false;
+      return true;
+    })
+    .map(({ row }) => row);
 
   const listed = parsed.countedOnly ? matched.filter((row) => row.counts === "yes") : matched;
   const showTotal = parsed.countedOnly && parsed.kinds.length === 1;

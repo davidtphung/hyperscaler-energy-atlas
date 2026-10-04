@@ -1,8 +1,8 @@
-import type { Commitment, PreparedCommitment, TechType, Status, Category, Era, NumberKind } from "../types";
+import type { Commitment, CountsFlag, PreparedCommitment, TechType, Status, Category, Era, NumberKind } from "../types";
 import { formatExactMW, parseDate } from "./format.ts";
 import { classifyEra } from "./era.ts";
 import { resolveActorKind } from "./actors.ts";
-import { rankRows } from "./search.ts";
+import { chipsMatch, parseSearchQuery, rankRows, stateKey } from "./search.ts";
 
 export interface FilterState {
   buyers: Set<string>;
@@ -10,7 +10,25 @@ export interface FilterState {
   statuses: Set<Status>;
   categories: Set<Category>;
   eras: Set<Era>;
+  kinds: Set<NumberKind>;
+  counted: Set<CountsFlag>;
+  /** Normalized state keys (TX, not Texas). Display only; row ids are not rewritten. */
+  states: Set<string>;
   query: string;
+}
+
+export function emptyFilters(query = ""): FilterState {
+  return {
+    buyers: new Set(),
+    techs: new Set(),
+    statuses: new Set(),
+    categories: new Set(),
+    eras: new Set(),
+    kinds: new Set(),
+    counted: new Set(),
+    states: new Set(),
+    query,
+  };
 }
 
 export function prepare(commitments: Commitment[]): PreparedCommitment[] {
@@ -73,22 +91,30 @@ function legacyQuery(c: Commitment, q: string): boolean {
 
 function matchesQuery(c: Commitment, q: string): boolean {
   if (!q.trim()) return true;
-  if (legacyQuery(c, q)) return true;
-  return rankRows(q, [c]).some((hit) => hit.score > 0);
+  const parsed = parseSearchQuery(q);
+  if (parsed.chips.length > 0 && !chipsMatch(c, parsed.chips)) return false;
+  if (!parsed.text) return true;
+  if (legacyQuery(c, parsed.text)) return true;
+  return rankRows(parsed.text, [c]).some((hit) => hit.score > 0);
+}
+
+function passesFacet(c: PreparedCommitment, f: FilterState, skip: string): boolean {
+  if (skip !== "buyer" && (f.buyers?.size ?? 0) > 0 && !f.buyers.has(c.buyer)) return false;
+  if (skip !== "tech" && (f.techs?.size ?? 0) > 0 && !f.techs.has(c.techType)) return false;
+  if (skip !== "status" && (f.statuses?.size ?? 0) > 0 && !f.statuses.has(c.status)) return false;
+  if (skip !== "category" && (f.categories?.size ?? 0) > 0 && !f.categories.has(c.category)) return false;
+  if (skip !== "era" && (f.eras?.size ?? 0) > 0 && !f.eras.has(c.era)) return false;
+  if (skip !== "kind" && (f.kinds?.size ?? 0) > 0 && !f.kinds.has(c.numberKind)) return false;
+  if (skip !== "counted" && (f.counted?.size ?? 0) > 0 && !f.counted.has(c.counts)) return false;
+  if (skip !== "state" && (f.states?.size ?? 0) > 0 && !f.states.has(stateKey(c.state).key)) return false;
+  if (skip !== "query" && !matchesQuery(c, f.query)) return false;
+  return true;
 }
 
 /** Apply every facet filter (buyer, technology, status, category, query). The
  * timeline reveal is applied separately so future commitments can render faintly. */
 export function applyFacets(list: PreparedCommitment[], f: FilterState): PreparedCommitment[] {
-  return list.filter(
-    (c) =>
-      (f.buyers.size === 0 || f.buyers.has(c.buyer)) &&
-      (f.techs.size === 0 || f.techs.has(c.techType)) &&
-      (f.statuses.size === 0 || f.statuses.has(c.status)) &&
-      (f.categories.size === 0 || f.categories.has(c.category)) &&
-      (f.eras.size === 0 || f.eras.has(c.era)) &&
-      matchesQuery(c, f.query)
-  );
+  return list.filter((c) => passesFacet(c, f, ""));
 }
 
 /** Firm hero kinds, in display order. These totals are never added together. */
@@ -108,7 +134,7 @@ export interface KindTotal {
 }
 
 /** counts=yes rows only, split by kind. */
-export function firmKindTotals(list: Pick<Commitment, "numberKind" | "counts" | "capacityMW" | "bound">[]): KindTotal[] {
+export function firmKindTotals(list: readonly Pick<Commitment, "numberKind" | "counts" | "capacityMW" | "bound">[]): KindTotal[] {
   return FIRM_KIND_ORDER.map((kind) => {
     const rows = list.filter((c) => c.numberKind === kind && c.counts === "yes");
     return {
@@ -202,6 +228,14 @@ export interface FacetCounts {
   statuses: Record<string, number>;
   categories: Record<string, number>;
   eras: Record<string, number>;
+  kinds: Record<string, number>;
+  counted: Record<string, number>;
+  states: Record<string, number>;
+}
+
+export interface StateFacet {
+  key: string;
+  label: string;
 }
 
 /**
@@ -210,25 +244,38 @@ export interface FacetCounts {
  * Time range is intentionally excluded so chip counts stay stable while
  * scrubbing the timeline.
  */
-export function facetCounts(list: PreparedCommitment[], f: FilterState): FacetCounts {
-  const q = (c: Commitment) => matchesQuery(c, f.query);
-  const okBuyer = (c: PreparedCommitment) => f.buyers.size === 0 || f.buyers.has(c.buyer);
-  const okTech = (c: PreparedCommitment) => f.techs.size === 0 || f.techs.has(c.techType);
-  const okStatus = (c: PreparedCommitment) => f.statuses.size === 0 || f.statuses.has(c.status);
-  const okCat = (c: PreparedCommitment) => f.categories.size === 0 || f.categories.has(c.category);
-  const okEra = (c: PreparedCommitment) => f.eras.size === 0 || f.eras.has(c.era);
+export function stateFacets(list: Pick<Commitment, "state">[]): StateFacet[] {
+  const seen = new Map<string, string>();
+  for (const row of list) {
+    const st = stateKey(row.state);
+    if (!st.key || seen.has(st.key)) continue;
+    seen.set(st.key, st.label);
+  }
+  return [...seen.entries()]
+    .map(([key, label]) => ({ key, label }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+}
 
-  const tally = <K extends string>(pick: (c: PreparedCommitment) => K, keep: (c: PreparedCommitment) => boolean) => {
+export function facetCounts(list: PreparedCommitment[], f: FilterState): FacetCounts {
+  const tally = (pick: (c: PreparedCommitment) => string, skip: string) => {
     const m: Record<string, number> = {};
-    for (const c of list) if (q(c) && keep(c)) m[pick(c)] = (m[pick(c)] ?? 0) + 1;
+    for (const c of list) {
+      if (!passesFacet(c, f, skip)) continue;
+      const key = pick(c);
+      if (!key) continue;
+      m[key] = (m[key] ?? 0) + 1;
+    }
     return m;
   };
 
   return {
-    buyers: tally((c) => c.buyer, (c) => okTech(c) && okStatus(c) && okCat(c) && okEra(c)),
-    techs: tally((c) => c.techType, (c) => okBuyer(c) && okStatus(c) && okCat(c) && okEra(c)),
-    statuses: tally((c) => c.status, (c) => okBuyer(c) && okTech(c) && okCat(c) && okEra(c)),
-    categories: tally((c) => c.category, (c) => okBuyer(c) && okTech(c) && okStatus(c) && okEra(c)),
-    eras: tally((c) => c.era, (c) => okBuyer(c) && okTech(c) && okStatus(c) && okCat(c)),
+    buyers: tally((c) => c.buyer, "buyer"),
+    techs: tally((c) => c.techType, "tech"),
+    statuses: tally((c) => c.status, "status"),
+    categories: tally((c) => c.category, "category"),
+    eras: tally((c) => c.era, "era"),
+    kinds: tally((c) => c.numberKind, "kind"),
+    counted: tally((c) => c.counts, "counted"),
+    states: tally((c) => stateKey(c.state).key, "state"),
   };
 }

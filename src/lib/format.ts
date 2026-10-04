@@ -52,8 +52,26 @@ const NUMBER_KIND_LABEL: Record<NumberKind, string> = {
   unresolved: "Unresolved",
 };
 
+const NUMBER_KIND_SHORT: Record<NumberKind, string> = {
+  it_capacity: "IT load",
+  grid_gen_for_dc: "Grid generation",
+  btm_gen: "On-site",
+  offtake_new: "New-plant contracts",
+  offtake_existing: "Existing-plant contracts",
+  utility_load: "Utility load",
+  program: "Program",
+  equipment_supply: "Equipment",
+  storage: "Storage",
+  unresolved: "Unresolved",
+};
+
 export function formatNumberKind(kind: NumberKind | undefined): string | null {
   return kind ? NUMBER_KIND_LABEL[kind] : null;
+}
+
+/** Compact label for the five-kind strip and filter chips. */
+export function formatNumberKindShort(kind: NumberKind | undefined): string | null {
+  return kind ? NUMBER_KIND_SHORT[kind] : null;
 }
 
 export function formatNumberKindNote(kind: NumberKind | undefined): string | null {

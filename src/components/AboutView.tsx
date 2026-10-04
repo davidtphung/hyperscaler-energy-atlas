@@ -19,7 +19,7 @@ export default function AboutView({ total }: Props) {
 
       <div className="about-grid">
         <section className="prose">
-          <h2>What counts in a firm total</h2>
+          <h2 id="what-counts">What counts in a firm total</h2>
           <p>
             A row counts only when its own cited link shows that site being built or running. A contract with
             a plant also counts. An issued permit is not evidence of construction. A permitted row stays out
@@ -70,7 +70,7 @@ export default function AboutView({ total }: Props) {
         </section>
 
         <aside className="prose prose--side">
-          <h2>Data schema</h2>
+          <h2 id="data-dictionary">Data schema</h2>
           <p>Each record is normalized to these fields:</p>
           <ul className="schema-list">
             {[

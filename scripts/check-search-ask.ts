@@ -193,9 +193,30 @@ if (applyFacets(COMMITMENTS.map((c) => ({ ...c, actorKind: c.actorKind ?? "Undis
   categories: new Set(),
   eras: new Set(),
   query: "",
-}).length !== 153) {
-  fail("empty filters no longer return 153 rows");
+}).length !== 154) {
+  fail("empty filters no longer return 154 rows");
 }
+
+const vanBuren = COMMITMENTS.find((c) => c.id === "google-van-buren-dte-u22058");
+if (!vanBuren) fail("missing Google Van Buren");
+else {
+  if (vanBuren.numberKind !== "utility_load" || vanBuren.counts !== "no") fail("Van Buren kind or counts changed");
+  if (vanBuren.capacityMW != null) fail("Van Buren stored an MW figure");
+  if (vanBuren.lat != null || vanBuren.lng != null) fail("Van Buren pin was invented");
+  const ev = evidenceFor(vanBuren);
+  if (ev.mw.mark !== "CLAIM" || !ev.mw.reason.includes("1.0 GW")) fail("Van Buren MW is not labeled as a CLAIM");
+  if (hasLongDash(ev.mw.reason)) fail("Van Buren evidence has a long dash");
+}
+
+const onSiteOhio = rankRows("kind:on_site state:OH", COMMITMENTS).map((hit) => hit.row.id).sort();
+const onSiteOhioWant = COMMITMENTS.filter((c) => c.numberKind === "btm_gen" && (c.state.trim().toLowerCase() === "oh" || c.state.trim().toLowerCase() === "ohio"))
+  .map((c) => c.id)
+  .sort();
+if (onSiteOhio.join("|") !== onSiteOhioWant.join("|")) fail("kind:on_site state:OH did not match on-site Ohio rows");
+if (rankRows("counted:yes", COMMITMENTS).length !== 25) fail("counted:yes result count changed");
+const texasCode = rankRows("state:TX", COMMITMENTS).map((hit) => hit.row.id).sort().join("|");
+const texasName = rankRows("state:Texas", COMMITMENTS).map((hit) => hit.row.id).sort().join("|");
+if (!texasCode || texasCode !== texasName) fail("Texas and TX are not one filter value");
 
 const pins: Record<string, [number, number]> = {
   "fluidstack-lake-mariner-it-378": [43.3472, -78.5553],
@@ -219,6 +240,11 @@ const scanned = [
   "src/components/MapCanvas.tsx",
   "src/App.tsx",
   "src/lib/select.ts",
+  "src/lib/recordMeta.ts",
+  "src/lib/url.ts",
+  "src/components/SearchBox.tsx",
+  "src/components/TrustStrip.tsx",
+  "src/components/KindStrip.tsx",
   "src/index.css",
 ];
 const networkCall = new RegExp("\\bfetch\\s*\\(|XMLHttpRequest|new WebSocket|sendBeacon");
