@@ -1,6 +1,6 @@
 import type { Bound, Commitment, ExcludeReason } from "../types";
 import { evidenceFor } from "./evidence.ts";
-import { formatFullDate, formatNumberKind } from "./format.ts";
+import { formatFullDate, rowKindLabel } from "./format.ts";
 import { sourceDomain } from "./search.ts";
 import { STATUS } from "./theme.ts";
 
@@ -45,7 +45,7 @@ export function recordMeta(row: Commitment): RecordMeta {
   const unique = [...new Set(marks)];
   return {
     id: row.id,
-    kind: formatNumberKind(row.numberKind) ?? row.numberKind,
+    kind: rowKindLabel(row) ?? row.numberKind,
     status: STATUS[row.status].label,
     counts: row.counts,
     countsWhy: countsWhy(row),
