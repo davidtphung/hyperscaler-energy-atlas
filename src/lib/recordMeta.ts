@@ -8,6 +8,7 @@ const EXCLUDE_PLAIN: Record<ExcludeReason, string> = {
   mw_null: "no MW on the row",
   unverified: "not verified",
   duplicate: "duplicate of another row",
+  plant_capacity_no_buyer: "plant capacity, no buyer named in the source",
   conflict: "conflicts with another figure",
   target_not_firm: "target is not firm",
   restart: "restart in progress",

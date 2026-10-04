@@ -74,6 +74,19 @@ export function formatNumberKindShort(kind: NumberKind | undefined): string | nu
   return kind ? NUMBER_KIND_SHORT[kind] : null;
 }
 
+/** Label beside a row's megawatts. A plant with no named buyer uses capacity wording. */
+export function rowFigureLabel(row: { numberKind?: NumberKind; excludeReason?: string }): string | null {
+  if (row.excludeReason === "plant_capacity_no_buyer") return "Capacity not counted";
+  return formatNumberKind(row.numberKind);
+}
+
+export function rowFigureNote(row: { numberKind?: NumberKind; excludeReason?: string }): string | null {
+  if (row.excludeReason === "plant_capacity_no_buyer") {
+    return "Plant capacity, no buyer named in the source. This capacity is not counted.";
+  }
+  return formatNumberKindNote(row.numberKind);
+}
+
 export function formatNumberKindNote(kind: NumberKind | undefined): string | null {
   if (!kind) return null;
   switch (kind) {

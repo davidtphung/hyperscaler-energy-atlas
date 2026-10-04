@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
-import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
+import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatPower, formatSourcedDate, rowFigureLabel, rowFigureNote } from "../lib/format";
 import { listsAsActor } from "../lib/actors";
 import { announcedCount, firmKindTotals, kindHeroNote } from "../lib/select";
 import { emptyPrimaryMwIds, evidenceFor } from "../lib/evidence";
@@ -403,7 +403,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
         <div className="detail__capten">
           <span className="detail__cap">{formatBoundPower(c.capacityMW, c.bound)}</span>
           <span className="detail__cap-label">
-            {formatNumberKind(c.numberKind) ?? (c.capacityMW ? "committed capacity" : "capacity undisclosed")}
+            {rowFigureLabel(c) ?? (c.capacityMW ? "committed capacity" : "capacity undisclosed")}
           </span>
         </div>
       </div>
@@ -485,7 +485,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
         )}
 
         <p style={{ fontSize: 11, color: "var(--text-4)", marginTop: 2 }}>
-          {formatNumberKindNote(c.numberKind) ??
+          {rowFigureNote(c) ??
             `${formatBoundPower(c.capacityMW, c.bound)}. Figures reflect publicly reported headline capacity.`}
         </p>
       </div>
