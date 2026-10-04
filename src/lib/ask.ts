@@ -1,6 +1,7 @@
 import type { Commitment, ExcludeReason, NumberKind, Status } from "../types";
 import { evidenceFor } from "./evidence.ts";
 import { formatBoundPower, formatKindTotal, formatLocation, formatNumberKind, formatPower } from "./format.ts";
+import { listsAsActor } from "./actors.ts";
 import { firmKindTotals, FIRM_KIND_ORDER } from "./select.ts";
 import {
   indexCommitments,
@@ -136,7 +137,7 @@ function findStatus(text: string): Status | null {
 }
 
 function findBuyer(text: string, rows: readonly Commitment[]): string | null {
-  const names = [...new Set(rows.map((r) => r.buyer))].sort((a, b) => norm(b).length - norm(a).length);
+  const names = [...new Set(rows.map((r) => r.buyer))].filter(listsAsActor).sort((a, b) => norm(b).length - norm(a).length);
   for (const name of names) {
     const n = norm(name);
     if (n.length < 3) continue;

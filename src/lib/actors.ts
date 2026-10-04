@@ -56,6 +56,16 @@ const BUYER_KIND: Record<string, ActorKind> = {
   Unnamed: "Undisclosed",
 };
 
+/**
+ * Buyer text that records a missing name. It stays on the row.
+ * It is not an actor, so it is left out of actor chips and the actor count.
+ */
+export const UNLISTED_ACTOR_BUYERS = new Set(["Not named in the release"]);
+
+export function listsAsActor(buyer: string): boolean {
+  return !UNLISTED_ACTOR_BUYERS.has(buyer);
+}
+
 export function actorKindForBuyer(buyer: string): ActorKind {
   return BUYER_KIND[buyer] ?? "Undisclosed";
 }

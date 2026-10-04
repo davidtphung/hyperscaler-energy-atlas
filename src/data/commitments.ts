@@ -2542,7 +2542,7 @@ export const COMMITMENTS: Commitment[] = [
   },
   {
     "id": "google-fervo-cape-station-utah",
-    "buyer": "Google",
+    "buyer": "Not named in the release",
     "counterparty": "Fervo Energy",
     "project": "Cape Station enhanced geothermal (Utah)",
     "techType": "geothermal",
@@ -2557,7 +2557,7 @@ export const COMMITMENTS: Commitment[] = [
     "constructionStart": null,
     "onlineDate": null,
     "status": "construction",
-    "headline": "Fervo Cape Station Phase I is about 100 MW and under construction",
+    "headline": "Fervo says the first 33 MW block at Cape Station is in commercial operation (company claim)",
     "summary": "CLAIM. Per Fervo's 1 Oct 2026 release (8-K Exhibit 99.1), Cape Station declared commercial operation on Sep 30, 2026, one day before its contractual COD. The release says the first of three 33 MW GeoBlocks produced 33 MW net and is generating revenue under its PPA. The remaining two Phase I blocks are expected to reach contractual COD by Jan 1, 2027. The release names no buyer. This is a company claim, not measured energized load.",
     "sourceName": "Fervo Energy (GlobeNewswire)",
     "sourceUrl": "https://www.globenewswire.com/news-release/2026/09/24/3368115/0/en/fervo-energy-achieves-first-power-at-cape-station-a-landmark-moment-for-the-future-of-enhanced-geothermal-systems.html",

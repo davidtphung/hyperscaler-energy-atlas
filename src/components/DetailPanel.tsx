@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatNumberKindNote, formatPower, formatSourcedDate } from "../lib/format";
+import { listsAsActor } from "../lib/actors";
 import { announcedCount, firmKindTotals, kindHeroNote } from "../lib/select";
 import { emptyPrimaryMwIds, evidenceFor } from "../lib/evidence";
 import { recordMeta } from "../lib/recordMeta";
@@ -96,7 +97,7 @@ function Overview({
   ledgerFocusId: string | null;
 }) {
   const stats = useMemo(() => {
-    const actors = new Set(visible.map((c) => c.buyer));
+    const actors = new Set(visible.map((c) => c.buyer).filter(listsAsActor));
     return {
       kinds: firmKindTotals(visible),
       actors: actors.size,
