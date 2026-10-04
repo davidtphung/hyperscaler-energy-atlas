@@ -30,6 +30,11 @@ export default function AboutView({ total }: Props) {
             or at least stay out, as do goals, slogans, press releases, news articles, and newsletters. The
             five kinds stay separate and are not added together.
           </p>
+          <p>
+            Signals, on their own tab, are context only. Census construction spending is dollars of construction
+            put in place. Those dollars are not megawatts, they are not added to any kind, and they do not change
+            counted IT load.
+          </p>
 
           <h2>What counts as a commitment</h2>
           <p>

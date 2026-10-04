@@ -91,4 +91,5 @@ export const FIELD_DICTIONARY: { name: string; description: string }[] = [
   { name: "evidenceStatus", description: "Status evidence label from the row." },
   { name: "evidenceMw", description: "MW evidence label from the row." },
   { name: "summary", description: "Notes stored on the row." },
+  { name: "signals", description: "Context series such as Census construction spending. Dollars, not megawatts. Not a counted kind and not added to a firm total." },
 ];

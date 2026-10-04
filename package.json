@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "node --experimental-strip-types scripts/check-number-kinds.ts && node --experimental-strip-types scripts/check-map-zoom.ts && node --experimental-strip-types scripts/check-search-ask.ts && node --experimental-strip-types scripts/export-data.ts && tsc --noEmit && vite build",
+    "build": "node --experimental-strip-types scripts/fetch-signals.ts && node --experimental-strip-types scripts/check-number-kinds.ts && node --experimental-strip-types scripts/check-map-zoom.ts && node --experimental-strip-types scripts/check-search-ask.ts && node --experimental-strip-types scripts/check-signals.ts && node --experimental-strip-types scripts/export-data.ts && tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist -b gh-pages"

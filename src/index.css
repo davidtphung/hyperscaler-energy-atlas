@@ -1754,6 +1754,141 @@ a { color: inherit; }
   .trust-dict div { grid-template-columns: 1fr; }
 }
 
+.sig-note {
+  margin: 14px 0 0;
+  color: var(--text-2);
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 78ch;
+}
+.sig-download {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--signal-line);
+  background: var(--signal-soft);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 13px;
+}
+.sig-download--quiet {
+  background: transparent;
+  border-color: var(--line-2);
+  color: var(--text-2);
+}
+.sig-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.sig-stat {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--ink-850);
+  padding: 12px 14px 10px;
+}
+.sig-stat h2 {
+  margin: 6px 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-2);
+}
+.sig-stat__value {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 26px;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+.sig-stat__basis, .sig-copy {
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.sig-stat__basis { margin: 6px 0 0; }
+.sig-stat__tags { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.sig-tag {
+  display: inline-block;
+  margin: 0 6px 4px 0;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  vertical-align: middle;
+}
+.sig-fold { margin-top: 8px; }
+.sig-fold summary { cursor: pointer; color: var(--signal); font-size: 12.5px; }
+.sig-fold p { margin: 6px 0 0; color: var(--text-2); font-size: 13px; line-height: 1.5; }
+.sig-block { margin: 8px 0 32px; }
+.sig-block h2 { margin: 0 0 8px; font-size: 22px; }
+.sig-chart {
+  margin: 12px 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--ink-900);
+  padding: 8px 8px 4px;
+}
+.sig-chart svg { display: block; width: 100%; height: auto; }
+.sig-chart__grid { stroke: rgba(255, 255, 255, 0.08); stroke-width: 1; }
+.sig-chart__axis { fill: var(--text-2); font-size: 11px; font-family: var(--font-mono); }
+.sig-chart__dc { stroke: var(--signal); stroke-width: 2.25; }
+.sig-chart__general { stroke: #7fc4ec; stroke-width: 2.25; stroke-dasharray: 5 4; }
+.sig-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 4px 8px 8px;
+  color: var(--text-2);
+  font-size: 12.5px;
+}
+.sig-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sig-swatch { width: 18px; height: 3px; display: inline-block; }
+.sig-swatch--dc { background: var(--signal); }
+.sig-swatch--gen { background: #7fc4ec; }
+.sig-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-md); }
+.sig-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.sig-table th, .sig-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.sig-table th { color: var(--text); font-weight: 600; }
+.sig-table td { color: var(--text-2); }
+.sig-table caption { caption-side: bottom; text-align: left; padding: 8px 10px; color: var(--text-3); font-size: 12px; }
+.sig-census { display: inline-block; margin-right: 8px; font-family: var(--font-mono); color: var(--text); }
+.sig-raw, .sig-id { display: block; margin-top: 4px; font-size: 12px; color: var(--text-3); font-family: var(--font-mono); }
+.sig-sources { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sig-source {
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  background: var(--ink-850);
+}
+.sig-source h3 { margin: 0 0 6px; font-size: 15px; }
+.sig-source dl { margin: 8px 0; }
+.sig-source div { display: grid; grid-template-columns: 108px 1fr; gap: 6px; margin: 0 0 6px; }
+.sig-source dt { color: var(--text-3); font-size: 12px; }
+.sig-source dd { margin: 0; color: var(--text-2); font-size: 13px; }
+.sig-source a { color: var(--signal); font-size: 12.5px; overflow-wrap: anywhere; }
+.search-group { margin: 0 0 8px; }
+.search-group__label {
+  margin: 2px 0 6px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+@media (max-width: 900px) {
+  .sig-stats, .sig-sources { grid-template-columns: 1fr; }
+}
+
 @media (min-width: 1181px) {
   .searchbox--rail .search-results,
   .searchbox--rail .search-chips { display: none; }

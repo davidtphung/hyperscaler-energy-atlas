@@ -1,0 +1,86 @@
+[
+  {
+    "id": "census-c30-data-center",
+    "name": "Census C30 private data center construction spending",
+    "publisher": "U.S. Census Bureau",
+    "url": "https://www.census.gov/construction/c30/historical_data.html",
+    "cadence": "monthly",
+    "unit": "millions of dollars, seasonally adjusted annual rate, and monthly not seasonally adjusted",
+    "measures": "Value of private data center construction put in place. A subcategory of Office.",
+    "evidence": "FACT",
+    "lastChecked": "2026-10-04",
+    "fit": "Context only. Construction spending dollars are not megawatts and are not added to a counted kind."
+  },
+  {
+    "id": "census-c30-office",
+    "name": "Census C30 office construction spending",
+    "publisher": "U.S. Census Bureau",
+    "url": "https://www.census.gov/construction/c30/current/index.html",
+    "cadence": "monthly",
+    "unit": "millions of dollars, seasonally adjusted annual rate, and monthly not seasonally adjusted",
+    "measures": "Value of office construction put in place, including the General, Data center, and Financial parts. FRED series PROFCONS and TLOFCON mirror the private office annual rate and the total office monthly NSA line.",
+    "evidence": "FACT",
+    "lastChecked": "2026-10-04",
+    "fit": "Context only. Office dollars are not added to data center dollars, and neither is a counted megawatt."
+  },
+  {
+    "id": "eia-860m",
+    "name": "EIA-860M preliminary monthly electric generator inventory",
+    "publisher": "U.S. Energy Information Administration",
+    "url": "https://www.eia.gov/electricity/data/eia860m/",
+    "cadence": "monthly",
+    "unit": "generator nameplate megawatts and a status code",
+    "measures": "Monthly supplement to Form EIA-860 listing electric generators and whether they are planned, under construction, or operating.",
+    "evidence": "FACT",
+    "lastChecked": "2026-10-04",
+    "fit": "A plant row counts only under the counting rules. An 860M status is not construction spending and is not derived from dollars."
+  },
+  {
+    "id": "pjm-2028-2029-bra",
+    "name": "PJM 2028/2029 Base Residual Auction results",
+    "publisher": "PJM Interconnection",
+    "url": "https://www.pjm.com/-/media/DotCom/markets-ops/rpm/rpm-auction-info/2028-2029/2028-2029-bra-results-report.pdf",
+    "cadence": "each capacity auction",
+    "unit": "megawatts of unforced capacity",
+    "measures": "Capacity cleared in the 2028/2029 Reliability Pricing Model Base Residual Auction.",
+    "evidence": "FACT",
+    "lastChecked": "2026-10-04",
+    "fit": "Auction capacity is not counted IT load. An interconnection queue position is not a counted megawatt."
+  },
+  {
+    "id": "state-commission-special-contracts",
+    "name": "State commission special contracts",
+    "publisher": "State public utility commissions",
+    "url": "https://www.michigan.gov/mpsc/commission/news-releases/2026/10/01/mpsc-approves-dte-electric-google-data-center-and-contracts-protects-customers-from-project-cost",
+    "cadence": "as orders are issued",
+    "unit": "contract terms stated in the order",
+    "measures": "Regulator orders and special contracts for data center load, including the Michigan Public Service Commission order opened with this entry.",
+    "evidence": "FACT",
+    "lastChecked": "2026-10-04",
+    "fit": "A contract counts only when the row rules say so. The order is not a construction spending series and is not converted to megawatts from dollars."
+  },
+  {
+    "id": "epoch-ai-data-centers",
+    "name": "Epoch AI data centers",
+    "publisher": "Epoch AI",
+    "url": "https://epoch.ai/data/data-centers",
+    "cadence": "updated as Epoch publishes",
+    "unit": "independent estimates of IT power, compute, and cost",
+    "measures": "Third party estimates of large AI data centers, built from imagery, permits, and a cost model.",
+    "evidence": "THIRD-PARTY ESTIMATE",
+    "lastChecked": "2026-10-04",
+    "fit": "Not a counted row. Not added to a firm total. Not a Census construction series."
+  },
+  {
+    "id": "sec-xbrl-capex-frames",
+    "name": "SEC XBRL capex frames",
+    "publisher": "U.S. Securities and Exchange Commission",
+    "url": "https://www.sec.gov/edgar/sec-api-documentation",
+    "cadence": "as filings are disseminated",
+    "unit": "dollars reported by the company",
+    "measures": "Company capital expenditure concepts in the XBRL frames API, such as PaymentsToAcquirePropertyPlantAndEquipment.",
+    "evidence": "COMPANY CLAIM",
+    "lastChecked": "2026-10-04",
+    "fit": "Company capex is not counted IT load and is not converted to megawatts."
+  }
+]

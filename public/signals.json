@@ -1,0 +1,5557 @@
+{
+  "note": "Dollars of construction put in place. Not megawatts. Not added to a counted kind. Does not change counted IT load.",
+  "retrieved": "2026-10-04",
+  "releaseDate": "2026-10-01",
+  "vintage": "as revised through 2026-10-01",
+  "definitions": {
+    "sourceUrl": "https://www.census.gov/construction/c30/definitions.html",
+    "checked": "2026-10-04",
+    "confirmedThisRun": true,
+    "dataCenter": "Includes buildings that contain the hardware needed for storing, processing, and transmitting digital information.",
+    "general": "Includes administration buildings, computer centers, office buildings, and professional buildings.",
+    "office": "In addition to the types of offices listed below, it also includes motion picture, television, and radio offices.",
+    "racksOrServers": "racks or servers in data centers"
+  },
+  "fred": {
+    "officeSaar": {
+      "id": "PROFCONS",
+      "page": "https://fred.stlouisfed.org/series/PROFCONS",
+      "verifiedOpen": true
+    },
+    "officeNsaTotal": {
+      "id": "TLOFCON",
+      "page": "https://fred.stlouisfed.org/series/TLOFCON",
+      "verifiedOpen": true
+    },
+    "dataCenterSearch": {
+      "url": "https://fred.stlouisfed.org/searchresults/?st=%22data+center%22&t=census",
+      "openedOn": "2026-10-04",
+      "verifiedOpen": true,
+      "result": "No Census construction spending series for data centers. The Census-tagged hits were discontinued purchased computer services series, not value of construction put in place."
+    },
+    "csvChecks": [
+      {
+        "id": "PROFCONS",
+        "page": "https://fred.stlouisfed.org/series/PROFCONS",
+        "verifiedOpen": true,
+        "openedOn": "2026-10-04",
+        "csv": {
+          "month": "2026-08",
+          "value": 134119
+        },
+        "censusMonth": "2026-08",
+        "censusValue": 134119,
+        "matchesCensus": true
+      },
+      {
+        "id": "TLOFCON",
+        "page": "https://fred.stlouisfed.org/series/TLOFCON",
+        "verifiedOpen": true,
+        "openedOn": "2026-10-04",
+        "csv": {
+          "month": "2026-08",
+          "value": 13372
+        },
+        "censusMonth": "2026-08",
+        "censusValue": 13372,
+        "matchesCensus": true
+      }
+    ]
+  },
+  "links": {
+    "release": "https://www.census.gov/construction/c30/current/index.html",
+    "releaseWorkbook": "https://www.census.gov/construction/c30/xlsx/release.xlsx",
+    "historical": "https://www.census.gov/construction/c30/historical_data.html",
+    "definitions": "https://www.census.gov/construction/c30/definitions.html"
+  },
+  "series": [
+    {
+      "id": "C30-PRIVATE-DATA-CENTER-SAAR",
+      "fredId": null,
+      "fredPage": null,
+      "fredVerifiedOpen": false,
+      "label": "Private data center construction spending",
+      "category": "Data center",
+      "ownership": "private",
+      "units": "Millions of dollars, seasonally adjusted annual rate",
+      "adjustment": "seasonally adjusted annual rate",
+      "priceNote": "Nominal dollars. Table 1 of the release says the figures are adjusted for seasonality but not price changes. NSA values are monthly millions of dollars from the same release, not a price-adjusted series.",
+      "releaseDate": "2026-10-01",
+      "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx",
+      "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, seasonally adjusted annual rate",
+      "retrieved": "2026-10-04",
+      "points": [
+        {
+          "month": "2014-01",
+          "value": 1637,
+          "flag": ""
+        },
+        {
+          "month": "2014-02",
+          "value": 1740,
+          "flag": ""
+        },
+        {
+          "month": "2014-03",
+          "value": 1680,
+          "flag": ""
+        },
+        {
+          "month": "2014-04",
+          "value": 1802,
+          "flag": ""
+        },
+        {
+          "month": "2014-05",
+          "value": 1814,
+          "flag": ""
+        },
+        {
+          "month": "2014-06",
+          "value": 1747,
+          "flag": ""
+        },
+        {
+          "month": "2014-07",
+          "value": 1786,
+          "flag": ""
+        },
+        {
+          "month": "2014-08",
+          "value": 1962,
+          "flag": ""
+        },
+        {
+          "month": "2014-09",
+          "value": 1922,
+          "flag": ""
+        },
+        {
+          "month": "2014-10",
+          "value": 1826,
+          "flag": ""
+        },
+        {
+          "month": "2014-11",
+          "value": 1952,
+          "flag": ""
+        },
+        {
+          "month": "2014-12",
+          "value": 1659,
+          "flag": ""
+        },
+        {
+          "month": "2015-01",
+          "value": 1921,
+          "flag": ""
+        },
+        {
+          "month": "2015-02",
+          "value": 1934,
+          "flag": ""
+        },
+        {
+          "month": "2015-03",
+          "value": 2136,
+          "flag": ""
+        },
+        {
+          "month": "2015-04",
+          "value": 2308,
+          "flag": ""
+        },
+        {
+          "month": "2015-05",
+          "value": 3343,
+          "flag": ""
+        },
+        {
+          "month": "2015-06",
+          "value": 3930,
+          "flag": ""
+        },
+        {
+          "month": "2015-07",
+          "value": 2684,
+          "flag": ""
+        },
+        {
+          "month": "2015-08",
+          "value": 2837,
+          "flag": ""
+        },
+        {
+          "month": "2015-09",
+          "value": 2800,
+          "flag": ""
+        },
+        {
+          "month": "2015-10",
+          "value": 2754,
+          "flag": ""
+        },
+        {
+          "month": "2015-11",
+          "value": 2975,
+          "flag": ""
+        },
+        {
+          "month": "2015-12",
+          "value": 3094,
+          "flag": ""
+        },
+        {
+          "month": "2016-01",
+          "value": 3155,
+          "flag": ""
+        },
+        {
+          "month": "2016-02",
+          "value": 3798,
+          "flag": ""
+        },
+        {
+          "month": "2016-03",
+          "value": 4118,
+          "flag": ""
+        },
+        {
+          "month": "2016-04",
+          "value": 4415,
+          "flag": ""
+        },
+        {
+          "month": "2016-05",
+          "value": 4150,
+          "flag": ""
+        },
+        {
+          "month": "2016-06",
+          "value": 4555,
+          "flag": ""
+        },
+        {
+          "month": "2016-07",
+          "value": 4247,
+          "flag": ""
+        },
+        {
+          "month": "2016-08",
+          "value": 4581,
+          "flag": ""
+        },
+        {
+          "month": "2016-09",
+          "value": 4220,
+          "flag": ""
+        },
+        {
+          "month": "2016-10",
+          "value": 3703,
+          "flag": ""
+        },
+        {
+          "month": "2016-11",
+          "value": 3956,
+          "flag": ""
+        },
+        {
+          "month": "2016-12",
+          "value": 4464,
+          "flag": ""
+        },
+        {
+          "month": "2017-01",
+          "value": 3988,
+          "flag": ""
+        },
+        {
+          "month": "2017-02",
+          "value": 4216,
+          "flag": ""
+        },
+        {
+          "month": "2017-03",
+          "value": 3990,
+          "flag": ""
+        },
+        {
+          "month": "2017-04",
+          "value": 4233,
+          "flag": ""
+        },
+        {
+          "month": "2017-05",
+          "value": 5032,
+          "flag": ""
+        },
+        {
+          "month": "2017-06",
+          "value": 4577,
+          "flag": ""
+        },
+        {
+          "month": "2017-07",
+          "value": 4665,
+          "flag": ""
+        },
+        {
+          "month": "2017-08",
+          "value": 4393,
+          "flag": ""
+        },
+        {
+          "month": "2017-09",
+          "value": 4686,
+          "flag": ""
+        },
+        {
+          "month": "2017-10",
+          "value": 4963,
+          "flag": ""
+        },
+        {
+          "month": "2017-11",
+          "value": 5460,
+          "flag": ""
+        },
+        {
+          "month": "2017-12",
+          "value": 5739,
+          "flag": ""
+        },
+        {
+          "month": "2018-01",
+          "value": 6078,
+          "flag": ""
+        },
+        {
+          "month": "2018-02",
+          "value": 6236,
+          "flag": ""
+        },
+        {
+          "month": "2018-03",
+          "value": 6469,
+          "flag": ""
+        },
+        {
+          "month": "2018-04",
+          "value": 6562,
+          "flag": ""
+        },
+        {
+          "month": "2018-05",
+          "value": 6987,
+          "flag": ""
+        },
+        {
+          "month": "2018-06",
+          "value": 7055,
+          "flag": ""
+        },
+        {
+          "month": "2018-07",
+          "value": 7452,
+          "flag": ""
+        },
+        {
+          "month": "2018-08",
+          "value": 7004,
+          "flag": ""
+        },
+        {
+          "month": "2018-09",
+          "value": 6287,
+          "flag": ""
+        },
+        {
+          "month": "2018-10",
+          "value": 7864,
+          "flag": ""
+        },
+        {
+          "month": "2018-11",
+          "value": 7103,
+          "flag": ""
+        },
+        {
+          "month": "2018-12",
+          "value": 8048,
+          "flag": ""
+        },
+        {
+          "month": "2019-01",
+          "value": 8116,
+          "flag": ""
+        },
+        {
+          "month": "2019-02",
+          "value": 8034,
+          "flag": ""
+        },
+        {
+          "month": "2019-03",
+          "value": 7640,
+          "flag": ""
+        },
+        {
+          "month": "2019-04",
+          "value": 7849,
+          "flag": ""
+        },
+        {
+          "month": "2019-05",
+          "value": 8740,
+          "flag": ""
+        },
+        {
+          "month": "2019-06",
+          "value": 8885,
+          "flag": ""
+        },
+        {
+          "month": "2019-07",
+          "value": 8826,
+          "flag": ""
+        },
+        {
+          "month": "2019-08",
+          "value": 8829,
+          "flag": ""
+        },
+        {
+          "month": "2019-09",
+          "value": 8120,
+          "flag": ""
+        },
+        {
+          "month": "2019-10",
+          "value": 9123,
+          "flag": ""
+        },
+        {
+          "month": "2019-11",
+          "value": 9609,
+          "flag": ""
+        },
+        {
+          "month": "2019-12",
+          "value": 7920,
+          "flag": ""
+        },
+        {
+          "month": "2020-01",
+          "value": 9443,
+          "flag": ""
+        },
+        {
+          "month": "2020-02",
+          "value": 9696,
+          "flag": ""
+        },
+        {
+          "month": "2020-03",
+          "value": 9445,
+          "flag": ""
+        },
+        {
+          "month": "2020-04",
+          "value": 8932,
+          "flag": ""
+        },
+        {
+          "month": "2020-05",
+          "value": 8695,
+          "flag": ""
+        },
+        {
+          "month": "2020-06",
+          "value": 8973,
+          "flag": ""
+        },
+        {
+          "month": "2020-07",
+          "value": 8750,
+          "flag": ""
+        },
+        {
+          "month": "2020-08",
+          "value": 9102,
+          "flag": ""
+        },
+        {
+          "month": "2020-09",
+          "value": 10101,
+          "flag": ""
+        },
+        {
+          "month": "2020-10",
+          "value": 9290,
+          "flag": ""
+        },
+        {
+          "month": "2020-11",
+          "value": 9229,
+          "flag": ""
+        },
+        {
+          "month": "2020-12",
+          "value": 9199,
+          "flag": ""
+        },
+        {
+          "month": "2021-01",
+          "value": 9257,
+          "flag": ""
+        },
+        {
+          "month": "2021-02",
+          "value": 9061,
+          "flag": ""
+        },
+        {
+          "month": "2021-03",
+          "value": 10274,
+          "flag": ""
+        },
+        {
+          "month": "2021-04",
+          "value": 9401,
+          "flag": ""
+        },
+        {
+          "month": "2021-05",
+          "value": 9326,
+          "flag": ""
+        },
+        {
+          "month": "2021-06",
+          "value": 9312,
+          "flag": ""
+        },
+        {
+          "month": "2021-07",
+          "value": 9752,
+          "flag": ""
+        },
+        {
+          "month": "2021-08",
+          "value": 10495,
+          "flag": ""
+        },
+        {
+          "month": "2021-09",
+          "value": 10834,
+          "flag": ""
+        },
+        {
+          "month": "2021-10",
+          "value": 9686,
+          "flag": ""
+        },
+        {
+          "month": "2021-11",
+          "value": 10578,
+          "flag": ""
+        },
+        {
+          "month": "2021-12",
+          "value": 11324,
+          "flag": ""
+        },
+        {
+          "month": "2022-01",
+          "value": 10959,
+          "flag": ""
+        },
+        {
+          "month": "2022-02",
+          "value": 10564,
+          "flag": ""
+        },
+        {
+          "month": "2022-03",
+          "value": 11307,
+          "flag": ""
+        },
+        {
+          "month": "2022-04",
+          "value": 12160,
+          "flag": ""
+        },
+        {
+          "month": "2022-05",
+          "value": 12126,
+          "flag": ""
+        },
+        {
+          "month": "2022-06",
+          "value": 12190,
+          "flag": ""
+        },
+        {
+          "month": "2022-07",
+          "value": 12751,
+          "flag": ""
+        },
+        {
+          "month": "2022-08",
+          "value": 13142,
+          "flag": ""
+        },
+        {
+          "month": "2022-09",
+          "value": 14571,
+          "flag": ""
+        },
+        {
+          "month": "2022-10",
+          "value": 12816,
+          "flag": ""
+        },
+        {
+          "month": "2022-11",
+          "value": 13855,
+          "flag": ""
+        },
+        {
+          "month": "2022-12",
+          "value": 14244,
+          "flag": ""
+        },
+        {
+          "month": "2023-01",
+          "value": 15589,
+          "flag": ""
+        },
+        {
+          "month": "2023-02",
+          "value": 17920,
+          "flag": ""
+        },
+        {
+          "month": "2023-03",
+          "value": 18015,
+          "flag": ""
+        },
+        {
+          "month": "2023-04",
+          "value": 17943,
+          "flag": ""
+        },
+        {
+          "month": "2023-05",
+          "value": 18232,
+          "flag": ""
+        },
+        {
+          "month": "2023-06",
+          "value": 18735,
+          "flag": ""
+        },
+        {
+          "month": "2023-07",
+          "value": 19641,
+          "flag": ""
+        },
+        {
+          "month": "2023-08",
+          "value": 20498,
+          "flag": ""
+        },
+        {
+          "month": "2023-09",
+          "value": 21285,
+          "flag": ""
+        },
+        {
+          "month": "2023-10",
+          "value": 23720,
+          "flag": ""
+        },
+        {
+          "month": "2023-11",
+          "value": 23864,
+          "flag": ""
+        },
+        {
+          "month": "2023-12",
+          "value": 24238,
+          "flag": ""
+        },
+        {
+          "month": "2024-01",
+          "value": 26412,
+          "flag": ""
+        },
+        {
+          "month": "2024-02",
+          "value": 28319,
+          "flag": ""
+        },
+        {
+          "month": "2024-03",
+          "value": 30172,
+          "flag": ""
+        },
+        {
+          "month": "2024-04",
+          "value": 28069,
+          "flag": ""
+        },
+        {
+          "month": "2024-05",
+          "value": 32271,
+          "flag": ""
+        },
+        {
+          "month": "2024-06",
+          "value": 35304,
+          "flag": ""
+        },
+        {
+          "month": "2024-07",
+          "value": 36124,
+          "flag": ""
+        },
+        {
+          "month": "2024-08",
+          "value": 36668,
+          "flag": ""
+        },
+        {
+          "month": "2024-09",
+          "value": 37576,
+          "flag": ""
+        },
+        {
+          "month": "2024-10",
+          "value": 40048,
+          "flag": ""
+        },
+        {
+          "month": "2024-11",
+          "value": 40951,
+          "flag": ""
+        },
+        {
+          "month": "2024-12",
+          "value": 44703,
+          "flag": ""
+        },
+        {
+          "month": "2025-01",
+          "value": 45341,
+          "flag": ""
+        },
+        {
+          "month": "2025-02",
+          "value": 46409,
+          "flag": ""
+        },
+        {
+          "month": "2025-03",
+          "value": 46593,
+          "flag": ""
+        },
+        {
+          "month": "2025-04",
+          "value": 52818,
+          "flag": ""
+        },
+        {
+          "month": "2025-05",
+          "value": 48210,
+          "flag": ""
+        },
+        {
+          "month": "2025-06",
+          "value": 46850,
+          "flag": ""
+        },
+        {
+          "month": "2025-07",
+          "value": 47810,
+          "flag": ""
+        },
+        {
+          "month": "2025-08",
+          "value": 49052,
+          "flag": ""
+        },
+        {
+          "month": "2025-09",
+          "value": 50700,
+          "flag": ""
+        },
+        {
+          "month": "2025-10",
+          "value": 54260,
+          "flag": ""
+        },
+        {
+          "month": "2025-11",
+          "value": 53043,
+          "flag": ""
+        },
+        {
+          "month": "2025-12",
+          "value": 55461,
+          "flag": ""
+        },
+        {
+          "month": "2026-01",
+          "value": 56211,
+          "flag": ""
+        },
+        {
+          "month": "2026-02",
+          "value": 57361,
+          "flag": ""
+        },
+        {
+          "month": "2026-03",
+          "value": 58121,
+          "flag": ""
+        },
+        {
+          "month": "2026-04",
+          "value": 61859,
+          "flag": ""
+        },
+        {
+          "month": "2026-05",
+          "value": 65688,
+          "flag": ""
+        },
+        {
+          "month": "2026-06",
+          "value": 72695,
+          "flag": "r"
+        },
+        {
+          "month": "2026-07",
+          "value": 79007,
+          "flag": "r"
+        },
+        {
+          "month": "2026-08",
+          "value": 84950,
+          "flag": "p"
+        }
+      ],
+      "frequency": "monthly",
+      "priceBasis": "nominal",
+      "vintage": "as revised through 2026-10-01",
+      "vintageNote": "The historical workbook is the revised series in this release. Months marked r were revised. A month marked p is preliminary. This is not as first published.",
+      "evidence": "FACT",
+      "valueTag": "MEASUREMENT"
+    },
+    {
+      "id": "C30-PRIVATE-DATA-CENTER-NSA",
+      "fredId": null,
+      "fredPage": null,
+      "fredVerifiedOpen": false,
+      "label": "Private data center construction spending, monthly not seasonally adjusted",
+      "category": "Data center",
+      "ownership": "private",
+      "units": "Millions of dollars, monthly not seasonally adjusted",
+      "adjustment": "monthly not seasonally adjusted",
+      "priceNote": "Nominal dollars. Table 1 of the release says the figures are adjusted for seasonality but not price changes. NSA values are monthly millions of dollars from the same release, not a price-adjusted series.",
+      "releaseDate": "2026-10-01",
+      "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privtime.xlsx",
+      "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, monthly not seasonally adjusted",
+      "retrieved": "2026-10-04",
+      "points": [
+        {
+          "month": "2014-01",
+          "value": 124,
+          "flag": ""
+        },
+        {
+          "month": "2014-02",
+          "value": 131,
+          "flag": ""
+        },
+        {
+          "month": "2014-03",
+          "value": 134,
+          "flag": ""
+        },
+        {
+          "month": "2014-04",
+          "value": 146,
+          "flag": ""
+        },
+        {
+          "month": "2014-05",
+          "value": 154,
+          "flag": ""
+        },
+        {
+          "month": "2014-06",
+          "value": 151,
+          "flag": ""
+        },
+        {
+          "month": "2014-07",
+          "value": 154,
+          "flag": ""
+        },
+        {
+          "month": "2014-08",
+          "value": 170,
+          "flag": ""
+        },
+        {
+          "month": "2014-09",
+          "value": 171,
+          "flag": ""
+        },
+        {
+          "month": "2014-10",
+          "value": 162,
+          "flag": ""
+        },
+        {
+          "month": "2014-11",
+          "value": 166,
+          "flag": ""
+        },
+        {
+          "month": "2014-12",
+          "value": 134,
+          "flag": ""
+        },
+        {
+          "month": "2015-01",
+          "value": 146,
+          "flag": ""
+        },
+        {
+          "month": "2015-02",
+          "value": 146,
+          "flag": ""
+        },
+        {
+          "month": "2015-03",
+          "value": 170,
+          "flag": ""
+        },
+        {
+          "month": "2015-04",
+          "value": 189,
+          "flag": ""
+        },
+        {
+          "month": "2015-05",
+          "value": 283,
+          "flag": ""
+        },
+        {
+          "month": "2015-06",
+          "value": 341,
+          "flag": ""
+        },
+        {
+          "month": "2015-07",
+          "value": 231,
+          "flag": ""
+        },
+        {
+          "month": "2015-08",
+          "value": 246,
+          "flag": ""
+        },
+        {
+          "month": "2015-09",
+          "value": 249,
+          "flag": ""
+        },
+        {
+          "month": "2015-10",
+          "value": 243,
+          "flag": ""
+        },
+        {
+          "month": "2015-11",
+          "value": 252,
+          "flag": ""
+        },
+        {
+          "month": "2015-12",
+          "value": 249,
+          "flag": ""
+        },
+        {
+          "month": "2016-01",
+          "value": 241,
+          "flag": ""
+        },
+        {
+          "month": "2016-02",
+          "value": 288,
+          "flag": ""
+        },
+        {
+          "month": "2016-03",
+          "value": 328,
+          "flag": ""
+        },
+        {
+          "month": "2016-04",
+          "value": 363,
+          "flag": ""
+        },
+        {
+          "month": "2016-05",
+          "value": 352,
+          "flag": ""
+        },
+        {
+          "month": "2016-06",
+          "value": 395,
+          "flag": ""
+        },
+        {
+          "month": "2016-07",
+          "value": 367,
+          "flag": ""
+        },
+        {
+          "month": "2016-08",
+          "value": 397,
+          "flag": ""
+        },
+        {
+          "month": "2016-09",
+          "value": 373,
+          "flag": ""
+        },
+        {
+          "month": "2016-10",
+          "value": 325,
+          "flag": ""
+        },
+        {
+          "month": "2016-11",
+          "value": 335,
+          "flag": ""
+        },
+        {
+          "month": "2016-12",
+          "value": 357,
+          "flag": ""
+        },
+        {
+          "month": "2017-01",
+          "value": 303,
+          "flag": ""
+        },
+        {
+          "month": "2017-02",
+          "value": 322,
+          "flag": ""
+        },
+        {
+          "month": "2017-03",
+          "value": 316,
+          "flag": ""
+        },
+        {
+          "month": "2017-04",
+          "value": 354,
+          "flag": ""
+        },
+        {
+          "month": "2017-05",
+          "value": 441,
+          "flag": ""
+        },
+        {
+          "month": "2017-06",
+          "value": 410,
+          "flag": ""
+        },
+        {
+          "month": "2017-07",
+          "value": 409,
+          "flag": ""
+        },
+        {
+          "month": "2017-08",
+          "value": 387,
+          "flag": ""
+        },
+        {
+          "month": "2017-09",
+          "value": 416,
+          "flag": ""
+        },
+        {
+          "month": "2017-10",
+          "value": 407,
+          "flag": ""
+        },
+        {
+          "month": "2017-11",
+          "value": 441,
+          "flag": ""
+        },
+        {
+          "month": "2017-12",
+          "value": 461,
+          "flag": ""
+        },
+        {
+          "month": "2018-01",
+          "value": 462,
+          "flag": ""
+        },
+        {
+          "month": "2018-02",
+          "value": 476,
+          "flag": ""
+        },
+        {
+          "month": "2018-03",
+          "value": 515,
+          "flag": ""
+        },
+        {
+          "month": "2018-04",
+          "value": 541,
+          "flag": ""
+        },
+        {
+          "month": "2018-05",
+          "value": 620,
+          "flag": ""
+        },
+        {
+          "month": "2018-06",
+          "value": 639,
+          "flag": ""
+        },
+        {
+          "month": "2018-07",
+          "value": 654,
+          "flag": ""
+        },
+        {
+          "month": "2018-08",
+          "value": 604,
+          "flag": ""
+        },
+        {
+          "month": "2018-09",
+          "value": 553,
+          "flag": ""
+        },
+        {
+          "month": "2018-10",
+          "value": 648,
+          "flag": ""
+        },
+        {
+          "month": "2018-11",
+          "value": 574,
+          "flag": ""
+        },
+        {
+          "month": "2018-12",
+          "value": 647,
+          "flag": ""
+        },
+        {
+          "month": "2019-01",
+          "value": 631,
+          "flag": ""
+        },
+        {
+          "month": "2019-02",
+          "value": 614,
+          "flag": ""
+        },
+        {
+          "month": "2019-03",
+          "value": 613,
+          "flag": ""
+        },
+        {
+          "month": "2019-04",
+          "value": 645,
+          "flag": ""
+        },
+        {
+          "month": "2019-05",
+          "value": 769,
+          "flag": ""
+        },
+        {
+          "month": "2019-06",
+          "value": 794,
+          "flag": ""
+        },
+        {
+          "month": "2019-07",
+          "value": 773,
+          "flag": ""
+        },
+        {
+          "month": "2019-08",
+          "value": 763,
+          "flag": ""
+        },
+        {
+          "month": "2019-09",
+          "value": 711,
+          "flag": ""
+        },
+        {
+          "month": "2019-10",
+          "value": 757,
+          "flag": ""
+        },
+        {
+          "month": "2019-11",
+          "value": 774,
+          "flag": ""
+        },
+        {
+          "month": "2019-12",
+          "value": 639,
+          "flag": ""
+        },
+        {
+          "month": "2020-01",
+          "value": 747,
+          "flag": ""
+        },
+        {
+          "month": "2020-02",
+          "value": 743,
+          "flag": ""
+        },
+        {
+          "month": "2020-03",
+          "value": 759,
+          "flag": ""
+        },
+        {
+          "month": "2020-04",
+          "value": 735,
+          "flag": ""
+        },
+        {
+          "month": "2020-05",
+          "value": 757,
+          "flag": ""
+        },
+        {
+          "month": "2020-06",
+          "value": 788,
+          "flag": ""
+        },
+        {
+          "month": "2020-07",
+          "value": 765,
+          "flag": ""
+        },
+        {
+          "month": "2020-08",
+          "value": 792,
+          "flag": ""
+        },
+        {
+          "month": "2020-09",
+          "value": 883,
+          "flag": ""
+        },
+        {
+          "month": "2020-10",
+          "value": 775,
+          "flag": ""
+        },
+        {
+          "month": "2020-11",
+          "value": 743,
+          "flag": ""
+        },
+        {
+          "month": "2020-12",
+          "value": 744,
+          "flag": ""
+        },
+        {
+          "month": "2021-01",
+          "value": 739,
+          "flag": ""
+        },
+        {
+          "month": "2021-02",
+          "value": 695,
+          "flag": ""
+        },
+        {
+          "month": "2021-03",
+          "value": 827,
+          "flag": ""
+        },
+        {
+          "month": "2021-04",
+          "value": 780,
+          "flag": ""
+        },
+        {
+          "month": "2021-05",
+          "value": 800,
+          "flag": ""
+        },
+        {
+          "month": "2021-06",
+          "value": 806,
+          "flag": ""
+        },
+        {
+          "month": "2021-07",
+          "value": 851,
+          "flag": ""
+        },
+        {
+          "month": "2021-08",
+          "value": 923,
+          "flag": ""
+        },
+        {
+          "month": "2021-09",
+          "value": 947,
+          "flag": ""
+        },
+        {
+          "month": "2021-10",
+          "value": 812,
+          "flag": ""
+        },
+        {
+          "month": "2021-11",
+          "value": 851,
+          "flag": ""
+        },
+        {
+          "month": "2021-12",
+          "value": 918,
+          "flag": ""
+        },
+        {
+          "month": "2022-01",
+          "value": 877,
+          "flag": ""
+        },
+        {
+          "month": "2022-02",
+          "value": 810,
+          "flag": ""
+        },
+        {
+          "month": "2022-03",
+          "value": 912,
+          "flag": ""
+        },
+        {
+          "month": "2022-04",
+          "value": 1017,
+          "flag": ""
+        },
+        {
+          "month": "2022-05",
+          "value": 1030,
+          "flag": ""
+        },
+        {
+          "month": "2022-06",
+          "value": 1043,
+          "flag": ""
+        },
+        {
+          "month": "2022-07",
+          "value": 1109,
+          "flag": ""
+        },
+        {
+          "month": "2022-08",
+          "value": 1162,
+          "flag": ""
+        },
+        {
+          "month": "2022-09",
+          "value": 1274,
+          "flag": ""
+        },
+        {
+          "month": "2022-10",
+          "value": 1076,
+          "flag": ""
+        },
+        {
+          "month": "2022-11",
+          "value": 1120,
+          "flag": ""
+        },
+        {
+          "month": "2022-12",
+          "value": 1153,
+          "flag": ""
+        },
+        {
+          "month": "2023-01",
+          "value": 1246,
+          "flag": ""
+        },
+        {
+          "month": "2023-02",
+          "value": 1374,
+          "flag": ""
+        },
+        {
+          "month": "2023-03",
+          "value": 1458,
+          "flag": ""
+        },
+        {
+          "month": "2023-04",
+          "value": 1509,
+          "flag": ""
+        },
+        {
+          "month": "2023-05",
+          "value": 1543,
+          "flag": ""
+        },
+        {
+          "month": "2023-06",
+          "value": 1595,
+          "flag": ""
+        },
+        {
+          "month": "2023-07",
+          "value": 1701,
+          "flag": ""
+        },
+        {
+          "month": "2023-08",
+          "value": 1814,
+          "flag": ""
+        },
+        {
+          "month": "2023-09",
+          "value": 1862,
+          "flag": ""
+        },
+        {
+          "month": "2023-10",
+          "value": 1995,
+          "flag": ""
+        },
+        {
+          "month": "2023-11",
+          "value": 1935,
+          "flag": ""
+        },
+        {
+          "month": "2023-12",
+          "value": 1963,
+          "flag": ""
+        },
+        {
+          "month": "2024-01",
+          "value": 2104,
+          "flag": ""
+        },
+        {
+          "month": "2024-02",
+          "value": 2170,
+          "flag": ""
+        },
+        {
+          "month": "2024-03",
+          "value": 2447,
+          "flag": ""
+        },
+        {
+          "month": "2024-04",
+          "value": 2359,
+          "flag": ""
+        },
+        {
+          "month": "2024-05",
+          "value": 2740,
+          "flag": ""
+        },
+        {
+          "month": "2024-06",
+          "value": 3007,
+          "flag": ""
+        },
+        {
+          "month": "2024-07",
+          "value": 3123,
+          "flag": ""
+        },
+        {
+          "month": "2024-08",
+          "value": 3235,
+          "flag": ""
+        },
+        {
+          "month": "2024-09",
+          "value": 3287,
+          "flag": ""
+        },
+        {
+          "month": "2024-10",
+          "value": 3370,
+          "flag": ""
+        },
+        {
+          "month": "2024-11",
+          "value": 3333,
+          "flag": ""
+        },
+        {
+          "month": "2024-12",
+          "value": 3622,
+          "flag": ""
+        },
+        {
+          "month": "2025-01",
+          "value": 3592,
+          "flag": ""
+        },
+        {
+          "month": "2025-02",
+          "value": 3554,
+          "flag": ""
+        },
+        {
+          "month": "2025-03",
+          "value": 3784,
+          "flag": ""
+        },
+        {
+          "month": "2025-04",
+          "value": 4422,
+          "flag": ""
+        },
+        {
+          "month": "2025-05",
+          "value": 4110,
+          "flag": ""
+        },
+        {
+          "month": "2025-06",
+          "value": 4013,
+          "flag": ""
+        },
+        {
+          "month": "2025-07",
+          "value": 4133,
+          "flag": ""
+        },
+        {
+          "month": "2025-08",
+          "value": 4312,
+          "flag": ""
+        },
+        {
+          "month": "2025-09",
+          "value": 4430,
+          "flag": ""
+        },
+        {
+          "month": "2025-10",
+          "value": 4573,
+          "flag": ""
+        },
+        {
+          "month": "2025-11",
+          "value": 4326,
+          "flag": ""
+        },
+        {
+          "month": "2025-12",
+          "value": 4488,
+          "flag": ""
+        },
+        {
+          "month": "2026-01",
+          "value": 4477,
+          "flag": ""
+        },
+        {
+          "month": "2026-02",
+          "value": 4466,
+          "flag": ""
+        },
+        {
+          "month": "2026-03",
+          "value": 4781,
+          "flag": ""
+        },
+        {
+          "month": "2026-04",
+          "value": 5198,
+          "flag": ""
+        },
+        {
+          "month": "2026-05",
+          "value": 5627,
+          "flag": ""
+        },
+        {
+          "month": "2026-06",
+          "value": 6244,
+          "flag": "r"
+        },
+        {
+          "month": "2026-07",
+          "value": 6898,
+          "flag": "r"
+        },
+        {
+          "month": "2026-08",
+          "value": 7535,
+          "flag": "p"
+        }
+      ],
+      "frequency": "monthly",
+      "priceBasis": "nominal",
+      "vintage": "as revised through 2026-10-01",
+      "vintageNote": "The historical workbook is the revised series in this release. Months marked r were revised. A month marked p is preliminary. This is not as first published.",
+      "evidence": "FACT",
+      "valueTag": "MEASUREMENT"
+    },
+    {
+      "id": "C30-PRIVATE-OFFICE-GENERAL-SAAR",
+      "fredId": null,
+      "fredPage": null,
+      "fredVerifiedOpen": false,
+      "label": "Private general office construction spending",
+      "category": "General",
+      "ownership": "private",
+      "units": "Millions of dollars, seasonally adjusted annual rate",
+      "adjustment": "seasonally adjusted annual rate",
+      "priceNote": "Nominal dollars. Table 1 of the release says the figures are adjusted for seasonality but not price changes. NSA values are monthly millions of dollars from the same release, not a price-adjusted series.",
+      "releaseDate": "2026-10-01",
+      "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx",
+      "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, seasonally adjusted annual rate",
+      "retrieved": "2026-10-04",
+      "points": [
+        {
+          "month": "2014-01",
+          "value": 32395,
+          "flag": ""
+        },
+        {
+          "month": "2014-02",
+          "value": 32279,
+          "flag": ""
+        },
+        {
+          "month": "2014-03",
+          "value": 31593,
+          "flag": ""
+        },
+        {
+          "month": "2014-04",
+          "value": 34806,
+          "flag": ""
+        },
+        {
+          "month": "2014-05",
+          "value": 34281,
+          "flag": ""
+        },
+        {
+          "month": "2014-06",
+          "value": 35383,
+          "flag": ""
+        },
+        {
+          "month": "2014-07",
+          "value": 35192,
+          "flag": ""
+        },
+        {
+          "month": "2014-08",
+          "value": 35322,
+          "flag": ""
+        },
+        {
+          "month": "2014-09",
+          "value": 36965,
+          "flag": ""
+        },
+        {
+          "month": "2014-10",
+          "value": 37787,
+          "flag": ""
+        },
+        {
+          "month": "2014-11",
+          "value": 36832,
+          "flag": ""
+        },
+        {
+          "month": "2014-12",
+          "value": 38359,
+          "flag": ""
+        },
+        {
+          "month": "2015-01",
+          "value": 39291,
+          "flag": ""
+        },
+        {
+          "month": "2015-02",
+          "value": 40100,
+          "flag": ""
+        },
+        {
+          "month": "2015-03",
+          "value": 41022,
+          "flag": ""
+        },
+        {
+          "month": "2015-04",
+          "value": 42378,
+          "flag": ""
+        },
+        {
+          "month": "2015-05",
+          "value": 44376,
+          "flag": ""
+        },
+        {
+          "month": "2015-06",
+          "value": 46141,
+          "flag": ""
+        },
+        {
+          "month": "2015-07",
+          "value": 43034,
+          "flag": ""
+        },
+        {
+          "month": "2015-08",
+          "value": 44809,
+          "flag": ""
+        },
+        {
+          "month": "2015-09",
+          "value": 43985,
+          "flag": ""
+        },
+        {
+          "month": "2015-10",
+          "value": 43438,
+          "flag": ""
+        },
+        {
+          "month": "2015-11",
+          "value": 45552,
+          "flag": ""
+        },
+        {
+          "month": "2015-12",
+          "value": 44915,
+          "flag": ""
+        },
+        {
+          "month": "2016-01",
+          "value": 45908,
+          "flag": ""
+        },
+        {
+          "month": "2016-02",
+          "value": 48874,
+          "flag": ""
+        },
+        {
+          "month": "2016-03",
+          "value": 49305,
+          "flag": ""
+        },
+        {
+          "month": "2016-04",
+          "value": 50969,
+          "flag": ""
+        },
+        {
+          "month": "2016-05",
+          "value": 50759,
+          "flag": ""
+        },
+        {
+          "month": "2016-06",
+          "value": 53008,
+          "flag": ""
+        },
+        {
+          "month": "2016-07",
+          "value": 55097,
+          "flag": ""
+        },
+        {
+          "month": "2016-08",
+          "value": 55670,
+          "flag": ""
+        },
+        {
+          "month": "2016-09",
+          "value": 56870,
+          "flag": ""
+        },
+        {
+          "month": "2016-10",
+          "value": 57192,
+          "flag": ""
+        },
+        {
+          "month": "2016-11",
+          "value": 58836,
+          "flag": ""
+        },
+        {
+          "month": "2016-12",
+          "value": 57218,
+          "flag": ""
+        },
+        {
+          "month": "2017-01",
+          "value": 56386,
+          "flag": ""
+        },
+        {
+          "month": "2017-02",
+          "value": 53845,
+          "flag": ""
+        },
+        {
+          "month": "2017-03",
+          "value": 53515,
+          "flag": ""
+        },
+        {
+          "month": "2017-04",
+          "value": 53366,
+          "flag": ""
+        },
+        {
+          "month": "2017-05",
+          "value": 51468,
+          "flag": ""
+        },
+        {
+          "month": "2017-06",
+          "value": 52009,
+          "flag": ""
+        },
+        {
+          "month": "2017-07",
+          "value": 51138,
+          "flag": ""
+        },
+        {
+          "month": "2017-08",
+          "value": 50367,
+          "flag": ""
+        },
+        {
+          "month": "2017-09",
+          "value": 50590,
+          "flag": ""
+        },
+        {
+          "month": "2017-10",
+          "value": 52167,
+          "flag": ""
+        },
+        {
+          "month": "2017-11",
+          "value": 53419,
+          "flag": ""
+        },
+        {
+          "month": "2017-12",
+          "value": 54456,
+          "flag": ""
+        },
+        {
+          "month": "2018-01",
+          "value": 53584,
+          "flag": ""
+        },
+        {
+          "month": "2018-02",
+          "value": 56145,
+          "flag": ""
+        },
+        {
+          "month": "2018-03",
+          "value": 55458,
+          "flag": ""
+        },
+        {
+          "month": "2018-04",
+          "value": 55542,
+          "flag": ""
+        },
+        {
+          "month": "2018-05",
+          "value": 57923,
+          "flag": ""
+        },
+        {
+          "month": "2018-06",
+          "value": 56614,
+          "flag": ""
+        },
+        {
+          "month": "2018-07",
+          "value": 57308,
+          "flag": ""
+        },
+        {
+          "month": "2018-08",
+          "value": 59493,
+          "flag": ""
+        },
+        {
+          "month": "2018-09",
+          "value": 60239,
+          "flag": ""
+        },
+        {
+          "month": "2018-10",
+          "value": 60784,
+          "flag": ""
+        },
+        {
+          "month": "2018-11",
+          "value": 59081,
+          "flag": ""
+        },
+        {
+          "month": "2018-12",
+          "value": 60119,
+          "flag": ""
+        },
+        {
+          "month": "2019-01",
+          "value": 61561,
+          "flag": ""
+        },
+        {
+          "month": "2019-02",
+          "value": 61711,
+          "flag": ""
+        },
+        {
+          "month": "2019-03",
+          "value": 63426,
+          "flag": ""
+        },
+        {
+          "month": "2019-04",
+          "value": 64744,
+          "flag": ""
+        },
+        {
+          "month": "2019-05",
+          "value": 65547,
+          "flag": ""
+        },
+        {
+          "month": "2019-06",
+          "value": 64763,
+          "flag": ""
+        },
+        {
+          "month": "2019-07",
+          "value": 69384,
+          "flag": ""
+        },
+        {
+          "month": "2019-08",
+          "value": 71494,
+          "flag": ""
+        },
+        {
+          "month": "2019-09",
+          "value": 68969,
+          "flag": ""
+        },
+        {
+          "month": "2019-10",
+          "value": 69311,
+          "flag": ""
+        },
+        {
+          "month": "2019-11",
+          "value": 69623,
+          "flag": ""
+        },
+        {
+          "month": "2019-12",
+          "value": 69905,
+          "flag": ""
+        },
+        {
+          "month": "2020-01",
+          "value": 72193,
+          "flag": ""
+        },
+        {
+          "month": "2020-02",
+          "value": 72918,
+          "flag": ""
+        },
+        {
+          "month": "2020-03",
+          "value": 72173,
+          "flag": ""
+        },
+        {
+          "month": "2020-04",
+          "value": 67786,
+          "flag": ""
+        },
+        {
+          "month": "2020-05",
+          "value": 69544,
+          "flag": ""
+        },
+        {
+          "month": "2020-06",
+          "value": 70913,
+          "flag": ""
+        },
+        {
+          "month": "2020-07",
+          "value": 68958,
+          "flag": ""
+        },
+        {
+          "month": "2020-08",
+          "value": 67360,
+          "flag": ""
+        },
+        {
+          "month": "2020-09",
+          "value": 66938,
+          "flag": ""
+        },
+        {
+          "month": "2020-10",
+          "value": 66210,
+          "flag": ""
+        },
+        {
+          "month": "2020-11",
+          "value": 64938,
+          "flag": ""
+        },
+        {
+          "month": "2020-12",
+          "value": 65672,
+          "flag": ""
+        },
+        {
+          "month": "2021-01",
+          "value": 66591,
+          "flag": ""
+        },
+        {
+          "month": "2021-02",
+          "value": 64708,
+          "flag": ""
+        },
+        {
+          "month": "2021-03",
+          "value": 67307,
+          "flag": ""
+        },
+        {
+          "month": "2021-04",
+          "value": 66428,
+          "flag": ""
+        },
+        {
+          "month": "2021-05",
+          "value": 66735,
+          "flag": ""
+        },
+        {
+          "month": "2021-06",
+          "value": 66160,
+          "flag": ""
+        },
+        {
+          "month": "2021-07",
+          "value": 66254,
+          "flag": ""
+        },
+        {
+          "month": "2021-08",
+          "value": 64814,
+          "flag": ""
+        },
+        {
+          "month": "2021-09",
+          "value": 64840,
+          "flag": ""
+        },
+        {
+          "month": "2021-10",
+          "value": 64656,
+          "flag": ""
+        },
+        {
+          "month": "2021-11",
+          "value": 65040,
+          "flag": ""
+        },
+        {
+          "month": "2021-12",
+          "value": 63323,
+          "flag": ""
+        },
+        {
+          "month": "2022-01",
+          "value": 64558,
+          "flag": ""
+        },
+        {
+          "month": "2022-02",
+          "value": 65691,
+          "flag": ""
+        },
+        {
+          "month": "2022-03",
+          "value": 65377,
+          "flag": ""
+        },
+        {
+          "month": "2022-04",
+          "value": 67261,
+          "flag": ""
+        },
+        {
+          "month": "2022-05",
+          "value": 66910,
+          "flag": ""
+        },
+        {
+          "month": "2022-06",
+          "value": 66941,
+          "flag": ""
+        },
+        {
+          "month": "2022-07",
+          "value": 66889,
+          "flag": ""
+        },
+        {
+          "month": "2022-08",
+          "value": 68464,
+          "flag": ""
+        },
+        {
+          "month": "2022-09",
+          "value": 69044,
+          "flag": ""
+        },
+        {
+          "month": "2022-10",
+          "value": 69658,
+          "flag": ""
+        },
+        {
+          "month": "2022-11",
+          "value": 69543,
+          "flag": ""
+        },
+        {
+          "month": "2022-12",
+          "value": 70884,
+          "flag": ""
+        },
+        {
+          "month": "2023-01",
+          "value": 70224,
+          "flag": ""
+        },
+        {
+          "month": "2023-02",
+          "value": 68684,
+          "flag": ""
+        },
+        {
+          "month": "2023-03",
+          "value": 68221,
+          "flag": ""
+        },
+        {
+          "month": "2023-04",
+          "value": 66978,
+          "flag": ""
+        },
+        {
+          "month": "2023-05",
+          "value": 67313,
+          "flag": ""
+        },
+        {
+          "month": "2023-06",
+          "value": 65966,
+          "flag": ""
+        },
+        {
+          "month": "2023-07",
+          "value": 63814,
+          "flag": ""
+        },
+        {
+          "month": "2023-08",
+          "value": 63543,
+          "flag": ""
+        },
+        {
+          "month": "2023-09",
+          "value": 63403,
+          "flag": ""
+        },
+        {
+          "month": "2023-10",
+          "value": 61307,
+          "flag": ""
+        },
+        {
+          "month": "2023-11",
+          "value": 61651,
+          "flag": ""
+        },
+        {
+          "month": "2023-12",
+          "value": 59822,
+          "flag": ""
+        },
+        {
+          "month": "2024-01",
+          "value": 57595,
+          "flag": ""
+        },
+        {
+          "month": "2024-02",
+          "value": 57449,
+          "flag": ""
+        },
+        {
+          "month": "2024-03",
+          "value": 55423,
+          "flag": ""
+        },
+        {
+          "month": "2024-04",
+          "value": 54163,
+          "flag": ""
+        },
+        {
+          "month": "2024-05",
+          "value": 53355,
+          "flag": ""
+        },
+        {
+          "month": "2024-06",
+          "value": 53776,
+          "flag": ""
+        },
+        {
+          "month": "2024-07",
+          "value": 53866,
+          "flag": ""
+        },
+        {
+          "month": "2024-08",
+          "value": 52993,
+          "flag": ""
+        },
+        {
+          "month": "2024-09",
+          "value": 51144,
+          "flag": ""
+        },
+        {
+          "month": "2024-10",
+          "value": 49609,
+          "flag": ""
+        },
+        {
+          "month": "2024-11",
+          "value": 50701,
+          "flag": ""
+        },
+        {
+          "month": "2024-12",
+          "value": 51109,
+          "flag": ""
+        },
+        {
+          "month": "2025-01",
+          "value": 53185,
+          "flag": ""
+        },
+        {
+          "month": "2025-02",
+          "value": 52577,
+          "flag": ""
+        },
+        {
+          "month": "2025-03",
+          "value": 52633,
+          "flag": ""
+        },
+        {
+          "month": "2025-04",
+          "value": 52451,
+          "flag": ""
+        },
+        {
+          "month": "2025-05",
+          "value": 51243,
+          "flag": ""
+        },
+        {
+          "month": "2025-06",
+          "value": 50328,
+          "flag": ""
+        },
+        {
+          "month": "2025-07",
+          "value": 50547,
+          "flag": ""
+        },
+        {
+          "month": "2025-08",
+          "value": 50724,
+          "flag": ""
+        },
+        {
+          "month": "2025-09",
+          "value": 50056,
+          "flag": ""
+        },
+        {
+          "month": "2025-10",
+          "value": 51064,
+          "flag": ""
+        },
+        {
+          "month": "2025-11",
+          "value": 49192,
+          "flag": ""
+        },
+        {
+          "month": "2025-12",
+          "value": 48457,
+          "flag": ""
+        },
+        {
+          "month": "2026-01",
+          "value": 46552,
+          "flag": ""
+        },
+        {
+          "month": "2026-02",
+          "value": 46148,
+          "flag": ""
+        },
+        {
+          "month": "2026-03",
+          "value": 45697,
+          "flag": ""
+        },
+        {
+          "month": "2026-04",
+          "value": 45412,
+          "flag": ""
+        },
+        {
+          "month": "2026-05",
+          "value": 45846,
+          "flag": ""
+        },
+        {
+          "month": "2026-06",
+          "value": 45667,
+          "flag": "r"
+        },
+        {
+          "month": "2026-07",
+          "value": 45745,
+          "flag": "r"
+        },
+        {
+          "month": "2026-08",
+          "value": 45809,
+          "flag": "p"
+        }
+      ],
+      "frequency": "monthly",
+      "priceBasis": "nominal",
+      "vintage": "as revised through 2026-10-01",
+      "vintageNote": "The historical workbook is the revised series in this release. Months marked r were revised. A month marked p is preliminary. This is not as first published.",
+      "evidence": "FACT",
+      "valueTag": "MEASUREMENT"
+    },
+    {
+      "id": "C30-PRIVATE-OFFICE-GENERAL-NSA",
+      "fredId": null,
+      "fredPage": null,
+      "fredVerifiedOpen": false,
+      "label": "Private general office construction spending, monthly not seasonally adjusted",
+      "category": "General",
+      "ownership": "private",
+      "units": "Millions of dollars, monthly not seasonally adjusted",
+      "adjustment": "monthly not seasonally adjusted",
+      "priceNote": "Nominal dollars. Table 1 of the release says the figures are adjusted for seasonality but not price changes. NSA values are monthly millions of dollars from the same release, not a price-adjusted series.",
+      "releaseDate": "2026-10-01",
+      "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privtime.xlsx",
+      "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, monthly not seasonally adjusted",
+      "retrieved": "2026-10-04",
+      "points": [
+        {
+          "month": "2014-01",
+          "value": 2460,
+          "flag": ""
+        },
+        {
+          "month": "2014-02",
+          "value": 2435,
+          "flag": ""
+        },
+        {
+          "month": "2014-03",
+          "value": 2522,
+          "flag": ""
+        },
+        {
+          "month": "2014-04",
+          "value": 2828,
+          "flag": ""
+        },
+        {
+          "month": "2014-05",
+          "value": 2901,
+          "flag": ""
+        },
+        {
+          "month": "2014-06",
+          "value": 3055,
+          "flag": ""
+        },
+        {
+          "month": "2014-07",
+          "value": 3025,
+          "flag": ""
+        },
+        {
+          "month": "2014-08",
+          "value": 3062,
+          "flag": ""
+        },
+        {
+          "month": "2014-09",
+          "value": 3296,
+          "flag": ""
+        },
+        {
+          "month": "2014-10",
+          "value": 3348,
+          "flag": ""
+        },
+        {
+          "month": "2014-11",
+          "value": 3131,
+          "flag": ""
+        },
+        {
+          "month": "2014-12",
+          "value": 3101,
+          "flag": ""
+        },
+        {
+          "month": "2015-01",
+          "value": 2986,
+          "flag": ""
+        },
+        {
+          "month": "2015-02",
+          "value": 3033,
+          "flag": ""
+        },
+        {
+          "month": "2015-03",
+          "value": 3272,
+          "flag": ""
+        },
+        {
+          "month": "2015-04",
+          "value": 3461,
+          "flag": ""
+        },
+        {
+          "month": "2015-05",
+          "value": 3756,
+          "flag": ""
+        },
+        {
+          "month": "2015-06",
+          "value": 3998,
+          "flag": ""
+        },
+        {
+          "month": "2015-07",
+          "value": 3710,
+          "flag": ""
+        },
+        {
+          "month": "2015-08",
+          "value": 3877,
+          "flag": ""
+        },
+        {
+          "month": "2015-09",
+          "value": 3910,
+          "flag": ""
+        },
+        {
+          "month": "2015-10",
+          "value": 3830,
+          "flag": ""
+        },
+        {
+          "month": "2015-11",
+          "value": 3865,
+          "flag": ""
+        },
+        {
+          "month": "2015-12",
+          "value": 3610,
+          "flag": ""
+        },
+        {
+          "month": "2016-01",
+          "value": 3501,
+          "flag": ""
+        },
+        {
+          "month": "2016-02",
+          "value": 3709,
+          "flag": ""
+        },
+        {
+          "month": "2016-03",
+          "value": 3932,
+          "flag": ""
+        },
+        {
+          "month": "2016-04",
+          "value": 4185,
+          "flag": ""
+        },
+        {
+          "month": "2016-05",
+          "value": 4307,
+          "flag": ""
+        },
+        {
+          "month": "2016-06",
+          "value": 4598,
+          "flag": ""
+        },
+        {
+          "month": "2016-07",
+          "value": 4761,
+          "flag": ""
+        },
+        {
+          "month": "2016-08",
+          "value": 4820,
+          "flag": ""
+        },
+        {
+          "month": "2016-09",
+          "value": 5022,
+          "flag": ""
+        },
+        {
+          "month": "2016-10",
+          "value": 5015,
+          "flag": ""
+        },
+        {
+          "month": "2016-11",
+          "value": 4979,
+          "flag": ""
+        },
+        {
+          "month": "2016-12",
+          "value": 4578,
+          "flag": ""
+        },
+        {
+          "month": "2017-01",
+          "value": 4298,
+          "flag": ""
+        },
+        {
+          "month": "2017-02",
+          "value": 4101,
+          "flag": ""
+        },
+        {
+          "month": "2017-03",
+          "value": 4283,
+          "flag": ""
+        },
+        {
+          "month": "2017-04",
+          "value": 4409,
+          "flag": ""
+        },
+        {
+          "month": "2017-05",
+          "value": 4340,
+          "flag": ""
+        },
+        {
+          "month": "2017-06",
+          "value": 4498,
+          "flag": ""
+        },
+        {
+          "month": "2017-07",
+          "value": 4402,
+          "flag": ""
+        },
+        {
+          "month": "2017-08",
+          "value": 4371,
+          "flag": ""
+        },
+        {
+          "month": "2017-09",
+          "value": 4474,
+          "flag": ""
+        },
+        {
+          "month": "2017-10",
+          "value": 4591,
+          "flag": ""
+        },
+        {
+          "month": "2017-11",
+          "value": 4507,
+          "flag": ""
+        },
+        {
+          "month": "2017-12",
+          "value": 4318,
+          "flag": ""
+        },
+        {
+          "month": "2018-01",
+          "value": 4097,
+          "flag": ""
+        },
+        {
+          "month": "2018-02",
+          "value": 4294,
+          "flag": ""
+        },
+        {
+          "month": "2018-03",
+          "value": 4476,
+          "flag": ""
+        },
+        {
+          "month": "2018-04",
+          "value": 4610,
+          "flag": ""
+        },
+        {
+          "month": "2018-05",
+          "value": 4887,
+          "flag": ""
+        },
+        {
+          "month": "2018-06",
+          "value": 4901,
+          "flag": ""
+        },
+        {
+          "month": "2018-07",
+          "value": 4940,
+          "flag": ""
+        },
+        {
+          "month": "2018-08",
+          "value": 5164,
+          "flag": ""
+        },
+        {
+          "month": "2018-09",
+          "value": 5308,
+          "flag": ""
+        },
+        {
+          "month": "2018-10",
+          "value": 5333,
+          "flag": ""
+        },
+        {
+          "month": "2018-11",
+          "value": 4949,
+          "flag": ""
+        },
+        {
+          "month": "2018-12",
+          "value": 4736,
+          "flag": ""
+        },
+        {
+          "month": "2019-01",
+          "value": 4712,
+          "flag": ""
+        },
+        {
+          "month": "2019-02",
+          "value": 4736,
+          "flag": ""
+        },
+        {
+          "month": "2019-03",
+          "value": 5157,
+          "flag": ""
+        },
+        {
+          "month": "2019-04",
+          "value": 5396,
+          "flag": ""
+        },
+        {
+          "month": "2019-05",
+          "value": 5532,
+          "flag": ""
+        },
+        {
+          "month": "2019-06",
+          "value": 5610,
+          "flag": ""
+        },
+        {
+          "month": "2019-07",
+          "value": 5991,
+          "flag": ""
+        },
+        {
+          "month": "2019-08",
+          "value": 6206,
+          "flag": ""
+        },
+        {
+          "month": "2019-09",
+          "value": 6068,
+          "flag": ""
+        },
+        {
+          "month": "2019-10",
+          "value": 6071,
+          "flag": ""
+        },
+        {
+          "month": "2019-11",
+          "value": 5784,
+          "flag": ""
+        },
+        {
+          "month": "2019-12",
+          "value": 5487,
+          "flag": ""
+        },
+        {
+          "month": "2020-01",
+          "value": 5540,
+          "flag": ""
+        },
+        {
+          "month": "2020-02",
+          "value": 5597,
+          "flag": ""
+        },
+        {
+          "month": "2020-03",
+          "value": 5901,
+          "flag": ""
+        },
+        {
+          "month": "2020-04",
+          "value": 5668,
+          "flag": ""
+        },
+        {
+          "month": "2020-05",
+          "value": 5879,
+          "flag": ""
+        },
+        {
+          "month": "2020-06",
+          "value": 6143,
+          "flag": ""
+        },
+        {
+          "month": "2020-07",
+          "value": 5960,
+          "flag": ""
+        },
+        {
+          "month": "2020-08",
+          "value": 5849,
+          "flag": ""
+        },
+        {
+          "month": "2020-09",
+          "value": 5876,
+          "flag": ""
+        },
+        {
+          "month": "2020-10",
+          "value": 5772,
+          "flag": ""
+        },
+        {
+          "month": "2020-11",
+          "value": 5384,
+          "flag": ""
+        },
+        {
+          "month": "2020-12",
+          "value": 5151,
+          "flag": ""
+        },
+        {
+          "month": "2021-01",
+          "value": 5117,
+          "flag": ""
+        },
+        {
+          "month": "2021-02",
+          "value": 4982,
+          "flag": ""
+        },
+        {
+          "month": "2021-03",
+          "value": 5513,
+          "flag": ""
+        },
+        {
+          "month": "2021-04",
+          "value": 5562,
+          "flag": ""
+        },
+        {
+          "month": "2021-05",
+          "value": 5633,
+          "flag": ""
+        },
+        {
+          "month": "2021-06",
+          "value": 5731,
+          "flag": ""
+        },
+        {
+          "month": "2021-07",
+          "value": 5728,
+          "flag": ""
+        },
+        {
+          "month": "2021-08",
+          "value": 5639,
+          "flag": ""
+        },
+        {
+          "month": "2021-09",
+          "value": 5677,
+          "flag": ""
+        },
+        {
+          "month": "2021-10",
+          "value": 5610,
+          "flag": ""
+        },
+        {
+          "month": "2021-11",
+          "value": 5398,
+          "flag": ""
+        },
+        {
+          "month": "2021-12",
+          "value": 4986,
+          "flag": ""
+        },
+        {
+          "month": "2022-01",
+          "value": 4971,
+          "flag": ""
+        },
+        {
+          "month": "2022-02",
+          "value": 5058,
+          "flag": ""
+        },
+        {
+          "month": "2022-03",
+          "value": 5353,
+          "flag": ""
+        },
+        {
+          "month": "2022-04",
+          "value": 5633,
+          "flag": ""
+        },
+        {
+          "month": "2022-05",
+          "value": 5633,
+          "flag": ""
+        },
+        {
+          "month": "2022-06",
+          "value": 5787,
+          "flag": ""
+        },
+        {
+          "month": "2022-07",
+          "value": 5781,
+          "flag": ""
+        },
+        {
+          "month": "2022-08",
+          "value": 5973,
+          "flag": ""
+        },
+        {
+          "month": "2022-09",
+          "value": 6026,
+          "flag": ""
+        },
+        {
+          "month": "2022-10",
+          "value": 6024,
+          "flag": ""
+        },
+        {
+          "month": "2022-11",
+          "value": 5804,
+          "flag": ""
+        },
+        {
+          "month": "2022-12",
+          "value": 5619,
+          "flag": ""
+        },
+        {
+          "month": "2023-01",
+          "value": 5413,
+          "flag": ""
+        },
+        {
+          "month": "2023-02",
+          "value": 5295,
+          "flag": ""
+        },
+        {
+          "month": "2023-03",
+          "value": 5561,
+          "flag": ""
+        },
+        {
+          "month": "2023-04",
+          "value": 5601,
+          "flag": ""
+        },
+        {
+          "month": "2023-05",
+          "value": 5650,
+          "flag": ""
+        },
+        {
+          "month": "2023-06",
+          "value": 5681,
+          "flag": ""
+        },
+        {
+          "month": "2023-07",
+          "value": 5512,
+          "flag": ""
+        },
+        {
+          "month": "2023-08",
+          "value": 5570,
+          "flag": ""
+        },
+        {
+          "month": "2023-09",
+          "value": 5523,
+          "flag": ""
+        },
+        {
+          "month": "2023-10",
+          "value": 5299,
+          "flag": ""
+        },
+        {
+          "month": "2023-11",
+          "value": 5166,
+          "flag": ""
+        },
+        {
+          "month": "2023-12",
+          "value": 4778,
+          "flag": ""
+        },
+        {
+          "month": "2024-01",
+          "value": 4442,
+          "flag": ""
+        },
+        {
+          "month": "2024-02",
+          "value": 4424,
+          "flag": ""
+        },
+        {
+          "month": "2024-03",
+          "value": 4498,
+          "flag": ""
+        },
+        {
+          "month": "2024-04",
+          "value": 4520,
+          "flag": ""
+        },
+        {
+          "month": "2024-05",
+          "value": 4467,
+          "flag": ""
+        },
+        {
+          "month": "2024-06",
+          "value": 4611,
+          "flag": ""
+        },
+        {
+          "month": "2024-07",
+          "value": 4650,
+          "flag": ""
+        },
+        {
+          "month": "2024-08",
+          "value": 4664,
+          "flag": ""
+        },
+        {
+          "month": "2024-09",
+          "value": 4455,
+          "flag": ""
+        },
+        {
+          "month": "2024-10",
+          "value": 4292,
+          "flag": ""
+        },
+        {
+          "month": "2024-11",
+          "value": 4267,
+          "flag": ""
+        },
+        {
+          "month": "2024-12",
+          "value": 4106,
+          "flag": ""
+        },
+        {
+          "month": "2025-01",
+          "value": 4099,
+          "flag": ""
+        },
+        {
+          "month": "2025-02",
+          "value": 4047,
+          "flag": ""
+        },
+        {
+          "month": "2025-03",
+          "value": 4253,
+          "flag": ""
+        },
+        {
+          "month": "2025-04",
+          "value": 4365,
+          "flag": ""
+        },
+        {
+          "month": "2025-05",
+          "value": 4277,
+          "flag": ""
+        },
+        {
+          "month": "2025-06",
+          "value": 4307,
+          "flag": ""
+        },
+        {
+          "month": "2025-07",
+          "value": 4360,
+          "flag": ""
+        },
+        {
+          "month": "2025-08",
+          "value": 4480,
+          "flag": ""
+        },
+        {
+          "month": "2025-09",
+          "value": 4361,
+          "flag": ""
+        },
+        {
+          "month": "2025-10",
+          "value": 4428,
+          "flag": ""
+        },
+        {
+          "month": "2025-11",
+          "value": 4146,
+          "flag": ""
+        },
+        {
+          "month": "2025-12",
+          "value": 3905,
+          "flag": ""
+        },
+        {
+          "month": "2026-01",
+          "value": 3582,
+          "flag": ""
+        },
+        {
+          "month": "2026-02",
+          "value": 3567,
+          "flag": ""
+        },
+        {
+          "month": "2026-03",
+          "value": 3714,
+          "flag": ""
+        },
+        {
+          "month": "2026-04",
+          "value": 3797,
+          "flag": ""
+        },
+        {
+          "month": "2026-05",
+          "value": 3846,
+          "flag": ""
+        },
+        {
+          "month": "2026-06",
+          "value": 3899,
+          "flag": "r"
+        },
+        {
+          "month": "2026-07",
+          "value": 3936,
+          "flag": "r"
+        },
+        {
+          "month": "2026-08",
+          "value": 4058,
+          "flag": "p"
+        }
+      ],
+      "frequency": "monthly",
+      "priceBasis": "nominal",
+      "vintage": "as revised through 2026-10-01",
+      "vintageNote": "The historical workbook is the revised series in this release. Months marked r were revised. A month marked p is preliminary. This is not as first published.",
+      "evidence": "FACT",
+      "valueTag": "MEASUREMENT"
+    },
+    {
+      "id": "PROFCONS",
+      "fredId": "PROFCONS",
+      "fredPage": "https://fred.stlouisfed.org/series/PROFCONS",
+      "fredVerifiedOpen": true,
+      "label": "Private office construction spending",
+      "category": "Office",
+      "ownership": "private",
+      "units": "Millions of dollars, seasonally adjusted annual rate",
+      "adjustment": "seasonally adjusted annual rate",
+      "priceNote": "Nominal dollars. Table 1 of the release says the figures are adjusted for seasonality but not price changes. NSA values are monthly millions of dollars from the same release, not a price-adjusted series.",
+      "releaseDate": "2026-10-01",
+      "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx",
+      "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, seasonally adjusted annual rate",
+      "retrieved": "2026-10-04",
+      "points": [
+        {
+          "month": "2014-01",
+          "value": 35629,
+          "flag": ""
+        },
+        {
+          "month": "2014-02",
+          "value": 35632,
+          "flag": ""
+        },
+        {
+          "month": "2014-03",
+          "value": 35293,
+          "flag": ""
+        },
+        {
+          "month": "2014-04",
+          "value": 38601,
+          "flag": ""
+        },
+        {
+          "month": "2014-05",
+          "value": 38291,
+          "flag": ""
+        },
+        {
+          "month": "2014-06",
+          "value": 39271,
+          "flag": ""
+        },
+        {
+          "month": "2014-07",
+          "value": 38962,
+          "flag": ""
+        },
+        {
+          "month": "2014-08",
+          "value": 39245,
+          "flag": ""
+        },
+        {
+          "month": "2014-09",
+          "value": 40699,
+          "flag": ""
+        },
+        {
+          "month": "2014-10",
+          "value": 41513,
+          "flag": ""
+        },
+        {
+          "month": "2014-11",
+          "value": 40546,
+          "flag": ""
+        },
+        {
+          "month": "2014-12",
+          "value": 41829,
+          "flag": ""
+        },
+        {
+          "month": "2015-01",
+          "value": 42861,
+          "flag": ""
+        },
+        {
+          "month": "2015-02",
+          "value": 43717,
+          "flag": ""
+        },
+        {
+          "month": "2015-03",
+          "value": 44805,
+          "flag": ""
+        },
+        {
+          "month": "2015-04",
+          "value": 46409,
+          "flag": ""
+        },
+        {
+          "month": "2015-05",
+          "value": 49359,
+          "flag": ""
+        },
+        {
+          "month": "2015-06",
+          "value": 52110,
+          "flag": ""
+        },
+        {
+          "month": "2015-07",
+          "value": 47544,
+          "flag": ""
+        },
+        {
+          "month": "2015-08",
+          "value": 49414,
+          "flag": ""
+        },
+        {
+          "month": "2015-09",
+          "value": 48798,
+          "flag": ""
+        },
+        {
+          "month": "2015-10",
+          "value": 48159,
+          "flag": ""
+        },
+        {
+          "month": "2015-11",
+          "value": 50424,
+          "flag": ""
+        },
+        {
+          "month": "2015-12",
+          "value": 49894,
+          "flag": ""
+        },
+        {
+          "month": "2016-01",
+          "value": 50683,
+          "flag": ""
+        },
+        {
+          "month": "2016-02",
+          "value": 54829,
+          "flag": ""
+        },
+        {
+          "month": "2016-03",
+          "value": 55474,
+          "flag": ""
+        },
+        {
+          "month": "2016-04",
+          "value": 57365,
+          "flag": ""
+        },
+        {
+          "month": "2016-05",
+          "value": 57176,
+          "flag": ""
+        },
+        {
+          "month": "2016-06",
+          "value": 60032,
+          "flag": ""
+        },
+        {
+          "month": "2016-07",
+          "value": 61422,
+          "flag": ""
+        },
+        {
+          "month": "2016-08",
+          "value": 62814,
+          "flag": ""
+        },
+        {
+          "month": "2016-09",
+          "value": 63241,
+          "flag": ""
+        },
+        {
+          "month": "2016-10",
+          "value": 63377,
+          "flag": ""
+        },
+        {
+          "month": "2016-11",
+          "value": 65110,
+          "flag": ""
+        },
+        {
+          "month": "2016-12",
+          "value": 64316,
+          "flag": ""
+        },
+        {
+          "month": "2017-01",
+          "value": 62978,
+          "flag": ""
+        },
+        {
+          "month": "2017-02",
+          "value": 60356,
+          "flag": ""
+        },
+        {
+          "month": "2017-03",
+          "value": 60197,
+          "flag": ""
+        },
+        {
+          "month": "2017-04",
+          "value": 60376,
+          "flag": ""
+        },
+        {
+          "month": "2017-05",
+          "value": 59565,
+          "flag": ""
+        },
+        {
+          "month": "2017-06",
+          "value": 60209,
+          "flag": ""
+        },
+        {
+          "month": "2017-07",
+          "value": 58627,
+          "flag": ""
+        },
+        {
+          "month": "2017-08",
+          "value": 57421,
+          "flag": ""
+        },
+        {
+          "month": "2017-09",
+          "value": 58071,
+          "flag": ""
+        },
+        {
+          "month": "2017-10",
+          "value": 59408,
+          "flag": ""
+        },
+        {
+          "month": "2017-11",
+          "value": 61116,
+          "flag": ""
+        },
+        {
+          "month": "2017-12",
+          "value": 62243,
+          "flag": ""
+        },
+        {
+          "month": "2018-01",
+          "value": 61953,
+          "flag": ""
+        },
+        {
+          "month": "2018-02",
+          "value": 64524,
+          "flag": ""
+        },
+        {
+          "month": "2018-03",
+          "value": 64060,
+          "flag": ""
+        },
+        {
+          "month": "2018-04",
+          "value": 64539,
+          "flag": ""
+        },
+        {
+          "month": "2018-05",
+          "value": 66837,
+          "flag": ""
+        },
+        {
+          "month": "2018-06",
+          "value": 65598,
+          "flag": ""
+        },
+        {
+          "month": "2018-07",
+          "value": 67061,
+          "flag": ""
+        },
+        {
+          "month": "2018-08",
+          "value": 68707,
+          "flag": ""
+        },
+        {
+          "month": "2018-09",
+          "value": 68540,
+          "flag": ""
+        },
+        {
+          "month": "2018-10",
+          "value": 70796,
+          "flag": ""
+        },
+        {
+          "month": "2018-11",
+          "value": 68474,
+          "flag": ""
+        },
+        {
+          "month": "2018-12",
+          "value": 70816,
+          "flag": ""
+        },
+        {
+          "month": "2019-01",
+          "value": 71955,
+          "flag": ""
+        },
+        {
+          "month": "2019-02",
+          "value": 72129,
+          "flag": ""
+        },
+        {
+          "month": "2019-03",
+          "value": 73168,
+          "flag": ""
+        },
+        {
+          "month": "2019-04",
+          "value": 74633,
+          "flag": ""
+        },
+        {
+          "month": "2019-05",
+          "value": 76366,
+          "flag": ""
+        },
+        {
+          "month": "2019-06",
+          "value": 75568,
+          "flag": ""
+        },
+        {
+          "month": "2019-07",
+          "value": 80445,
+          "flag": ""
+        },
+        {
+          "month": "2019-08",
+          "value": 82817,
+          "flag": ""
+        },
+        {
+          "month": "2019-09",
+          "value": 79572,
+          "flag": ""
+        },
+        {
+          "month": "2019-10",
+          "value": 81040,
+          "flag": ""
+        },
+        {
+          "month": "2019-11",
+          "value": 81931,
+          "flag": ""
+        },
+        {
+          "month": "2019-12",
+          "value": 80025,
+          "flag": ""
+        },
+        {
+          "month": "2020-01",
+          "value": 84149,
+          "flag": ""
+        },
+        {
+          "month": "2020-02",
+          "value": 85308,
+          "flag": ""
+        },
+        {
+          "month": "2020-03",
+          "value": 84246,
+          "flag": ""
+        },
+        {
+          "month": "2020-04",
+          "value": 79128,
+          "flag": ""
+        },
+        {
+          "month": "2020-05",
+          "value": 80744,
+          "flag": ""
+        },
+        {
+          "month": "2020-06",
+          "value": 82540,
+          "flag": ""
+        },
+        {
+          "month": "2020-07",
+          "value": 80728,
+          "flag": ""
+        },
+        {
+          "month": "2020-08",
+          "value": 78950,
+          "flag": ""
+        },
+        {
+          "month": "2020-09",
+          "value": 79383,
+          "flag": ""
+        },
+        {
+          "month": "2020-10",
+          "value": 77955,
+          "flag": ""
+        },
+        {
+          "month": "2020-11",
+          "value": 76760,
+          "flag": ""
+        },
+        {
+          "month": "2020-12",
+          "value": 77420,
+          "flag": ""
+        },
+        {
+          "month": "2021-01",
+          "value": 78188,
+          "flag": ""
+        },
+        {
+          "month": "2021-02",
+          "value": 76140,
+          "flag": ""
+        },
+        {
+          "month": "2021-03",
+          "value": 79715,
+          "flag": ""
+        },
+        {
+          "month": "2021-04",
+          "value": 78051,
+          "flag": ""
+        },
+        {
+          "month": "2021-05",
+          "value": 78118,
+          "flag": ""
+        },
+        {
+          "month": "2021-06",
+          "value": 77444,
+          "flag": ""
+        },
+        {
+          "month": "2021-07",
+          "value": 77764,
+          "flag": ""
+        },
+        {
+          "month": "2021-08",
+          "value": 77091,
+          "flag": ""
+        },
+        {
+          "month": "2021-09",
+          "value": 77484,
+          "flag": ""
+        },
+        {
+          "month": "2021-10",
+          "value": 76312,
+          "flag": ""
+        },
+        {
+          "month": "2021-11",
+          "value": 77574,
+          "flag": ""
+        },
+        {
+          "month": "2021-12",
+          "value": 76645,
+          "flag": ""
+        },
+        {
+          "month": "2022-01",
+          "value": 77632,
+          "flag": ""
+        },
+        {
+          "month": "2022-02",
+          "value": 78285,
+          "flag": ""
+        },
+        {
+          "month": "2022-03",
+          "value": 78798,
+          "flag": ""
+        },
+        {
+          "month": "2022-04",
+          "value": 81447,
+          "flag": ""
+        },
+        {
+          "month": "2022-05",
+          "value": 81055,
+          "flag": ""
+        },
+        {
+          "month": "2022-06",
+          "value": 81177,
+          "flag": ""
+        },
+        {
+          "month": "2022-07",
+          "value": 81730,
+          "flag": ""
+        },
+        {
+          "month": "2022-08",
+          "value": 83674,
+          "flag": ""
+        },
+        {
+          "month": "2022-09",
+          "value": 85837,
+          "flag": ""
+        },
+        {
+          "month": "2022-10",
+          "value": 84657,
+          "flag": ""
+        },
+        {
+          "month": "2022-11",
+          "value": 85716,
+          "flag": ""
+        },
+        {
+          "month": "2022-12",
+          "value": 87411,
+          "flag": ""
+        },
+        {
+          "month": "2023-01",
+          "value": 87862,
+          "flag": ""
+        },
+        {
+          "month": "2023-02",
+          "value": 88818,
+          "flag": ""
+        },
+        {
+          "month": "2023-03",
+          "value": 88688,
+          "flag": ""
+        },
+        {
+          "month": "2023-04",
+          "value": 87516,
+          "flag": ""
+        },
+        {
+          "month": "2023-05",
+          "value": 88366,
+          "flag": ""
+        },
+        {
+          "month": "2023-06",
+          "value": 87555,
+          "flag": ""
+        },
+        {
+          "month": "2023-07",
+          "value": 86300,
+          "flag": ""
+        },
+        {
+          "month": "2023-08",
+          "value": 87440,
+          "flag": ""
+        },
+        {
+          "month": "2023-09",
+          "value": 87800,
+          "flag": ""
+        },
+        {
+          "month": "2023-10",
+          "value": 87815,
+          "flag": ""
+        },
+        {
+          "month": "2023-11",
+          "value": 88346,
+          "flag": ""
+        },
+        {
+          "month": "2023-12",
+          "value": 87235,
+          "flag": ""
+        },
+        {
+          "month": "2024-01",
+          "value": 87227,
+          "flag": ""
+        },
+        {
+          "month": "2024-02",
+          "value": 89029,
+          "flag": ""
+        },
+        {
+          "month": "2024-03",
+          "value": 88947,
+          "flag": ""
+        },
+        {
+          "month": "2024-04",
+          "value": 85609,
+          "flag": ""
+        },
+        {
+          "month": "2024-05",
+          "value": 89114,
+          "flag": ""
+        },
+        {
+          "month": "2024-06",
+          "value": 92969,
+          "flag": ""
+        },
+        {
+          "month": "2024-07",
+          "value": 93625,
+          "flag": ""
+        },
+        {
+          "month": "2024-08",
+          "value": 93183,
+          "flag": ""
+        },
+        {
+          "month": "2024-09",
+          "value": 92147,
+          "flag": ""
+        },
+        {
+          "month": "2024-10",
+          "value": 93113,
+          "flag": ""
+        },
+        {
+          "month": "2024-11",
+          "value": 95146,
+          "flag": ""
+        },
+        {
+          "month": "2024-12",
+          "value": 99316,
+          "flag": ""
+        },
+        {
+          "month": "2025-01",
+          "value": 102225,
+          "flag": ""
+        },
+        {
+          "month": "2025-02",
+          "value": 102795,
+          "flag": ""
+        },
+        {
+          "month": "2025-03",
+          "value": 102854,
+          "flag": ""
+        },
+        {
+          "month": "2025-04",
+          "value": 109064,
+          "flag": ""
+        },
+        {
+          "month": "2025-05",
+          "value": 102760,
+          "flag": ""
+        },
+        {
+          "month": "2025-06",
+          "value": 100575,
+          "flag": ""
+        },
+        {
+          "month": "2025-07",
+          "value": 101666,
+          "flag": ""
+        },
+        {
+          "month": "2025-08",
+          "value": 103300,
+          "flag": ""
+        },
+        {
+          "month": "2025-09",
+          "value": 104376,
+          "flag": ""
+        },
+        {
+          "month": "2025-10",
+          "value": 108898,
+          "flag": ""
+        },
+        {
+          "month": "2025-11",
+          "value": 105503,
+          "flag": ""
+        },
+        {
+          "month": "2025-12",
+          "value": 107066,
+          "flag": ""
+        },
+        {
+          "month": "2026-01",
+          "value": 105913,
+          "flag": ""
+        },
+        {
+          "month": "2026-02",
+          "value": 106772,
+          "flag": ""
+        },
+        {
+          "month": "2026-03",
+          "value": 107164,
+          "flag": ""
+        },
+        {
+          "month": "2026-04",
+          "value": 111220,
+          "flag": ""
+        },
+        {
+          "month": "2026-05",
+          "value": 115159,
+          "flag": ""
+        },
+        {
+          "month": "2026-06",
+          "value": 121940,
+          "flag": "r"
+        },
+        {
+          "month": "2026-07",
+          "value": 128199,
+          "flag": "r"
+        },
+        {
+          "month": "2026-08",
+          "value": 134119,
+          "flag": "p"
+        }
+      ],
+      "frequency": "monthly",
+      "priceBasis": "nominal",
+      "vintage": "as revised through 2026-10-01",
+      "vintageNote": "The historical workbook is the revised series in this release. Months marked r were revised. A month marked p is preliminary. This is not as first published.",
+      "evidence": "FACT",
+      "valueTag": "MEASUREMENT"
+    },
+    {
+      "id": "C30-PRIVATE-OFFICE-NSA",
+      "fredId": null,
+      "fredPage": null,
+      "fredVerifiedOpen": false,
+      "label": "Private office construction spending, monthly not seasonally adjusted",
+      "category": "Office",
+      "ownership": "private",
+      "units": "Millions of dollars, monthly not seasonally adjusted",
+      "adjustment": "monthly not seasonally adjusted",
+      "priceNote": "Nominal dollars. Table 1 of the release says the figures are adjusted for seasonality but not price changes. NSA values are monthly millions of dollars from the same release, not a price-adjusted series.",
+      "releaseDate": "2026-10-01",
+      "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privtime.xlsx",
+      "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, monthly not seasonally adjusted",
+      "retrieved": "2026-10-04",
+      "points": [
+        {
+          "month": "2014-01",
+          "value": 2701,
+          "flag": ""
+        },
+        {
+          "month": "2014-02",
+          "value": 2686,
+          "flag": ""
+        },
+        {
+          "month": "2014-03",
+          "value": 2817,
+          "flag": ""
+        },
+        {
+          "month": "2014-04",
+          "value": 3136,
+          "flag": ""
+        },
+        {
+          "month": "2014-05",
+          "value": 3243,
+          "flag": ""
+        },
+        {
+          "month": "2014-06",
+          "value": 3383,
+          "flag": ""
+        },
+        {
+          "month": "2014-07",
+          "value": 3351,
+          "flag": ""
+        },
+        {
+          "month": "2014-08",
+          "value": 3406,
+          "flag": ""
+        },
+        {
+          "month": "2014-09",
+          "value": 3632,
+          "flag": ""
+        },
+        {
+          "month": "2014-10",
+          "value": 3688,
+          "flag": ""
+        },
+        {
+          "month": "2014-11",
+          "value": 3442,
+          "flag": ""
+        },
+        {
+          "month": "2014-12",
+          "value": 3381,
+          "flag": ""
+        },
+        {
+          "month": "2015-01",
+          "value": 3253,
+          "flag": ""
+        },
+        {
+          "month": "2015-02",
+          "value": 3306,
+          "flag": ""
+        },
+        {
+          "month": "2015-03",
+          "value": 3572,
+          "flag": ""
+        },
+        {
+          "month": "2015-04",
+          "value": 3789,
+          "flag": ""
+        },
+        {
+          "month": "2015-05",
+          "value": 4178,
+          "flag": ""
+        },
+        {
+          "month": "2015-06",
+          "value": 4506,
+          "flag": ""
+        },
+        {
+          "month": "2015-07",
+          "value": 4101,
+          "flag": ""
+        },
+        {
+          "month": "2015-08",
+          "value": 4279,
+          "flag": ""
+        },
+        {
+          "month": "2015-09",
+          "value": 4337,
+          "flag": ""
+        },
+        {
+          "month": "2015-10",
+          "value": 4253,
+          "flag": ""
+        },
+        {
+          "month": "2015-11",
+          "value": 4276,
+          "flag": ""
+        },
+        {
+          "month": "2015-12",
+          "value": 4013,
+          "flag": ""
+        },
+        {
+          "month": "2016-01",
+          "value": 3865,
+          "flag": ""
+        },
+        {
+          "month": "2016-02",
+          "value": 4162,
+          "flag": ""
+        },
+        {
+          "month": "2016-03",
+          "value": 4421,
+          "flag": ""
+        },
+        {
+          "month": "2016-04",
+          "value": 4709,
+          "flag": ""
+        },
+        {
+          "month": "2016-05",
+          "value": 4848,
+          "flag": ""
+        },
+        {
+          "month": "2016-06",
+          "value": 5196,
+          "flag": ""
+        },
+        {
+          "month": "2016-07",
+          "value": 5309,
+          "flag": ""
+        },
+        {
+          "month": "2016-08",
+          "value": 5441,
+          "flag": ""
+        },
+        {
+          "month": "2016-09",
+          "value": 5583,
+          "flag": ""
+        },
+        {
+          "month": "2016-10",
+          "value": 5565,
+          "flag": ""
+        },
+        {
+          "month": "2016-11",
+          "value": 5510,
+          "flag": ""
+        },
+        {
+          "month": "2016-12",
+          "value": 5149,
+          "flag": ""
+        },
+        {
+          "month": "2017-01",
+          "value": 4802,
+          "flag": ""
+        },
+        {
+          "month": "2017-02",
+          "value": 4600,
+          "flag": ""
+        },
+        {
+          "month": "2017-03",
+          "value": 4810,
+          "flag": ""
+        },
+        {
+          "month": "2017-04",
+          "value": 4988,
+          "flag": ""
+        },
+        {
+          "month": "2017-05",
+          "value": 5032,
+          "flag": ""
+        },
+        {
+          "month": "2017-06",
+          "value": 5205,
+          "flag": ""
+        },
+        {
+          "month": "2017-07",
+          "value": 5058,
+          "flag": ""
+        },
+        {
+          "month": "2017-08",
+          "value": 4994,
+          "flag": ""
+        },
+        {
+          "month": "2017-09",
+          "value": 5137,
+          "flag": ""
+        },
+        {
+          "month": "2017-10",
+          "value": 5206,
+          "flag": ""
+        },
+        {
+          "month": "2017-11",
+          "value": 5140,
+          "flag": ""
+        },
+        {
+          "month": "2017-12",
+          "value": 4946,
+          "flag": ""
+        },
+        {
+          "month": "2018-01",
+          "value": 4738,
+          "flag": ""
+        },
+        {
+          "month": "2018-02",
+          "value": 4936,
+          "flag": ""
+        },
+        {
+          "month": "2018-03",
+          "value": 5156,
+          "flag": ""
+        },
+        {
+          "month": "2018-04",
+          "value": 5348,
+          "flag": ""
+        },
+        {
+          "month": "2018-05",
+          "value": 5662,
+          "flag": ""
+        },
+        {
+          "month": "2018-06",
+          "value": 5699,
+          "flag": ""
+        },
+        {
+          "month": "2018-07",
+          "value": 5795,
+          "flag": ""
+        },
+        {
+          "month": "2018-08",
+          "value": 5965,
+          "flag": ""
+        },
+        {
+          "month": "2018-09",
+          "value": 6041,
+          "flag": ""
+        },
+        {
+          "month": "2018-10",
+          "value": 6177,
+          "flag": ""
+        },
+        {
+          "month": "2018-11",
+          "value": 5720,
+          "flag": ""
+        },
+        {
+          "month": "2018-12",
+          "value": 5600,
+          "flag": ""
+        },
+        {
+          "month": "2019-01",
+          "value": 5521,
+          "flag": ""
+        },
+        {
+          "month": "2019-02",
+          "value": 5537,
+          "flag": ""
+        },
+        {
+          "month": "2019-03",
+          "value": 5932,
+          "flag": ""
+        },
+        {
+          "month": "2019-04",
+          "value": 6205,
+          "flag": ""
+        },
+        {
+          "month": "2019-05",
+          "value": 6465,
+          "flag": ""
+        },
+        {
+          "month": "2019-06",
+          "value": 6563,
+          "flag": ""
+        },
+        {
+          "month": "2019-07",
+          "value": 6958,
+          "flag": ""
+        },
+        {
+          "month": "2019-08",
+          "value": 7191,
+          "flag": ""
+        },
+        {
+          "month": "2019-09",
+          "value": 7001,
+          "flag": ""
+        },
+        {
+          "month": "2019-10",
+          "value": 7066,
+          "flag": ""
+        },
+        {
+          "month": "2019-11",
+          "value": 6791,
+          "flag": ""
+        },
+        {
+          "month": "2019-12",
+          "value": 6306,
+          "flag": ""
+        },
+        {
+          "month": "2020-01",
+          "value": 6482,
+          "flag": ""
+        },
+        {
+          "month": "2020-02",
+          "value": 6550,
+          "flag": ""
+        },
+        {
+          "month": "2020-03",
+          "value": 6862,
+          "flag": ""
+        },
+        {
+          "month": "2020-04",
+          "value": 6598,
+          "flag": ""
+        },
+        {
+          "month": "2020-05",
+          "value": 6834,
+          "flag": ""
+        },
+        {
+          "month": "2020-06",
+          "value": 7149,
+          "flag": ""
+        },
+        {
+          "month": "2020-07",
+          "value": 6987,
+          "flag": ""
+        },
+        {
+          "month": "2020-08",
+          "value": 6864,
+          "flag": ""
+        },
+        {
+          "month": "2020-09",
+          "value": 6972,
+          "flag": ""
+        },
+        {
+          "month": "2020-10",
+          "value": 6772,
+          "flag": ""
+        },
+        {
+          "month": "2020-11",
+          "value": 6353,
+          "flag": ""
+        },
+        {
+          "month": "2020-12",
+          "value": 6102,
+          "flag": ""
+        },
+        {
+          "month": "2021-01",
+          "value": 6035,
+          "flag": ""
+        },
+        {
+          "month": "2021-02",
+          "value": 5862,
+          "flag": ""
+        },
+        {
+          "month": "2021-03",
+          "value": 6504,
+          "flag": ""
+        },
+        {
+          "month": "2021-04",
+          "value": 6519,
+          "flag": ""
+        },
+        {
+          "month": "2021-05",
+          "value": 6597,
+          "flag": ""
+        },
+        {
+          "month": "2021-06",
+          "value": 6699,
+          "flag": ""
+        },
+        {
+          "month": "2021-07",
+          "value": 6731,
+          "flag": ""
+        },
+        {
+          "month": "2021-08",
+          "value": 6722,
+          "flag": ""
+        },
+        {
+          "month": "2021-09",
+          "value": 6788,
+          "flag": ""
+        },
+        {
+          "month": "2021-10",
+          "value": 6603,
+          "flag": ""
+        },
+        {
+          "month": "2021-11",
+          "value": 6421,
+          "flag": ""
+        },
+        {
+          "month": "2021-12",
+          "value": 6065,
+          "flag": ""
+        },
+        {
+          "month": "2022-01",
+          "value": 6008,
+          "flag": ""
+        },
+        {
+          "month": "2022-02",
+          "value": 6027,
+          "flag": ""
+        },
+        {
+          "month": "2022-03",
+          "value": 6427,
+          "flag": ""
+        },
+        {
+          "month": "2022-04",
+          "value": 6813,
+          "flag": ""
+        },
+        {
+          "month": "2022-05",
+          "value": 6825,
+          "flag": ""
+        },
+        {
+          "month": "2022-06",
+          "value": 6998,
+          "flag": ""
+        },
+        {
+          "month": "2022-07",
+          "value": 7069,
+          "flag": ""
+        },
+        {
+          "month": "2022-08",
+          "value": 7320,
+          "flag": ""
+        },
+        {
+          "month": "2022-09",
+          "value": 7501,
+          "flag": ""
+        },
+        {
+          "month": "2022-10",
+          "value": 7300,
+          "flag": ""
+        },
+        {
+          "month": "2022-11",
+          "value": 7127,
+          "flag": ""
+        },
+        {
+          "month": "2022-12",
+          "value": 6956,
+          "flag": ""
+        },
+        {
+          "month": "2023-01",
+          "value": 6812,
+          "flag": ""
+        },
+        {
+          "month": "2023-02",
+          "value": 6841,
+          "flag": ""
+        },
+        {
+          "month": "2023-03",
+          "value": 7208,
+          "flag": ""
+        },
+        {
+          "month": "2023-04",
+          "value": 7320,
+          "flag": ""
+        },
+        {
+          "month": "2023-05",
+          "value": 7421,
+          "flag": ""
+        },
+        {
+          "month": "2023-06",
+          "value": 7513,
+          "flag": ""
+        },
+        {
+          "month": "2023-07",
+          "value": 7455,
+          "flag": ""
+        },
+        {
+          "month": "2023-08",
+          "value": 7687,
+          "flag": ""
+        },
+        {
+          "month": "2023-09",
+          "value": 7668,
+          "flag": ""
+        },
+        {
+          "month": "2023-10",
+          "value": 7551,
+          "flag": ""
+        },
+        {
+          "month": "2023-11",
+          "value": 7350,
+          "flag": ""
+        },
+        {
+          "month": "2023-12",
+          "value": 6997,
+          "flag": ""
+        },
+        {
+          "month": "2024-01",
+          "value": 6788,
+          "flag": ""
+        },
+        {
+          "month": "2024-02",
+          "value": 6848,
+          "flag": ""
+        },
+        {
+          "month": "2024-03",
+          "value": 7207,
+          "flag": ""
+        },
+        {
+          "month": "2024-04",
+          "value": 7154,
+          "flag": ""
+        },
+        {
+          "month": "2024-05",
+          "value": 7494,
+          "flag": ""
+        },
+        {
+          "month": "2024-06",
+          "value": 7941,
+          "flag": ""
+        },
+        {
+          "month": "2024-07",
+          "value": 8079,
+          "flag": ""
+        },
+        {
+          "month": "2024-08",
+          "value": 8208,
+          "flag": ""
+        },
+        {
+          "month": "2024-09",
+          "value": 8050,
+          "flag": ""
+        },
+        {
+          "month": "2024-10",
+          "value": 7975,
+          "flag": ""
+        },
+        {
+          "month": "2024-11",
+          "value": 7904,
+          "flag": ""
+        },
+        {
+          "month": "2024-12",
+          "value": 8010,
+          "flag": ""
+        },
+        {
+          "month": "2025-01",
+          "value": 7970,
+          "flag": ""
+        },
+        {
+          "month": "2025-02",
+          "value": 7897,
+          "flag": ""
+        },
+        {
+          "month": "2025-03",
+          "value": 8324,
+          "flag": ""
+        },
+        {
+          "month": "2025-04",
+          "value": 9098,
+          "flag": ""
+        },
+        {
+          "month": "2025-05",
+          "value": 8659,
+          "flag": ""
+        },
+        {
+          "month": "2025-06",
+          "value": 8602,
+          "flag": ""
+        },
+        {
+          "month": "2025-07",
+          "value": 8772,
+          "flag": ""
+        },
+        {
+          "month": "2025-08",
+          "value": 9101,
+          "flag": ""
+        },
+        {
+          "month": "2025-09",
+          "value": 9118,
+          "flag": ""
+        },
+        {
+          "month": "2025-10",
+          "value": 9326,
+          "flag": ""
+        },
+        {
+          "month": "2025-11",
+          "value": 8756,
+          "flag": ""
+        },
+        {
+          "month": "2025-12",
+          "value": 8646,
+          "flag": ""
+        },
+        {
+          "month": "2026-01",
+          "value": 8295,
+          "flag": ""
+        },
+        {
+          "month": "2026-02",
+          "value": 8287,
+          "flag": ""
+        },
+        {
+          "month": "2026-03",
+          "value": 8761,
+          "flag": ""
+        },
+        {
+          "month": "2026-04",
+          "value": 9325,
+          "flag": ""
+        },
+        {
+          "month": "2026-05",
+          "value": 9778,
+          "flag": ""
+        },
+        {
+          "month": "2026-06",
+          "value": 10443,
+          "flag": "r"
+        },
+        {
+          "month": "2026-07",
+          "value": 11124,
+          "flag": "r"
+        },
+        {
+          "month": "2026-08",
+          "value": 11886,
+          "flag": "p"
+        }
+      ],
+      "frequency": "monthly",
+      "priceBasis": "nominal",
+      "vintage": "as revised through 2026-10-01",
+      "vintageNote": "The historical workbook is the revised series in this release. Months marked r were revised. A month marked p is preliminary. This is not as first published.",
+      "evidence": "FACT",
+      "valueTag": "MEASUREMENT"
+    },
+    {
+      "id": "TLOFCON",
+      "fredId": "TLOFCON",
+      "fredPage": "https://fred.stlouisfed.org/series/TLOFCON",
+      "fredVerifiedOpen": true,
+      "label": "Total office construction spending, monthly not seasonally adjusted",
+      "category": "Office",
+      "ownership": "total, private plus public",
+      "units": "Millions of dollars, monthly not seasonally adjusted",
+      "adjustment": "monthly not seasonally adjusted",
+      "priceNote": "Nominal dollars. Table 1 of the release says the figures are adjusted for seasonality but not price changes. NSA values are monthly millions of dollars from the same release, not a price-adjusted series.",
+      "releaseDate": "2026-10-01",
+      "sourceUrl": "https://www.census.gov/construction/c30/xlsx/tottime.xlsx",
+      "sourceName": "U.S. Census Bureau, Value of Construction Put in Place, monthly not seasonally adjusted",
+      "retrieved": "2026-10-04",
+      "points": [
+        {
+          "month": "2014-01",
+          "value": 3267,
+          "flag": ""
+        },
+        {
+          "month": "2014-02",
+          "value": 3265,
+          "flag": ""
+        },
+        {
+          "month": "2014-03",
+          "value": 3446,
+          "flag": ""
+        },
+        {
+          "month": "2014-04",
+          "value": 3781,
+          "flag": ""
+        },
+        {
+          "month": "2014-05",
+          "value": 3898,
+          "flag": ""
+        },
+        {
+          "month": "2014-06",
+          "value": 4058,
+          "flag": ""
+        },
+        {
+          "month": "2014-07",
+          "value": 4019,
+          "flag": ""
+        },
+        {
+          "month": "2014-08",
+          "value": 4061,
+          "flag": ""
+        },
+        {
+          "month": "2014-09",
+          "value": 4342,
+          "flag": ""
+        },
+        {
+          "month": "2014-10",
+          "value": 4345,
+          "flag": ""
+        },
+        {
+          "month": "2014-11",
+          "value": 4068,
+          "flag": ""
+        },
+        {
+          "month": "2014-12",
+          "value": 4034,
+          "flag": ""
+        },
+        {
+          "month": "2015-01",
+          "value": 3874,
+          "flag": ""
+        },
+        {
+          "month": "2015-02",
+          "value": 3911,
+          "flag": ""
+        },
+        {
+          "month": "2015-03",
+          "value": 4201,
+          "flag": ""
+        },
+        {
+          "month": "2015-04",
+          "value": 4482,
+          "flag": ""
+        },
+        {
+          "month": "2015-05",
+          "value": 4935,
+          "flag": ""
+        },
+        {
+          "month": "2015-06",
+          "value": 5226,
+          "flag": ""
+        },
+        {
+          "month": "2015-07",
+          "value": 4807,
+          "flag": ""
+        },
+        {
+          "month": "2015-08",
+          "value": 4973,
+          "flag": ""
+        },
+        {
+          "month": "2015-09",
+          "value": 5057,
+          "flag": ""
+        },
+        {
+          "month": "2015-10",
+          "value": 4957,
+          "flag": ""
+        },
+        {
+          "month": "2015-11",
+          "value": 4929,
+          "flag": ""
+        },
+        {
+          "month": "2015-12",
+          "value": 4661,
+          "flag": ""
+        },
+        {
+          "month": "2016-01",
+          "value": 4430,
+          "flag": ""
+        },
+        {
+          "month": "2016-02",
+          "value": 4769,
+          "flag": ""
+        },
+        {
+          "month": "2016-03",
+          "value": 5046,
+          "flag": ""
+        },
+        {
+          "month": "2016-04",
+          "value": 5352,
+          "flag": ""
+        },
+        {
+          "month": "2016-05",
+          "value": 5524,
+          "flag": ""
+        },
+        {
+          "month": "2016-06",
+          "value": 5909,
+          "flag": ""
+        },
+        {
+          "month": "2016-07",
+          "value": 5988,
+          "flag": ""
+        },
+        {
+          "month": "2016-08",
+          "value": 6182,
+          "flag": ""
+        },
+        {
+          "month": "2016-09",
+          "value": 6356,
+          "flag": ""
+        },
+        {
+          "month": "2016-10",
+          "value": 6246,
+          "flag": ""
+        },
+        {
+          "month": "2016-11",
+          "value": 6256,
+          "flag": ""
+        },
+        {
+          "month": "2016-12",
+          "value": 5850,
+          "flag": ""
+        },
+        {
+          "month": "2017-01",
+          "value": 5428,
+          "flag": ""
+        },
+        {
+          "month": "2017-02",
+          "value": 5245,
+          "flag": ""
+        },
+        {
+          "month": "2017-03",
+          "value": 5499,
+          "flag": ""
+        },
+        {
+          "month": "2017-04",
+          "value": 5598,
+          "flag": ""
+        },
+        {
+          "month": "2017-05",
+          "value": 5777,
+          "flag": ""
+        },
+        {
+          "month": "2017-06",
+          "value": 5938,
+          "flag": ""
+        },
+        {
+          "month": "2017-07",
+          "value": 5748,
+          "flag": ""
+        },
+        {
+          "month": "2017-08",
+          "value": 5755,
+          "flag": ""
+        },
+        {
+          "month": "2017-09",
+          "value": 5966,
+          "flag": ""
+        },
+        {
+          "month": "2017-10",
+          "value": 6038,
+          "flag": ""
+        },
+        {
+          "month": "2017-11",
+          "value": 6012,
+          "flag": ""
+        },
+        {
+          "month": "2017-12",
+          "value": 5683,
+          "flag": ""
+        },
+        {
+          "month": "2018-01",
+          "value": 5410,
+          "flag": ""
+        },
+        {
+          "month": "2018-02",
+          "value": 5636,
+          "flag": ""
+        },
+        {
+          "month": "2018-03",
+          "value": 5921,
+          "flag": ""
+        },
+        {
+          "month": "2018-04",
+          "value": 6171,
+          "flag": ""
+        },
+        {
+          "month": "2018-05",
+          "value": 6543,
+          "flag": ""
+        },
+        {
+          "month": "2018-06",
+          "value": 6605,
+          "flag": ""
+        },
+        {
+          "month": "2018-07",
+          "value": 6631,
+          "flag": ""
+        },
+        {
+          "month": "2018-08",
+          "value": 6906,
+          "flag": ""
+        },
+        {
+          "month": "2018-09",
+          "value": 6849,
+          "flag": ""
+        },
+        {
+          "month": "2018-10",
+          "value": 7051,
+          "flag": ""
+        },
+        {
+          "month": "2018-11",
+          "value": 6526,
+          "flag": ""
+        },
+        {
+          "month": "2018-12",
+          "value": 6413,
+          "flag": ""
+        },
+        {
+          "month": "2019-01",
+          "value": 6257,
+          "flag": ""
+        },
+        {
+          "month": "2019-02",
+          "value": 6302,
+          "flag": ""
+        },
+        {
+          "month": "2019-03",
+          "value": 6762,
+          "flag": ""
+        },
+        {
+          "month": "2019-04",
+          "value": 7104,
+          "flag": ""
+        },
+        {
+          "month": "2019-05",
+          "value": 7393,
+          "flag": ""
+        },
+        {
+          "month": "2019-06",
+          "value": 7515,
+          "flag": ""
+        },
+        {
+          "month": "2019-07",
+          "value": 7937,
+          "flag": ""
+        },
+        {
+          "month": "2019-08",
+          "value": 8239,
+          "flag": ""
+        },
+        {
+          "month": "2019-09",
+          "value": 8070,
+          "flag": ""
+        },
+        {
+          "month": "2019-10",
+          "value": 8071,
+          "flag": ""
+        },
+        {
+          "month": "2019-11",
+          "value": 7804,
+          "flag": ""
+        },
+        {
+          "month": "2019-12",
+          "value": 7271,
+          "flag": ""
+        },
+        {
+          "month": "2020-01",
+          "value": 7387,
+          "flag": ""
+        },
+        {
+          "month": "2020-02",
+          "value": 7461,
+          "flag": ""
+        },
+        {
+          "month": "2020-03",
+          "value": 7852,
+          "flag": ""
+        },
+        {
+          "month": "2020-04",
+          "value": 7587,
+          "flag": ""
+        },
+        {
+          "month": "2020-05",
+          "value": 7880,
+          "flag": ""
+        },
+        {
+          "month": "2020-06",
+          "value": 8306,
+          "flag": ""
+        },
+        {
+          "month": "2020-07",
+          "value": 8101,
+          "flag": ""
+        },
+        {
+          "month": "2020-08",
+          "value": 7992,
+          "flag": ""
+        },
+        {
+          "month": "2020-09",
+          "value": 8098,
+          "flag": ""
+        },
+        {
+          "month": "2020-10",
+          "value": 7782,
+          "flag": ""
+        },
+        {
+          "month": "2020-11",
+          "value": 7368,
+          "flag": ""
+        },
+        {
+          "month": "2020-12",
+          "value": 7019,
+          "flag": ""
+        },
+        {
+          "month": "2021-01",
+          "value": 6947,
+          "flag": ""
+        },
+        {
+          "month": "2021-02",
+          "value": 6767,
+          "flag": ""
+        },
+        {
+          "month": "2021-03",
+          "value": 7492,
+          "flag": ""
+        },
+        {
+          "month": "2021-04",
+          "value": 7518,
+          "flag": ""
+        },
+        {
+          "month": "2021-05",
+          "value": 7598,
+          "flag": ""
+        },
+        {
+          "month": "2021-06",
+          "value": 7797,
+          "flag": ""
+        },
+        {
+          "month": "2021-07",
+          "value": 7801,
+          "flag": ""
+        },
+        {
+          "month": "2021-08",
+          "value": 7827,
+          "flag": ""
+        },
+        {
+          "month": "2021-09",
+          "value": 7927,
+          "flag": ""
+        },
+        {
+          "month": "2021-10",
+          "value": 7673,
+          "flag": ""
+        },
+        {
+          "month": "2021-11",
+          "value": 7484,
+          "flag": ""
+        },
+        {
+          "month": "2021-12",
+          "value": 7072,
+          "flag": ""
+        },
+        {
+          "month": "2022-01",
+          "value": 6930,
+          "flag": ""
+        },
+        {
+          "month": "2022-02",
+          "value": 6994,
+          "flag": ""
+        },
+        {
+          "month": "2022-03",
+          "value": 7472,
+          "flag": ""
+        },
+        {
+          "month": "2022-04",
+          "value": 7865,
+          "flag": ""
+        },
+        {
+          "month": "2022-05",
+          "value": 7960,
+          "flag": ""
+        },
+        {
+          "month": "2022-06",
+          "value": 8127,
+          "flag": ""
+        },
+        {
+          "month": "2022-07",
+          "value": 8169,
+          "flag": ""
+        },
+        {
+          "month": "2022-08",
+          "value": 8476,
+          "flag": ""
+        },
+        {
+          "month": "2022-09",
+          "value": 8658,
+          "flag": ""
+        },
+        {
+          "month": "2022-10",
+          "value": 8423,
+          "flag": ""
+        },
+        {
+          "month": "2022-11",
+          "value": 8283,
+          "flag": ""
+        },
+        {
+          "month": "2022-12",
+          "value": 8026,
+          "flag": ""
+        },
+        {
+          "month": "2023-01",
+          "value": 7886,
+          "flag": ""
+        },
+        {
+          "month": "2023-02",
+          "value": 7925,
+          "flag": ""
+        },
+        {
+          "month": "2023-03",
+          "value": 8379,
+          "flag": ""
+        },
+        {
+          "month": "2023-04",
+          "value": 8560,
+          "flag": ""
+        },
+        {
+          "month": "2023-05",
+          "value": 8712,
+          "flag": ""
+        },
+        {
+          "month": "2023-06",
+          "value": 8843,
+          "flag": ""
+        },
+        {
+          "month": "2023-07",
+          "value": 8775,
+          "flag": ""
+        },
+        {
+          "month": "2023-08",
+          "value": 9115,
+          "flag": ""
+        },
+        {
+          "month": "2023-09",
+          "value": 9071,
+          "flag": ""
+        },
+        {
+          "month": "2023-10",
+          "value": 8897,
+          "flag": ""
+        },
+        {
+          "month": "2023-11",
+          "value": 8707,
+          "flag": ""
+        },
+        {
+          "month": "2023-12",
+          "value": 8289,
+          "flag": ""
+        },
+        {
+          "month": "2024-01",
+          "value": 8061,
+          "flag": ""
+        },
+        {
+          "month": "2024-02",
+          "value": 8126,
+          "flag": ""
+        },
+        {
+          "month": "2024-03",
+          "value": 8528,
+          "flag": ""
+        },
+        {
+          "month": "2024-04",
+          "value": 8508,
+          "flag": ""
+        },
+        {
+          "month": "2024-05",
+          "value": 8911,
+          "flag": ""
+        },
+        {
+          "month": "2024-06",
+          "value": 9361,
+          "flag": ""
+        },
+        {
+          "month": "2024-07",
+          "value": 9541,
+          "flag": ""
+        },
+        {
+          "month": "2024-08",
+          "value": 9683,
+          "flag": ""
+        },
+        {
+          "month": "2024-09",
+          "value": 9604,
+          "flag": ""
+        },
+        {
+          "month": "2024-10",
+          "value": 9489,
+          "flag": ""
+        },
+        {
+          "month": "2024-11",
+          "value": 9321,
+          "flag": ""
+        },
+        {
+          "month": "2024-12",
+          "value": 9295,
+          "flag": ""
+        },
+        {
+          "month": "2025-01",
+          "value": 9239,
+          "flag": ""
+        },
+        {
+          "month": "2025-02",
+          "value": 9152,
+          "flag": ""
+        },
+        {
+          "month": "2025-03",
+          "value": 9676,
+          "flag": ""
+        },
+        {
+          "month": "2025-04",
+          "value": 10501,
+          "flag": ""
+        },
+        {
+          "month": "2025-05",
+          "value": 10146,
+          "flag": ""
+        },
+        {
+          "month": "2025-06",
+          "value": 10139,
+          "flag": ""
+        },
+        {
+          "month": "2025-07",
+          "value": 10350,
+          "flag": ""
+        },
+        {
+          "month": "2025-08",
+          "value": 10687,
+          "flag": ""
+        },
+        {
+          "month": "2025-09",
+          "value": 10671,
+          "flag": ""
+        },
+        {
+          "month": "2025-10",
+          "value": 10851,
+          "flag": ""
+        },
+        {
+          "month": "2025-11",
+          "value": 10149,
+          "flag": ""
+        },
+        {
+          "month": "2025-12",
+          "value": 9921,
+          "flag": ""
+        },
+        {
+          "month": "2026-01",
+          "value": 9506,
+          "flag": ""
+        },
+        {
+          "month": "2026-02",
+          "value": 9485,
+          "flag": ""
+        },
+        {
+          "month": "2026-03",
+          "value": 10092,
+          "flag": ""
+        },
+        {
+          "month": "2026-04",
+          "value": 10710,
+          "flag": ""
+        },
+        {
+          "month": "2026-05",
+          "value": 11192,
+          "flag": ""
+        },
+        {
+          "month": "2026-06",
+          "value": 11904,
+          "flag": "r"
+        },
+        {
+          "month": "2026-07",
+          "value": 12593,
+          "flag": "r"
+        },
+        {
+          "month": "2026-08",
+          "value": 13372,
+          "flag": "p"
+        }
+      ],
+      "frequency": "monthly",
+      "priceBasis": "nominal",
+      "vintage": "as revised through 2026-10-01",
+      "vintageNote": "The historical workbook is the revised series in this release. Months marked r were revised. A month marked p is preliminary. This is not as first published.",
+      "evidence": "FACT",
+      "valueTag": "MEASUREMENT"
+    }
+  ]
+}

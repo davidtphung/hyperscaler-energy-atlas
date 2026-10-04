@@ -1,6 +1,7 @@
 import type { FilterState, FacetCounts } from "../lib/select";
 import { FIRM_KIND_ORDER, stateFacets } from "../lib/select";
 import type { Ranked } from "../lib/search";
+import type { CatalogHit } from "../lib/signalSearch";
 import type { CountsFlag, NumberKind, TechType, Status, Category, Era, ActorKind, PreparedCommitment } from "../types";
 import { TECH, TECH_ORDER, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
 import { ERA, ERA_ORDER } from "../lib/era";
@@ -27,8 +28,10 @@ interface Props {
   onClear: () => void;
   onClose: () => void;
   ranked: Ranked<PreparedCommitment>[];
+  extras: Ranked<CatalogHit>[];
   rows: PreparedCommitment[];
   onSelect: (id: string) => void;
+  onOpenExtra: (hit: CatalogHit) => void;
   askQuestion: string;
   onAskQuestion: (q: string) => void;
   onAskHighlight: (ids: string[]) => void;
@@ -78,8 +81,10 @@ export default function FilterRail({
   onClear,
   onClose,
   ranked,
+  extras,
   rows,
   onSelect,
+  onOpenExtra,
   askQuestion,
   onAskQuestion,
   onAskHighlight,
@@ -105,7 +110,9 @@ export default function FilterRail({
         query={query}
         onQuery={onQuery}
         results={ranked}
+        extras={extras}
         onSelect={onSelect}
+        onOpenExtra={onOpenExtra}
       />
 
       <AskAtlas

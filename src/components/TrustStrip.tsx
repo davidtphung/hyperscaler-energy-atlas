@@ -30,6 +30,9 @@ export default function TrustStrip({ dataThrough, rowCount, countedCount, onOpen
         <a className="trust-strip__link" href="data.json" download>
           Download JSON
         </a>
+        <a className="trust-strip__link" href="signals.json" download>
+          Download signals JSON
+        </a>
         <a className="trust-strip__link" href="data.csv" download>
           Download CSV
         </a>

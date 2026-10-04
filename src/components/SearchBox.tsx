@@ -9,6 +9,7 @@ import {
   withoutChip,
   type Ranked,
 } from "../lib/search";
+import type { CatalogHit } from "../lib/signalSearch";
 import { STATUS } from "../lib/theme";
 
 interface Props {
@@ -18,10 +19,12 @@ interface Props {
   onQuery: (q: string) => void;
   results: Ranked<PreparedCommitment>[];
   onSelect: (id: string) => void;
+  extras?: Ranked<CatalogHit>[];
+  onOpenExtra?: (hit: CatalogHit) => void;
   variant: "bar" | "rail";
 }
 
-export default function SearchBox({ label, placeholder, query, onQuery, results, onSelect, variant }: Props) {
+export default function SearchBox({ label, placeholder, query, onQuery, results, onSelect, extras = [], onOpenExtra, variant }: Props) {
   const listId = useId();
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -30,7 +33,9 @@ export default function SearchBox({ label, placeholder, query, onQuery, results,
   const terms = queryTerms(query);
   const count = results.length;
   const shown = results.slice(0, 30);
-  const activeIndex = shown.length === 0 ? -1 : Math.min(active, shown.length - 1);
+  const extraShown = extras.slice(0, 8);
+  const flatCount = extraShown.length + shown.length;
+  const activeIndex = flatCount === 0 ? -1 : Math.min(active, flatCount - 1);
   const activeId = activeIndex >= 0 ? `${listId}-opt-${activeIndex}` : undefined;
 
   useEffect(() => {
@@ -40,12 +45,12 @@ export default function SearchBox({ label, placeholder, query, onQuery, results,
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      if (shown.length === 0) return;
-      setActive((i) => (i + 1) % shown.length);
+      if (flatCount === 0) return;
+      setActive((i) => (i + 1) % flatCount);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      if (shown.length === 0) return;
-      setActive((i) => (i - 1 + shown.length) % shown.length);
+      if (flatCount === 0) return;
+      setActive((i) => (i - 1 + flatCount) % flatCount);
     } else if (e.key === "Home") {
       if (!open) return;
       e.preventDefault();
@@ -53,11 +58,17 @@ export default function SearchBox({ label, placeholder, query, onQuery, results,
     } else if (e.key === "End") {
       if (!open) return;
       e.preventDefault();
-      setActive(Math.max(0, shown.length - 1));
+      setActive(Math.max(0, flatCount - 1));
     } else if (e.key === "Enter") {
-      const hit = shown[activeIndex];
-      if (!hit) return;
+      if (activeIndex < 0) return;
       e.preventDefault();
+      if (activeIndex < extraShown.length) {
+        const extra = extraShown[activeIndex];
+        if (extra) onOpenExtra?.(extra.row);
+        return;
+      }
+      const hit = shown[activeIndex - extraShown.length];
+      if (!hit) return;
       onSelect(hit.row.id);
     } else if (e.key === "Escape") {
       if (!query) return;
@@ -119,30 +130,71 @@ export default function SearchBox({ label, placeholder, query, onQuery, results,
         <div className={`search-results${variant === "bar" ? " search-results--pop" : ""}`} id={listId}>
           <div className="search-results__bar" aria-live="polite">
             <span>
-              {count} ranked {count === 1 ? "match" : "matches"}
+              {extraShown.length > 0 ? `${extraShown.length} signals and sources. ` : ""}
+              {count} ranked {count === 1 ? "row" : "rows"}
             </span>
             <button type="button" onClick={() => onQuery("")}>
               Clear
             </button>
           </div>
-          {shown.length === 0 ? (
+          {flatCount === 0 ? (
             <p className="search-empty" role="status">
               No rows match. Try a name, a source, or a chip such as kind:on_site state:OH counted:yes.
             </p>
           ) : (
             <ul className="search-results__list" role="listbox" aria-label={label}>
+              {extraShown.length > 0 && (
+                <li role="presentation">
+                  <div className="search-group" role="group" aria-label="Signals and sources">
+                    <p className="search-group__label">Signals and sources</p>
+                    <ul className="search-results__list">
+                      {extraShown.map((hit, index) => (
+                        <li key={hit.row.id} role="presentation">
+                          <button
+                            type="button"
+                            id={`${listId}-opt-${index}`}
+                            role="option"
+                            aria-selected={index === activeIndex}
+                            className={`search-hit${index === activeIndex ? " search-hit--active" : ""}`}
+                            onMouseEnter={() => setActive(index)}
+                            onClick={() => onOpenExtra?.(hit.row)}
+                          >
+                            <span className="search-hit__buyer">
+                              <Mark text={hit.row.evidence} terms={terms} />
+                            </span>
+                            <span className="search-hit__project">
+                              <Mark text={hit.row.title} terms={terms} />
+                            </span>
+                            <span className="search-hit__meta">
+                              {hit.row.group === "source" ? "Source" : "Signal"}
+                              {" · "}
+                              not a map row
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              )}
+              {shown.length > 0 && (
+                <li role="presentation">
+                  <p className="search-group__label">Rows</p>
+                </li>
+              )}
               {shown.map((hit, index) => {
+                const optionIndex = extraShown.length + index;
                 const kind = formatNumberKindShort(hit.row.numberKind);
                 const why = matchSnippet(hit.row, terms, hit.matchedFields);
                 return (
                   <li key={hit.row.id} role="presentation">
                     <button
                       type="button"
-                      id={`${listId}-opt-${index}`}
+                      id={`${listId}-opt-${optionIndex}`}
                       role="option"
-                      aria-selected={index === activeIndex}
-                      className={`search-hit${index === activeIndex ? " search-hit--active" : ""}`}
-                      onMouseEnter={() => setActive(index)}
+                      aria-selected={optionIndex === activeIndex}
+                      className={`search-hit${optionIndex === activeIndex ? " search-hit--active" : ""}`}
+                      onMouseEnter={() => setActive(optionIndex)}
                       onClick={() => onSelect(hit.row.id)}
                     >
                       <span className="search-hit__buyer">

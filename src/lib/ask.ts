@@ -245,6 +245,18 @@ function kindOrder(kind: NumberKind): number {
  */
 export function ask(question: string, rows: readonly Commitment[]): AskResult {
   const footer = ASK_FOOTER;
+  const folded = norm(question);
+  const dollarTalk = /\bdollar|\bbillion|\bspending\b/.test(folded);
+  const powerTalk = /\bmegawatt|\bmw\b|\bgw\b/.test(folded);
+  if (folded.includes("construction spending") || (dollarTalk && powerTalk)) {
+    return {
+      ok: true,
+      lead: "Construction spending on the Signals tab is in dollars. Those dollars are not megawatts, and this answer does not convert them.",
+      separation: null,
+      groups: [],
+      footer,
+    };
+  }
   const parsed = parse(question, rows);
   if (!parsed) {
     return {

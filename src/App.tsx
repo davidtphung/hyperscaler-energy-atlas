@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } fro
 import { COMMITMENTS } from "./data/commitments";
 import { prepare, domainOf, applyFacets, facetCounts, emptyFilters } from "./lib/select";
 import { rankRows } from "./lib/search";
+import { rankCatalog, type CatalogHit } from "./lib/signalSearch";
 import type { FilterState } from "./lib/select";
 import type { CountsFlag, NumberKind, TechType, Status, Category, Era } from "./types";
 import { formatBoundPower } from "./lib/format";
@@ -24,6 +25,7 @@ const PolicyView = lazy(() => import("./components/PolicyView"));
 const ForecastView = lazy(() => import("./components/ForecastView"));
 const EconomicsView = lazy(() => import("./components/EconomicsView"));
 const HistoryView = lazy(() => import("./components/HistoryView"));
+const SignalsView = lazy(() => import("./components/SignalsView"));
 
 // Average month in ms. Playback speed is expressed as simulated months per real
 // second, so "6mo/s" advances the scrubber six months for every wall-clock
@@ -64,6 +66,7 @@ export default function App() {
   const [onsiteOnly, setOnsiteOnly] = useState(false);
   const [askHighlightIds, setAskHighlightIds] = useState<Set<string>>(new Set());
   const [ledgerFocusId, setLedgerFocusId] = useState<string | null>(null);
+  const [signalAnchor, setSignalAnchor] = useState<string | null>(null);
 
   const isCompact = useMediaQuery("(max-width: 1180px)");
   const phoneLayout = useMediaQuery(PHONE_LAYOUT_QUERY);
@@ -182,6 +185,7 @@ export default function App() {
     const base = applyFacets(prepared, { ...filters, query: "" });
     return rankRows(q, base).filter((hit) => hit.score > 0);
   }, [prepared, filters]);
+  const catalogMatches = useMemo(() => rankCatalog(filters.query), [filters.query]);
   const highlightIds = useMemo(() => {
     const ids = new Set<string>();
     if (onsiteOpen || onsiteOnly) {
@@ -323,6 +327,15 @@ export default function App() {
   const onPageChange = useCallback((p: Page) => {
     setPage(p);
     if (p !== "about") setAnchor(null);
+    if (p !== "signals") setSignalAnchor(null);
+    setRailOpen(false);
+    setDetailOpen(false);
+  }, []);
+
+  const onOpenExtra = useCallback((hit: CatalogHit) => {
+    setPage("signals");
+    setAnchor(null);
+    setSignalAnchor(hit.anchor);
     setRailOpen(false);
     setDetailOpen(false);
   }, []);
@@ -379,7 +392,9 @@ export default function App() {
           query={filters.query}
           onQuery={(q) => setFilters((f) => ({ ...f, query: q }))}
           ranked={rankedMatches}
+          extras={catalogMatches}
           onSelect={onSelect}
+          onOpenExtra={onOpenExtra}
           onToggleRail={() => {
             setRailOpen((v) => !v);
             setDetailOpen(false);
@@ -418,8 +433,10 @@ export default function App() {
               onClear={clearFilters}
               onClose={() => setRailOpen(false)}
               ranked={rankedMatches}
+              extras={catalogMatches}
               rows={prepared}
               onSelect={onSelect}
+              onOpenExtra={onOpenExtra}
               askQuestion={askQuestion}
               onAskQuestion={setAskQuestion}
               onAskHighlight={onAskHighlight}
@@ -495,6 +512,7 @@ export default function App() {
                   <ForecastView />
                 </>
               )}
+              {page === "signals" && <SignalsView anchor={signalAnchor} />}
               {page === "about" && (
                 <>
                   <AboutView total={prepared.length} />
