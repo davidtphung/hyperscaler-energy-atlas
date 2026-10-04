@@ -137,6 +137,13 @@ export interface Commitment {
   energizedMW?: number | null;
   /** Days from announcement to COD. null/omitted when not sourced. Do not invent. */
   daysToCod?: number | null;
+  /**
+   * IT load or facility power, only when a row records it.
+   * Omitted means the basis was not recorded. Do not infer it from the kind.
+   */
+  mwBasis?: "it_load" | "facility_power";
+  /** Date the cited link was checked, YYYY-MM-DD. Omitted when not recorded. Do not invent. */
+  checkedOn?: string;
 }
 
 // ---- Global data center directory ----

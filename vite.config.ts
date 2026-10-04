@@ -6,6 +6,9 @@ import react from "@vitejs/plugin-react";
 // a custom domain root, or local preview, with no per-host configuration.
 export default defineConfig({
   base: "./",
+  define: {
+    __ATLAS_BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+  },
   plugins: [react()],
   build: {
     target: "es2020",

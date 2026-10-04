@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type FocusEvent as ReactFocusEvent, type KeyboardEvent as ReactKeyboardEvent } from "react";
+import type { PreparedCommitment } from "../types";
+import type { Ranked } from "../lib/search";
+import SearchBox from "./SearchBox";
 
 export type Page = "atlas" | "datacenters" | "economics" | "history" | "contested" | "policy" | "portfolio" | "about";
 
@@ -7,6 +10,8 @@ interface Props {
   onPageChange: (p: Page) => void;
   query: string;
   onQuery: (q: string) => void;
+  ranked: Ranked<PreparedCommitment>[];
+  onSelect: (id: string) => void;
   onToggleRail: () => void;
   onToggleDetail: () => void;
 }
@@ -18,7 +23,7 @@ const STORY_PAGES: { id: Page; label: string }[] = [
   { id: "policy", label: "Policy" },
 ];
 
-export default function TopBar({ page, onPageChange, query, onQuery, onToggleRail, onToggleDetail }: Props) {
+export default function TopBar({ page, onPageChange, query, onQuery, ranked, onSelect, onToggleRail, onToggleDetail }: Props) {
   const onAtlas = page === "atlas";
   const storyCurrent = STORY_PAGES.find((p) => p.id === page) ?? null;
   const [storyOpen, setStoryOpen] = useState(false);
@@ -230,29 +235,15 @@ export default function TopBar({ page, onPageChange, query, onQuery, onToggleRai
       <div className="topbar__spacer" />
 
       {onAtlas && (
-        <div className="search" role="search">
-          <span className="search__icon" aria-hidden="true">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.5" y2="16.5" />
-            </svg>
-          </span>
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => onQuery(e.target.value)}
-            placeholder="Search projects, actors, places"
-            aria-label="Search commitments"
-          />
-          {query && (
-            <button className="search__clear" onClick={() => onQuery("")} aria-label="Clear search" type="button">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                <line x1="6" y1="6" x2="18" y2="18" />
-                <line x1="18" y1="6" x2="6" y2="18" />
-              </svg>
-            </button>
-          )}
-        </div>
+        <SearchBox
+          variant="bar"
+          label="Search atlas rows"
+          placeholder="Search rows, or kind:on_site state:OH"
+          query={query}
+          onQuery={onQuery}
+          results={ranked}
+          onSelect={onSelect}
+        />
       )}
 
       {onAtlas && (

@@ -1,17 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Commitment } from "../types";
 import { ASK_EXAMPLES, ask, type AskResult } from "../lib/ask";
 
 interface Props {
   rows: readonly Commitment[];
+  question: string;
+  onQuestion: (q: string) => void;
   onSelect: (id: string) => void;
   onHighlight: (ids: string[]) => void;
 }
 
-export default function AskAtlas({ rows, onSelect, onHighlight }: Props) {
-  const [open, setOpen] = useState(false);
-  const [draft, setDraft] = useState("");
-  const [result, setResult] = useState<AskResult | null>(null);
+export default function AskAtlas({ rows, question, onQuestion, onSelect, onHighlight }: Props) {
+  const [open, setOpen] = useState(question.trim().length > 0);
+  const [draft, setDraft] = useState(question);
+  const [result, setResult] = useState<AskResult | null>(() => (question.trim() ? ask(question, rows) : null));
 
   const ids = result && result.ok ? result.groups.flatMap((g) => g.hits.map((h) => h.id)) : [];
   const idsKey = ids.join("|");
@@ -20,13 +22,28 @@ export default function AskAtlas({ rows, onSelect, onHighlight }: Props) {
     onHighlight(idsKey ? idsKey.split("|") : []);
   }, [idsKey, onHighlight]);
 
-  const run = (question: string) => {
-    const q = question.trim();
+  const seenQuestion = useRef(question);
+  useEffect(() => {
+    if (question === seenQuestion.current) return;
+    seenQuestion.current = question;
+    setDraft(question);
+    if (!question.trim()) {
+      setResult(null);
+      return;
+    }
+    setOpen(true);
+    setResult(ask(question, rows));
+  }, [question, rows]);
+
+  const run = (next: string) => {
+    const q = next.trim();
     setDraft(q);
+    onQuestion(q);
     if (!q) {
       setResult(null);
       return;
     }
+    setOpen(true);
     setResult(ask(q, rows));
   };
 
@@ -43,7 +60,10 @@ export default function AskAtlas({ rows, onSelect, onHighlight }: Props) {
       </button>
       {open && (
         <div id="ask-atlas-panel" className="ask__panel">
-          <p className="ask__note">Questions stay in this browser. They use the rows already loaded.</p>
+          <p className="ask__note">
+            Questions stay in this browser. They use the rows already loaded. This is not a language model.
+            The examples below are the questions it can answer.
+          </p>
           <div className="ask__form">
             <input
               value={draft}

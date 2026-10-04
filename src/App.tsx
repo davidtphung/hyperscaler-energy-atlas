@@ -1,36 +1,38 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { COMMITMENTS } from "./data/commitments";
-import { prepare, domainOf, applyFacets, facetCounts } from "./lib/select";
+import { prepare, domainOf, applyFacets, facetCounts, emptyFilters } from "./lib/select";
 import { rankRows } from "./lib/search";
 import type { FilterState } from "./lib/select";
-import type { TechType, Status, Category, Era } from "./types";
+import type { CountsFlag, NumberKind, TechType, Status, Category, Era } from "./types";
 import { formatBoundPower } from "./lib/format";
 import { PHONE_LAYOUT_QUERY, useMediaQuery, useReducedMotion } from "./lib/hooks";
+import { readUrl, writeUrl } from "./lib/url";
 import TopBar, { type Page } from "./components/TopBar";
 import FilterRail from "./components/FilterRail";
 import MapCanvas, { type MapView } from "./components/MapCanvas";
 import Timeline from "./components/Timeline";
 import DetailPanel from "./components/DetailPanel";
-import PortfolioView from "./components/PortfolioView";
-import SourcesView from "./components/SourcesView";
-import AboutView from "./components/AboutView";
-import DataCentersView from "./components/DataCentersView";
-import ContestedView from "./components/ContestedView";
-import PolicyView from "./components/PolicyView";
-import ForecastView from "./components/ForecastView";
-import EconomicsView from "./components/EconomicsView";
-import HistoryView from "./components/HistoryView";
+import TrustStrip from "./components/TrustStrip";
+import KindStrip from "./components/KindStrip";
+
+const PortfolioView = lazy(() => import("./components/PortfolioView"));
+const SourcesView = lazy(() => import("./components/SourcesView"));
+const AboutView = lazy(() => import("./components/AboutView"));
+const DataCentersView = lazy(() => import("./components/DataCentersView"));
+const ContestedView = lazy(() => import("./components/ContestedView"));
+const PolicyView = lazy(() => import("./components/PolicyView"));
+const ForecastView = lazy(() => import("./components/ForecastView"));
+const EconomicsView = lazy(() => import("./components/EconomicsView"));
+const HistoryView = lazy(() => import("./components/HistoryView"));
 
 // Average month in ms. Playback speed is expressed as simulated months per real
 // second, so "6mo/s" advances the scrubber six months for every wall-clock
 // second, mirroring the speed-mode pill on a live tracker.
 const MONTH_MS = 2.6298e9;
 
-function donateRequested(): boolean {
-  if (typeof window === "undefined") return false;
-  const hash = window.location.hash.replace(/^#/, "").toLowerCase();
-  if (hash === "donate") return true;
-  return new URLSearchParams(window.location.search).get("tab")?.toLowerCase() === "donate";
+function currentUrl() {
+  if (typeof window === "undefined") return readUrl("https://hypergrid.davidtphung.com/");
+  return readUrl(window.location.href);
 }
 
 function toggle<T>(set: Set<T>, value: T): Set<T> {
@@ -43,18 +45,14 @@ export default function App() {
   const prepared = useMemo(() => prepare(COMMITMENTS), []);
   const domain = useMemo(() => domainOf(prepared), [prepared]);
 
-  const [filters, setFilters] = useState<FilterState>({
-    buyers: new Set(),
-    techs: new Set(),
-    statuses: new Set(),
-    categories: new Set(),
-    eras: new Set(),
-    query: "",
-  });
-  const [page, setPage] = useState<Page>(() => (donateRequested() ? "about" : "atlas"));
-  const [scrollDonate, setScrollDonate] = useState(donateRequested);
+  const [filters, setFilters] = useState<FilterState>(() => currentUrl().filters);
+  const [page, setPage] = useState<Page>(() => (currentUrl().anchor ? "about" : "atlas"));
+  const [anchor, setAnchor] = useState<"donate" | "what-counts" | null>(() => currentUrl().anchor);
+  const [scrollDonate, setScrollDonate] = useState(() => currentUrl().anchor === "donate");
+  const [scrollRule, setScrollRule] = useState(() => currentUrl().anchor === "what-counts");
+  const [askQuestion, setAskQuestion] = useState(() => currentUrl().ask ?? "");
   const [view, setView] = useState<MapView>("us");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(() => currentUrl().row);
   const [scrubT, setScrubT] = useState(domain.maxT);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(6); // simulated months per real second
@@ -82,29 +80,77 @@ export default function App() {
     setScrubT(domain.maxT);
   }, [timelineCollapsed, domain.maxT]);
 
-  // Old Donate links (#donate or ?tab=donate) open About and land on that section.
+  // Shared links (#donate, #what-counts, ?row=, filters, ask) reopen the same view.
   useEffect(() => {
-    const openDonate = () => {
-      if (!donateRequested()) return;
-      setPage("about");
-      setScrollDonate(true);
+    const apply = () => {
+      const url = readUrl(window.location.href);
+      setFilters(url.filters);
+      setSelectedId(url.row);
+      setAskQuestion(url.ask ?? "");
+      setAnchor(url.anchor);
+      if (url.anchor) {
+        setPage("about");
+        setScrollDonate(url.anchor === "donate");
+        setScrollRule(url.anchor === "what-counts");
+      }
+      if (url.row) setDetailOpen(true);
     };
-    window.addEventListener("hashchange", openDonate);
-    window.addEventListener("popstate", openDonate);
+    window.addEventListener("hashchange", apply);
+    window.addEventListener("popstate", apply);
     return () => {
-      window.removeEventListener("hashchange", openDonate);
-      window.removeEventListener("popstate", openDonate);
+      window.removeEventListener("hashchange", apply);
+      window.removeEventListener("popstate", apply);
     };
   }, []);
 
   useEffect(() => {
+    const next = writeUrl(
+      {
+        filters,
+        row: page === "atlas" ? selectedId : null,
+        ask: page === "atlas" && askQuestion.trim() ? askQuestion.trim() : null,
+        anchor: page === "about" ? anchor : null,
+      },
+      window.location,
+    );
+    const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (next !== current) history.replaceState(null, "", next);
+  }, [filters, selectedId, askQuestion, page, anchor]);
+
+  useEffect(() => {
     if (page !== "about" || !scrollDonate) return;
-    const el = document.getElementById("donate");
-    if (!el) return;
-    el.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
-    el.focus({ preventScroll: true });
-    setScrollDonate(false);
+    let tries = 0;
+    let timer = 0;
+    const tick = () => {
+      const el = document.getElementById("donate");
+      if (el) {
+        el.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+        el.focus({ preventScroll: true });
+        setScrollDonate(false);
+        return;
+      }
+      if (tries++ < 20) timer = window.setTimeout(tick, 50);
+    };
+    tick();
+    return () => window.clearTimeout(timer);
   }, [page, scrollDonate, reducedMotion]);
+
+  useEffect(() => {
+    if (page !== "about" || !scrollRule) return;
+    let tries = 0;
+    let timer = 0;
+    const tick = () => {
+      const el = document.getElementById("what-counts");
+      if (el) {
+        el.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+        setScrollRule(false);
+        return;
+      }
+      if (tries++ < 20) timer = window.setTimeout(tick, 50);
+    };
+    tick();
+    return () => window.clearTimeout(timer);
+  }, [page, scrollRule, reducedMotion]);
 
   // Boot reveal.
   useEffect(() => {
@@ -247,10 +293,23 @@ export default function App() {
     [isCompact, prepared]
   );
 
-  const clearFilters = useCallback(
-    () => setFilters({ buyers: new Set(), techs: new Set(), statuses: new Set(), categories: new Set(), eras: new Set(), query: "" }),
-    []
-  );
+  const clearFilters = useCallback(() => setFilters(emptyFilters()), []);
+
+  const dataThrough = useMemo(() => {
+    let best = "";
+    for (const row of prepared) {
+      if (row.date > best) best = row.date;
+    }
+    return best;
+  }, [prepared]);
+  const countedCount = useMemo(() => prepared.filter((row) => row.counts === "yes").length, [prepared]);
+
+  const openedFromUrl = useRef(false);
+  useEffect(() => {
+    if (openedFromUrl.current || !selectedId || !isCompact) return;
+    openedFromUrl.current = true;
+    setDetailOpen(true);
+  }, [selectedId, isCompact]);
 
   const onAskHighlight = useCallback((ids: string[]) => {
     setAskHighlightIds(new Set(ids));
@@ -263,6 +322,15 @@ export default function App() {
 
   const onPageChange = useCallback((p: Page) => {
     setPage(p);
+    if (p !== "about") setAnchor(null);
+    setRailOpen(false);
+    setDetailOpen(false);
+  }, []);
+
+  const onOpenRule = useCallback(() => {
+    setPage("about");
+    setAnchor("what-counts");
+    setScrollRule(true);
     setRailOpen(false);
     setDetailOpen(false);
   }, []);
@@ -297,8 +365,11 @@ export default function App() {
 
   return (
     <>
-      <a className="skip-link" href="#map">
+      <a className="skip-link" href="#map-marker">
         Skip to map
+      </a>
+      <a className="skip-link skip-link--next" href="#ledger">
+        Skip to ledger
       </a>
 
       <div className={`app${page === "atlas" && timelineCollapsed ? " app--tl-collapsed" : ""}`}>
@@ -307,6 +378,8 @@ export default function App() {
           onPageChange={onPageChange}
           query={filters.query}
           onQuery={(q) => setFilters((f) => ({ ...f, query: q }))}
+          ranked={rankedMatches}
+          onSelect={onSelect}
           onToggleRail={() => {
             setRailOpen((v) => !v);
             setDetailOpen(false);
@@ -316,6 +389,14 @@ export default function App() {
             setRailOpen(false);
           }}
         />
+
+        <TrustStrip
+          dataThrough={dataThrough}
+          rowCount={prepared.length}
+          countedCount={countedCount}
+          onOpenRule={onOpenRule}
+        />
+        {page === "atlas" && <KindStrip rows={prepared} />}
 
         {page === "atlas" ? (
           <>
@@ -331,11 +412,16 @@ export default function App() {
               onToggleStatus={(v: Status) => setFilters((f) => ({ ...f, statuses: toggle(f.statuses, v) }))}
               onToggleCategory={(v: Category) => setFilters((f) => ({ ...f, categories: toggle(f.categories, v) }))}
               onToggleEra={(v: Era) => setFilters((f) => ({ ...f, eras: toggle(f.eras, v) }))}
+              onToggleKind={(v: NumberKind) => setFilters((f) => ({ ...f, kinds: toggle(f.kinds, v) }))}
+              onToggleCounted={(v: CountsFlag) => setFilters((f) => ({ ...f, counted: toggle(f.counted, v) }))}
+              onToggleState={(v: string) => setFilters((f) => ({ ...f, states: toggle(f.states, v) }))}
               onClear={clearFilters}
               onClose={() => setRailOpen(false)}
               ranked={rankedMatches}
               rows={prepared}
               onSelect={onSelect}
+              askQuestion={askQuestion}
+              onAskQuestion={setAskQuestion}
               onAskHighlight={onAskHighlight}
             />
 
@@ -396,25 +482,27 @@ export default function App() {
             />
           </>
         ) : (
-          <div className="page-wrap" key={page}>
-            {page === "datacenters" && <DataCentersView />}
-            {page === "economics" && <EconomicsView />}
-            {page === "history" && <HistoryView />}
-            {page === "contested" && <ContestedView />}
-            {page === "policy" && <PolicyView />}
-            {page === "portfolio" && (
-              <>
-                <PortfolioView commitments={facetFiltered} />
-                <ForecastView />
-              </>
-            )}
-            {page === "about" && (
-              <>
-                <AboutView total={prepared.length} />
-                <SourcesView commitments={facetFiltered} />
-              </>
-            )}
-          </div>
+          <Suspense fallback={<div className="page-wrap" role="status">Loading.</div>}>
+            <div className="page-wrap" key={page}>
+              {page === "datacenters" && <DataCentersView />}
+              {page === "economics" && <EconomicsView />}
+              {page === "history" && <HistoryView />}
+              {page === "contested" && <ContestedView />}
+              {page === "policy" && <PolicyView />}
+              {page === "portfolio" && (
+                <>
+                  <PortfolioView commitments={facetFiltered} />
+                  <ForecastView />
+                </>
+              )}
+              {page === "about" && (
+                <>
+                  <AboutView total={prepared.length} />
+                  <SourcesView commitments={facetFiltered} />
+                </>
+              )}
+            </div>
+          </Suspense>
         )}
       </div>
 
