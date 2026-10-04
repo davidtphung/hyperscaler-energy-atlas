@@ -1,7 +1,7 @@
 import type { Commitment, CountsFlag, PreparedCommitment, TechType, Status, Category, Era, NumberKind } from "../types";
 import { formatExactMW, parseDate } from "./format.ts";
 import { classifyEra } from "./era.ts";
-import { resolveActorKind } from "./actors.ts";
+import { listsAsActor, resolveActorKind } from "./actors.ts";
 import { chipsMatch, parseSearchQuery, rankRows, stateKey } from "./search.ts";
 
 export interface FilterState {
@@ -73,7 +73,7 @@ export function domainOf(prepared: PreparedCommitment[]): Domain {
       maxT = Math.max(maxT, c.t);
     }
     totalMW += mwForAggregate(c);
-    buyers.set(c.buyer, (buyers.get(c.buyer) ?? 0) + 1);
+    if (listsAsActor(c.buyer)) buyers.set(c.buyer, (buyers.get(c.buyer) ?? 0) + 1);
   }
   const ordered = [...buyers.entries()].sort((a, b) => b[1] - a[1]).map(([b]) => b);
   return { minT, maxT, buyers: ordered, totalMW };
