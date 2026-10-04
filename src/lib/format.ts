@@ -80,6 +80,12 @@ export function rowFigureLabel(row: { numberKind?: NumberKind; excludeReason?: s
   return formatNumberKind(row.numberKind);
 }
 
+/** Kind line for one row. A plant with no named buyer prints plant capacity. */
+export function rowKindLabel(row: { numberKind?: NumberKind; excludeReason?: string }): string | null {
+  if (row.excludeReason === "plant_capacity_no_buyer") return "Plant capacity (not counted)";
+  return formatNumberKind(row.numberKind);
+}
+
 export function rowFigureNote(row: { numberKind?: NumberKind; excludeReason?: string }): string | null {
   if (row.excludeReason === "plant_capacity_no_buyer") {
     return "Plant capacity, no buyer named in the source. This capacity is not counted.";

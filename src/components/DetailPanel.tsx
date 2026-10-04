@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import type { PreparedCommitment } from "../types";
 import { TECH, STATUS, CATEGORY, techColor, buyerAccent } from "../lib/theme";
-import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatPower, formatSourcedDate, rowFigureLabel, rowFigureNote } from "../lib/format";
+import { formatBoundPower, formatExactMW, formatFullDate, formatLocation, formatNumberKind, formatPower, formatSourcedDate, rowFigureLabel, rowFigureNote, rowKindLabel } from "../lib/format";
 import { listsAsActor } from "../lib/actors";
 import { announcedCount, firmKindTotals, kindHeroNote } from "../lib/select";
 import { emptyPrimaryMwIds, evidenceFor } from "../lib/evidence";
@@ -452,7 +452,7 @@ function DetailCard({ c, onClose }: { c: PreparedCommitment; onClose: () => void
           {c.numberKind && (
             <div className="kv__row">
               <span className="kv__k">Number kind</span>
-              <span className="kv__v">{formatNumberKind(c.numberKind)}</span>
+              <span className="kv__v">{rowKindLabel(c)}</span>
             </div>
           )}
           {"energizedMW" in c && (
