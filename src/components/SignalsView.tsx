@@ -103,7 +103,7 @@ export default function SignalsView({ anchor }: Props) {
             label="Data center year over year"
             value={formatPercent(yoy.ratio)}
             basis={dcBasis}
-            formula={`(${formatMillions(yoy.latest.value)} - ${formatMillions(yoy.prior.value)}) / ${formatMillions(yoy.prior.value)} = ${formatPercent(yoy.ratio)}. ${FORMULAS.yoy}.`}
+            formula={`(${formatMillions(yoy.latest.value)} minus ${formatMillions(yoy.prior.value)}) / ${formatMillions(yoy.prior.value)} = ${formatPercent(yoy.ratio)}. ${FORMULAS.yoy}.`}
           />
         )}
         <Stat
@@ -112,7 +112,7 @@ export default function SignalsView({ anchor }: Props) {
           label="Data center minus general office"
           value={formatBillions(gap)}
           basis={`${dcBasis} Compared with ${genBasis}`}
-          formula={`${formatMillions(end.value)} - ${formatMillions(genEnd.value)} = ${formatBillions(gap)}. ${FORMULAS.gap}`}
+          formula={`${formatMillions(end.value)} minus ${formatMillions(genEnd.value)} = ${formatBillions(gap)}. ${FORMULAS.gap}`}
         />
         {since && (
           <Stat
@@ -121,7 +121,7 @@ export default function SignalsView({ anchor }: Props) {
             label="Change since Jan 2021"
             value={formatSignedBillions(since.change)}
             basis={dcBasis}
-            formula={`${formatMillions(since.latest.value)} - ${formatMillions(since.prior.value)} = ${formatSignedBillions(since.change)}. ${FORMULAS.since}.`}
+            formula={`${formatMillions(since.latest.value)} minus ${formatMillions(since.prior.value)} = ${formatSignedBillions(since.change)}. ${FORMULAS.since}.`}
           />
         )}
         {since && (
@@ -131,7 +131,7 @@ export default function SignalsView({ anchor }: Props) {
             label="Percent since Jan 2021"
             value={formatPercent(since.ratio)}
             basis={dcBasis}
-            formula={`(${formatMillions(since.latest.value)} - ${formatMillions(since.prior.value)}) / ${formatMillions(since.prior.value)} = ${formatPercent(since.ratio)}. ${FORMULAS.sincePct}.`}
+            formula={`(${formatMillions(since.latest.value)} minus ${formatMillions(since.prior.value)}) / ${formatMillions(since.prior.value)} = ${formatPercent(since.ratio)}. ${FORMULAS.sincePct}.`}
           />
         )}
       </section>
