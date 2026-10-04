@@ -4205,7 +4205,7 @@
       "parentId": "google-fervo-cape-station-ppa-396",
       "counts": "no",
       "bound": "exact",
-      "excludeReason": "duplicate",
+      "excludeReason": "plant_capacity_no_buyer",
       "energizedMW": "",
       "daysToCod": "",
       "checkedOn": "",

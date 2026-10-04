@@ -2570,7 +2570,7 @@ export const COMMITMENTS: Commitment[] = [
     "counts": "no",
     "bound": "exact",
     "parentId": "google-fervo-cape-station-ppa-396",
-    "excludeReason": "duplicate"
+    "excludeReason": "plant_capacity_no_buyer"
   },
   {
     "id": "xai-colossus-2-southaven-turbines",

@@ -23,6 +23,7 @@ const REASONS = new Set<ExcludeReason>([
   "mw_null",
   "unverified",
   "duplicate",
+  "plant_capacity_no_buyer",
   "conflict",
   "target_not_firm",
   "restart",

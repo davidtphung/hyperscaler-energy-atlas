@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 import type { PreparedCommitment } from "../types";
-import { formatBoundPower, formatNumberKindShort } from "../lib/format";
+import { formatBoundPower, formatNumberKindShort, rowFigureLabel } from "../lib/format";
 import {
   highlightParts,
   matchSnippet,
@@ -184,7 +184,7 @@ export default function SearchBox({ label, placeholder, query, onQuery, results,
               )}
               {shown.map((hit, index) => {
                 const optionIndex = extraShown.length + index;
-                const kind = formatNumberKindShort(hit.row.numberKind);
+                const kind = hit.row.excludeReason === "plant_capacity_no_buyer" ? rowFigureLabel(hit.row) : formatNumberKindShort(hit.row.numberKind);
                 const why = matchSnippet(hit.row, terms, hit.matchedFields);
                 return (
                   <li key={hit.row.id} role="presentation">

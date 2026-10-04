@@ -4,7 +4,7 @@ import type { GeoProjection } from "d3-geo";
 import type { PreparedCommitment } from "../types";
 import { techColor, TECH } from "../lib/theme";
 import { radiusForCapacity } from "../lib/scales";
-import { formatBoundPower, formatLocation, formatNumberKind } from "../lib/format";
+import { formatBoundPower, formatLocation, rowFigureLabel } from "../lib/format";
 import { useElementSize } from "../lib/hooks";
 import { IDENTITY_TRANSFORM, clampTransform, zoomAt, type MapTransform } from "../lib/mapZoom";
 import { usStates, usStateBorders, worldCountries, worldBorders } from "../lib/geo";
@@ -301,7 +301,7 @@ export default function MapCanvas({
                     id={m.c.id === activeRoving ? "map-marker" : undefined}
                     role="button"
                     tabIndex={m.c.id === activeRoving ? 0 : -1}
-                    aria-label={`${m.c.buyer}, ${m.c.project}. ${formatBoundPower(m.c.capacityMW, m.c.bound)} ${formatNumberKind(m.c.numberKind) ?? TECH[m.c.techType].label}. ${formatLocation(m.c.city, m.c.state, m.c.country)}${m.c.locationApprox ? ". Approximate pin, not an exact site." : "."}`}
+                    aria-label={`${m.c.buyer}, ${m.c.project}. ${formatBoundPower(m.c.capacityMW, m.c.bound)} ${rowFigureLabel(m.c) ?? TECH[m.c.techType].label}. ${formatLocation(m.c.city, m.c.state, m.c.country)}${m.c.locationApprox ? ". Approximate pin, not an exact site." : "."}`}
                     aria-pressed={isSel}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -367,7 +367,7 @@ export default function MapCanvas({
             <div className="tooltip__title">{hover.c.project}</div>
             <div className="tooltip__meta">
               <span className="tooltip__cap">{formatBoundPower(hover.c.capacityMW, hover.c.bound)}</span>
-              <span>{formatNumberKind(hover.c.numberKind) ?? TECH[hover.c.techType].short}</span>
+              <span>{rowFigureLabel(hover.c) ?? TECH[hover.c.techType].short}</span>
               <span>{formatLocation(hover.c.city, hover.c.state, hover.c.country)}{hover.c.locationApprox ? " · Approximate pin" : ""}</span>
             </div>
           </div>
