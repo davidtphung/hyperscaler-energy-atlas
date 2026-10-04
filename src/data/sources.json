@@ -6,22 +6,22 @@
     "url": "https://www.census.gov/construction/c30/historical_data.html",
     "cadence": "monthly",
     "unit": "millions of dollars, seasonally adjusted annual rate, and monthly not seasonally adjusted",
-    "measures": "Value of private data center construction put in place. A subcategory of Office.",
+    "measures": "Value of private data center construction put in place. A subcategory of Census Office.",
     "evidence": "FACT",
     "lastChecked": "2026-10-04",
     "fit": "Context only. Construction spending dollars are not megawatts and are not added to a counted kind."
   },
   {
     "id": "census-c30-office",
-    "name": "Census C30 office construction spending",
+    "name": "Census C30 Census Office total construction spending",
     "publisher": "U.S. Census Bureau",
     "url": "https://www.census.gov/construction/c30/current/index.html",
     "cadence": "monthly",
     "unit": "millions of dollars, seasonally adjusted annual rate, and monthly not seasonally adjusted",
-    "measures": "Value of office construction put in place, including the General, Data center, and Financial parts. FRED series PROFCONS and TLOFCON mirror the private office annual rate and the total office monthly NSA line.",
+    "measures": "Value of Census Office construction put in place, including general office, data center, and financial. FRED series PROFCONS and TLOFCON mirror the private Census Office annual rate and the total Census Office monthly NSA line.",
     "evidence": "FACT",
     "lastChecked": "2026-10-04",
-    "fit": "Context only. Office dollars are not added to data center dollars, and neither is a counted megawatt."
+    "fit": "Context only. Census Office dollars are not added to data center dollars, and neither is a counted megawatt."
   },
   {
     "id": "eia-860m",

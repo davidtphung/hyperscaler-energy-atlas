@@ -22,6 +22,10 @@ const EMPTY_PRIMARY_MW_REASON: Record<string, string> = {
     "Cited filing gives 556 MW combined for both plants, no per-plant MW, and does not name the customer",
   "meta-socrates-north-btm-200":
     "Cited filing gives 556 MW combined for both plants, no per-plant MW, and does not name the customer",
+  "stargate-port-washington-wisconsin-vantage":
+    "The cited 27 April 2026 release shows no MW figure (EMPTY PRIMARY for the figure). The campus page states 902 MW of critical IT load and is undated. That figure does not count.",
+  "bloom-brookfield-fuel-cells":
+    "The 13 October 2025 release does not state a megawatt figure for the partnership (EMPTY PRIMARY for the figure). The 1,000 MW stored on this row is not in that release.",
 };
 
 /**
@@ -31,6 +35,10 @@ const EMPTY_PRIMARY_MW_REASON: Record<string, string> = {
 const CLAIM_MW_REASON: Record<string, string> = {
   "google-van-buren-dte-u22058":
     "The 1 Oct 2026 MPSC release does not state a megawatt size. A 1.0 GW facility figure is a CLAIM and is not stored on this row.",
+  "google-nv-energy-clean-transition-tariff-corsac":
+    "Tariff approval only. The cited link does not show a plant being built or running.",
+  "coreweave-applied-digital-ellendale":
+    "CLAIM. These are company statements. 400 MW contracted across three leases. 250 MW counted. The last 150 MW is not counted: the FY2026 10-K says under construction in Item 1 (printed p.6) and currently in the design phase in Note 17 (printed p.119). It returns to the count only when a primary shows work at that hall.",
 };
 
 export function emptyPrimaryMwIds(): string[] {

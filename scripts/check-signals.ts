@@ -14,9 +14,9 @@ function fail(msg: string) {
 if (COMMITMENTS.length !== 154) fail(`row count ${COMMITMENTS.length}`);
 const totals = Object.fromEntries(firmKindTotals(COMMITMENTS).map((row) => [row.kind, row]));
 const expect: Record<string, { rows: number; mw: number }> = {
-  it_capacity: { rows: 20, mw: 8085.5 },
+  it_capacity: { rows: 19, mw: 7033.5 },
   btm_gen: { rows: 2, mw: 400 },
-  offtake_new: { rows: 3, mw: 1188 },
+  offtake_new: { rows: 2, mw: 1073 },
   grid_gen_for_dc: { rows: 0, mw: 0 },
   offtake_existing: { rows: 0, mw: 0 },
 };

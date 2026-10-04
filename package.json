@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "HYPERGRID — an interactive atlas of the energy and datacenter commitments powering the AI era, mapped across time and space.",
+  "description": "HYPERGRID, an interactive atlas of the energy and datacenter commitments powering the AI era, mapped across time and space.",
   "author": "David T Phung (https://x.com/davidtphung)",
   "license": "MIT",
   "scripts": {
