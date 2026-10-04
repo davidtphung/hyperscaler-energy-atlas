@@ -216,7 +216,7 @@ export function claimChecks(): ClaimCheck[] {
       id: "dc-aug-yoy",
       claim: "+73% year over year in Aug 2026",
       census: formatPercent(yoy.ratio),
-      formula: `(${formatMillions(yoy.latest.value)} - ${formatMillions(yoy.prior.value)}) / ${formatMillions(yoy.prior.value)} = ${formatPercent(yoy.ratio)}. ${YOY_WORDS}.`,
+      formula: `(${formatMillions(yoy.latest.value)} minus ${formatMillions(yoy.prior.value)}) / ${formatMillions(yoy.prior.value)} = ${formatPercent(yoy.ratio)}. ${YOY_WORDS}.`,
       basis: dcBasis,
       matched: roundsToPercent(yoy.ratio, 73),
     });
@@ -234,7 +234,7 @@ export function claimChecks(): ClaimCheck[] {
       id: "dc-jun-yoy",
       claim: "+65% year over year in June",
       census: formatPercent(june.ratio),
-      formula: `(${formatMillions(june.latest.value)} - ${formatMillions(june.prior.value)}) / ${formatMillions(june.prior.value)} = ${formatPercent(june.ratio)}. ${YOY_WORDS}. June 2026 against June 2025.`,
+      formula: `(${formatMillions(june.latest.value)} minus ${formatMillions(june.prior.value)}) / ${formatMillions(june.prior.value)} = ${formatPercent(june.ratio)}. ${YOY_WORDS}. June 2026 against June 2025.`,
       basis: juneBasis,
       matched: roundsToPercent(june.ratio, 65),
     });
@@ -244,7 +244,7 @@ export function claimChecks(): ClaimCheck[] {
       id: "dc-since-level",
       claim: "+$76B since the start of 2021",
       census: formatSignedBillions(since.change),
-      formula: `${formatMillions(since.latest.value)} - ${formatMillions(since.prior.value)} = ${formatSignedBillions(since.change)}. ${SINCE_WORDS}. Start of 2021 is January 2021 in this file.`,
+      formula: `${formatMillions(since.latest.value)} minus ${formatMillions(since.prior.value)} = ${formatSignedBillions(since.change)}. ${SINCE_WORDS}. Start of 2021 is January 2021 in this file.`,
       basis: dcBasis,
       matched: roundsToBillion(since.change, 76),
     });
@@ -252,7 +252,7 @@ export function claimChecks(): ClaimCheck[] {
       id: "dc-since-pct",
       claim: "+823% since the start of 2021",
       census: formatPercent(since.ratio),
-      formula: `(${formatMillions(since.latest.value)} - ${formatMillions(since.prior.value)}) / ${formatMillions(since.prior.value)} = ${formatPercent(since.ratio)}. ${SINCE_PCT_WORDS}.`,
+      formula: `(${formatMillions(since.latest.value)} minus ${formatMillions(since.prior.value)}) / ${formatMillions(since.prior.value)} = ${formatPercent(since.ratio)}. ${SINCE_PCT_WORDS}.`,
       basis: dcBasis,
       matched: roundsToPercent(since.ratio, 823),
     });
@@ -262,7 +262,7 @@ export function claimChecks(): ClaimCheck[] {
       id: "gen-yoy",
       claim: "general office -10% year over year",
       census: formatPercent(genYoy.ratio),
-      formula: `(${formatMillions(genYoy.latest.value)} - ${formatMillions(genYoy.prior.value)}) / ${formatMillions(genYoy.prior.value)} = ${formatPercent(genYoy.ratio)}. ${YOY_WORDS}.`,
+      formula: `(${formatMillions(genYoy.latest.value)} minus ${formatMillions(genYoy.prior.value)}) / ${formatMillions(genYoy.prior.value)} = ${formatPercent(genYoy.ratio)}. ${YOY_WORDS}.`,
       basis: genBasis,
       matched: roundsToPercent(genYoy.ratio, -10),
     });
@@ -280,7 +280,7 @@ export function claimChecks(): ClaimCheck[] {
       id: "gap",
       claim: "gap $39B",
       census: formatBillions(gap),
-      formula: `${formatMillions(end.value)} - ${formatMillions(genNow.value)} = ${formatBillions(gap)}. ${GAP_WORDS}`,
+      formula: `${formatMillions(end.value)} minus ${formatMillions(genNow.value)} = ${formatBillions(gap)}. ${GAP_WORDS}`,
       basis: `${dcBasis} Compared with ${genBasis}`,
       matched: roundsToBillion(gap, 39),
     });
