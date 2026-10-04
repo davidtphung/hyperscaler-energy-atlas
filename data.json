@@ -85,6 +85,10 @@
     {
       "name": "summary",
       "description": "Notes stored on the row."
+    },
+    {
+      "name": "signals",
+      "description": "Context series such as Census construction spending. Dollars, not megawatts. Not a counted kind and not added to a firm total."
     }
   ],
   "rows": [
