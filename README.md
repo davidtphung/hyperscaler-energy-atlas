@@ -18,7 +18,7 @@ Built by [David T Phung](https://x.com/davidtphung).
 
 ## Data
 
-The atlas holds 154 commitment rows. That count is taken from [`src/data/commitments.ts`](src/data/commitments.ts) when the site is built. Each row is a publicly announced commitment with a primary source (company press releases, Reuters, AP, CNBC, World Nuclear News, DOE, and utility investor-relations pages). Capacities are electrical megawatts reflecting reported headline figures. The dataset was compiled and cross-checked through a multi-agent research and verification pass and lives in that typed file. It is designed to be appended to over time. `data.json` and `data.csv` are written from the same file at build time.
+The atlas holds 156 commitment rows. That count is taken from [`src/data/commitments.ts`](src/data/commitments.ts) when the site is built. Each row is a publicly announced commitment with a primary source (company press releases, Reuters, AP, CNBC, World Nuclear News, DOE, and utility investor-relations pages). Capacities are electrical megawatts reflecting reported headline figures. The dataset was compiled and cross-checked through a multi-agent research and verification pass and lives in that typed file. It is designed to be appended to over time. `data.json` and `data.csv` are written from the same file at build time.
 
 Capacity figures for very large framework and supply agreements (for example multi-gigawatt renewable frameworks or module supply alliances) represent the headline program size, not instantaneous nameplate generation. Treat the atlas as a directional map of intent and momentum, not a generation accounting ledger.
 

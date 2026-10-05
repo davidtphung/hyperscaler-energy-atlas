@@ -193,19 +193,53 @@ if (applyFacets(COMMITMENTS.map((c) => ({ ...c, actorKind: c.actorKind ?? "Undis
   categories: new Set(),
   eras: new Set(),
   query: "",
-}).length !== 154) {
-  fail("empty filters no longer return 154 rows");
+}).length !== 156) {
+  fail("empty filters no longer return 156 rows");
 }
 
 const vanBuren = COMMITMENTS.find((c) => c.id === "google-van-buren-dte-u22058");
 if (!vanBuren) fail("missing Google Van Buren");
 else {
-  if (vanBuren.numberKind !== "utility_load" || vanBuren.counts !== "no") fail("Van Buren kind or counts changed");
-  if (vanBuren.capacityMW != null) fail("Van Buren stored an MW figure");
+  if (vanBuren.numberKind !== "utility_load" || vanBuren.counts !== "no" || vanBuren.status !== "contracted") {
+    fail("Van Buren kind, counts, or status changed");
+  }
+  if (vanBuren.capacityMW !== 1000) fail("Van Buren capacity is not the company-stated 1000 MW");
+  if (vanBuren.energizedMW != null || vanBuren.onlineDate) fail("Van Buren energized MW or COD was filled");
   if (vanBuren.lat != null || vanBuren.lng != null) fail("Van Buren pin was invented");
+  if (!vanBuren.sourceUrl2?.includes("dtebusinessupdate92826fi.htm")) fail("Van Buren is missing the DTE 8-K source");
   const ev = evidenceFor(vanBuren);
-  if (ev.mw.mark !== "CLAIM" || !ev.mw.reason.includes("1.0 GW")) fail("Van Buren MW is not labeled as a CLAIM");
-  if (hasLongDash(ev.mw.reason)) fail("Van Buren evidence has a long dash");
+  if (ev.mw.mark !== "CLAIM" || !ev.mw.reason.includes("company-stated (DTE 8-K)")) {
+    fail("Van Buren MW is not labeled company-stated (DTE 8-K)");
+  }
+  if (ev.mw.reason.includes("MPSC-stated") && !ev.mw.reason.includes("not MPSC-stated")) {
+    fail("Van Buren 1000 MW was labeled MPSC-stated");
+  }
+  if (hasLongDash(ev.mw.reason) || hasLongDash(vanBuren.summary)) fail("Van Buren copy has a long dash");
+}
+
+const nebiusClt = COMMITMENTS.find((c) => c.id === "nebius-aib-clt01-sc-50");
+if (!nebiusClt) fail("missing Nebius CLT-01");
+else {
+  if (nebiusClt.numberKind !== "it_capacity" || nebiusClt.counts !== "no" || nebiusClt.status !== "contracted") {
+    fail("Nebius CLT-01 kind, counts, or status changed");
+  }
+  if (nebiusClt.capacityMW !== 50) fail("Nebius CLT-01 capacity is not 50 MW");
+  if (nebiusClt.energizedMW != null || nebiusClt.onlineDate) fail("Nebius CLT-01 energized MW or COD was filled");
+  if (nebiusClt.summary.includes("50+65") || nebiusClt.summary.includes("115")) fail("Nebius CLT-01 copy adds 50 and 65");
+  if (hasLongDash(nebiusClt.summary) || hasLongDash(nebiusClt.headline)) fail("Nebius CLT-01 copy has a long dash");
+}
+
+const pointBeach = COMMITMENTS.find((c) => c.id === "oracle-we-energies-point-beach");
+if (!pointBeach) fail("missing Point Beach");
+else {
+  if (pointBeach.numberKind !== "offtake_existing" || pointBeach.counts !== "no" || pointBeach.status !== "announced") {
+    fail("Point Beach kind, counts, or status changed");
+  }
+  if (pointBeach.capacityMW != null) fail("Point Beach stored an MW figure");
+  if (pointBeach.energizedMW != null || pointBeach.onlineDate) fail("Point Beach energized MW or COD was filled");
+  const ev = evidenceFor(pointBeach);
+  if (ev.mw.mark !== "EMPTY PRIMARY") fail("Point Beach MW is not EMPTY PRIMARY");
+  if (hasLongDash(pointBeach.summary) || hasLongDash(ev.mw.reason)) fail("Point Beach copy has a long dash");
 }
 
 const onSiteOhio = rankRows("kind:on_site state:OH", COMMITMENTS).map((hit) => hit.row.id).sort();
