@@ -26,15 +26,18 @@ const EMPTY_PRIMARY_MW_REASON: Record<string, string> = {
     "The cited 27 April 2026 release shows no MW figure (EMPTY PRIMARY for the figure). The campus page states 902 MW of critical IT load and is undated. That figure does not count.",
   "bloom-brookfield-fuel-cells":
     "The 13 October 2025 release does not state a megawatt figure for the partnership (EMPTY PRIMARY for the figure). The 1,000 MW stored on this row is not in that release.",
+  "oracle-we-energies-point-beach":
+    "The 2 Oct 2026 Oracle announcement does not state a megawatt figure (EMPTY PRIMARY for the figure). A trade share is not stored. This is a subscription to existing Point Beach output and it does not count.",
 };
 
 /**
- * google-van-buren-dte-u22058: the 1 Oct 2026 MPSC release does not state a megawatt size.
- * A 1.0 GW facility figure is a CLAIM and is not stored on the row.
+ * google-van-buren-dte-u22058: 1,000 MW is company-stated in the DTE 8-K.
+ * The 1 Oct 2026 MPSC release does not state a megawatt size.
+ * The row stays utility load and does not count.
  */
 const CLAIM_MW_REASON: Record<string, string> = {
   "google-van-buren-dte-u22058":
-    "The 1 Oct 2026 MPSC release does not state a megawatt size. A 1.0 GW facility figure is a CLAIM and is not stored on this row.",
+    "The 1,000 MW stored on this row is company-stated (DTE 8-K), not MPSC-stated. The 1 Oct 2026 MPSC release does not state a megawatt size. Up to 1,600 MW of renewables and 480 MW of storage stay note-only and are not stored as capacity.",
   "google-nv-energy-clean-transition-tariff-corsac":
     "Tariff approval only. The cited link does not show a plant being built or running.",
   "coreweave-applied-digital-ellendale":

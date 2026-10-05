@@ -21,7 +21,7 @@ HYPERGRID is a single static single-page application that unifies several source
 
 | Tab | What it does |
 |---|---|
-| **Atlas** | Interactive map plus timeline of 154 hyperscaler energy and datacenter commitments. Speed-mode playback pill (Live / 1mo/s / 6mo/s / 1yr/s), cumulative buildout reveal, filters (buyer, era, technology, status, category), search, detail panel with stats and ledger. Map views: United States, China, Global. |
+| **Atlas** | Interactive map plus timeline of 156 hyperscaler energy and datacenter commitments. Speed-mode playback pill (Live / 1mo/s / 6mo/s / 1yr/s), cumulative buildout reveal, filters (buyer, era, technology, status, category), search, detail panel with stats and ledger. Map views: United States, China, Global. |
 | **Data Centers** | Searchable, sortable global directory of 260 facilities across 46 countries (93 in China). Map views Global / China / US, click a dot for a facility info card, top-countries breakdown, click-to-sort columns (MW top and least, undisclosed last). |
 | **Economics** | 25 real estate transactions (M&A, take-privates, sale-leasebacks, land) on a deal map with sortable table, a price-per-square-foot scatter, construction cost benchmarks (USD millions per MW by market), and a long-lead equipment chart (transformers 128 to 210 weeks, generators, switchgear, chillers, UPS). |
 | **History** | 28 source-backed milestones from ENIAC (1945) through carrier hotels, colocation, cloud and hyperscale, edge, and the AI factory era, grouped on an editorial timeline by era. |
@@ -37,7 +37,7 @@ HYPERGRID is a single static single-page application that unifies several source
 
 | Dataset | File | Records |
 |---|---|---|
-| Commitments | `src/data/commitments.ts` | 154 |
+| Commitments | `src/data/commitments.ts` | 156 |
 | Data centers | `src/data/datacenters.ts` | 260 (93 China, 8 historical landmarks) |
 | Real estate deals | `src/data/realestate.ts` | 25 |
 | Construction (materials + cost) | `src/data/construction.ts` | 20 (13 materials, 7 benchmarks) |
