@@ -1,11 +1,11 @@
 {
   "note": "Dollars of construction put in place. Not megawatts. Not added to a counted kind. Does not change counted IT load.",
-  "retrieved": "2026-10-05",
+  "retrieved": "2026-10-04",
   "releaseDate": "2026-10-01",
   "vintage": "as revised through 2026-10-01",
   "definitions": {
     "sourceUrl": "https://www.census.gov/construction/c30/definitions.html",
-    "checked": "2026-10-05",
+    "checked": "2026-10-04",
     "confirmedThisRun": true,
     "dataCenter": "Includes buildings that contain the hardware needed for storing, processing, and transmitting digital information.",
     "general": "Includes administration buildings, computer centers, office buildings, and professional buildings.",
@@ -79,7 +79,7 @@
       "releaseDate": "2026-10-01",
       "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx",
       "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, seasonally adjusted annual rate",
-      "retrieved": "2026-10-05",
+      "retrieved": "2026-10-04",
       "points": [
         {
           "month": "2014-01",
@@ -863,7 +863,7 @@
       "releaseDate": "2026-10-01",
       "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privtime.xlsx",
       "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, monthly not seasonally adjusted",
-      "retrieved": "2026-10-05",
+      "retrieved": "2026-10-04",
       "points": [
         {
           "month": "2014-01",
@@ -1647,7 +1647,7 @@
       "releaseDate": "2026-10-01",
       "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx",
       "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, seasonally adjusted annual rate",
-      "retrieved": "2026-10-05",
+      "retrieved": "2026-10-04",
       "points": [
         {
           "month": "2014-01",
@@ -2431,7 +2431,7 @@
       "releaseDate": "2026-10-01",
       "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privtime.xlsx",
       "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, monthly not seasonally adjusted",
-      "retrieved": "2026-10-05",
+      "retrieved": "2026-10-04",
       "points": [
         {
           "month": "2014-01",
@@ -3215,7 +3215,7 @@
       "releaseDate": "2026-10-01",
       "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privsatime.xlsx",
       "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, seasonally adjusted annual rate",
-      "retrieved": "2026-10-05",
+      "retrieved": "2026-10-04",
       "points": [
         {
           "month": "2014-01",
@@ -3999,7 +3999,7 @@
       "releaseDate": "2026-10-01",
       "sourceUrl": "https://www.census.gov/construction/c30/xlsx/privtime.xlsx",
       "sourceName": "U.S. Census Bureau, Value of Private Construction Put in Place, monthly not seasonally adjusted",
-      "retrieved": "2026-10-05",
+      "retrieved": "2026-10-04",
       "points": [
         {
           "month": "2014-01",
@@ -4783,7 +4783,7 @@
       "releaseDate": "2026-10-01",
       "sourceUrl": "https://www.census.gov/construction/c30/xlsx/tottime.xlsx",
       "sourceName": "U.S. Census Bureau, Value of Construction Put in Place, monthly not seasonally adjusted",
-      "retrieved": "2026-10-05",
+      "retrieved": "2026-10-04",
       "points": [
         {
           "month": "2014-01",
