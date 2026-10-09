@@ -39,6 +39,7 @@ const EXCLUDE_PLAIN: Record<ExcludeReason, string> = {
   status_flip_pending: "status change is still pending",
   remove_candidate: "candidate for removal",
   unverified_construction: "construction is not verified",
+  zec_only: "ZEC subscription only; no energy or capacity offtake",
 };
 
 const STATUS_PHRASES: { phrase: string; status: Status }[] = [

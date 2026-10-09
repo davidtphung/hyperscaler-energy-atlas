@@ -78,7 +78,8 @@ export type ExcludeReason =
   | "restart"
   | "status_flip_pending"
   | "remove_candidate"
-  | "unverified_construction";
+  | "unverified_construction"
+  | "zec_only";
 
 export interface Commitment {
   id: string;

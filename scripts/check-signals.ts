@@ -11,14 +11,14 @@ function fail(msg: string) {
   errors.push(msg);
 }
 
-if (COMMITMENTS.length !== 156) fail(`row count ${COMMITMENTS.length}`);
+if (COMMITMENTS.length !== 160) fail(`row count ${COMMITMENTS.length}`);
 const totals = Object.fromEntries(firmKindTotals(COMMITMENTS).map((row) => [row.kind, row]));
 const expect: Record<string, { rows: number; mw: number }> = {
   it_capacity: { rows: 19, mw: 7033.5 },
   btm_gen: { rows: 2, mw: 400 },
   offtake_new: { rows: 2, mw: 1073 },
   grid_gen_for_dc: { rows: 0, mw: 0 },
-  offtake_existing: { rows: 0, mw: 0 },
+  offtake_existing: { rows: 1, mw: 500 },
 };
 for (const [kind, want] of Object.entries(expect)) {
   const got = totals[kind];

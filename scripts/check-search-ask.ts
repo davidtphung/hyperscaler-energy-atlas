@@ -193,8 +193,8 @@ if (applyFacets(COMMITMENTS.map((c) => ({ ...c, actorKind: c.actorKind ?? "Undis
   categories: new Set(),
   eras: new Set(),
   query: "",
-}).length !== 156) {
-  fail("empty filters no longer return 156 rows");
+}).length !== 160) {
+  fail("empty filters no longer return 160 rows");
 }
 
 const vanBuren = COMMITMENTS.find((c) => c.id === "google-van-buren-dte-u22058");
@@ -242,12 +242,64 @@ else {
   if (hasLongDash(pointBeach.summary) || hasLongDash(ev.mw.reason)) fail("Point Beach copy has a long dash");
 }
 
+const byIdGuard = new Map(COMMITMENTS.map((c) => [c.id, c]));
+const guard = (id: string) => {
+  const row = byIdGuard.get(id);
+  if (!row) fail(`missing ${id}`);
+  return row;
+};
+const calvertA = guard("amazon-constellation-calvert-cliffs-existing-500");
+if (calvertA) {
+  if (calvertA.numberKind !== "offtake_existing" || calvertA.counts !== "yes" || calvertA.capacityMW !== 500) fail("Calvert A is not 500 MW counted existing-plant");
+  if (calvertA.energizedMW != null || calvertA.onlineDate) fail("Calvert A energized MW or COD was filled");
+}
+const calvertB = guard("amazon-constellation-calvert-cliffs-uprate-190");
+if (calvertB) {
+  if (calvertB.numberKind !== "offtake_new" || calvertB.counts !== "no" || calvertB.capacityMW !== 190) fail("Calvert B is not 190 MW uncounted new-plant");
+}
+for (const c of [calvertA, calvertB]) {
+  if (c && (c.numberKind === "it_capacity" || /\b500 ?\+ ?190\b|\b690 MW (is )?counted/.test(c.summary))) fail(`${c.id} filed as IT or combines 500 and 190`);
+}
+const g890 = guard("google-constellation-pjm-uprates-890");
+if (g890) {
+  if (g890.numberKind !== "offtake_new" || g890.counts !== "no" || g890.capacityMW !== 890 || g890.status !== "ppa-signed") fail("Google 890 kind, counts, MW, or status changed");
+  if (g890.lat != null || g890.lng != null || g890.city || g890.state) fail("Google 890 was pinned or given a city or state");
+  if (!g890.summary.startsWith("IL, PA, NJ (PJM), 11 units at 6 sites")) fail("Google 890 summary lead changed");
+  if (/3,?590/.test(g890.summary)) fail("Google 890 summed with 2,700");
+}
+const bh = guard("google-black-hills-cheyenne-lpcsa-590");
+if (bh) {
+  if (bh.numberKind !== "utility_load" || bh.counts !== "no" || bh.capacityMW !== 590 || bh.status !== "contracted") fail("Black Hills Cheyenne kind, counts, MW, or status changed");
+  if (bh.lat != null || bh.lng != null) fail("Black Hills Cheyenne was pinned");
+  if (bh.energizedMW != null || bh.onlineDate) fail("Black Hills Cheyenne energized MW or COD was filled");
+  if (/\b590 ?\+|\+ ?2,?100|\b2,?690\b|\b590 MW plus/.test(bh.summary)) fail("Black Hills Cheyenne shows a combined figure");
+}
+const cwCheyenne = guard("coreweave-related-cheyenne-it-88");
+if (cwCheyenne && (cwCheyenne.capacityMW !== 88 || cwCheyenne.status !== "construction" || cwCheyenne.counts !== "yes" || cwCheyenne.numberKind !== "it_capacity")) fail("CoreWeave Cheyenne 88 MW row changed");
+const ell = guard("coreweave-applied-digital-ellendale");
+if (ell) {
+  if (ell.capacityMW !== 250 || ell.status !== "operational" || ell.counts !== "yes" || ell.numberKind !== "it_capacity") fail("Ellendale is not 250 MW operational counted IT");
+  if (ell.energizedMW != null) fail("Ellendale energized MW was filled");
+  if (/250 ?\+ ?150/.test(ell.summary)) fail("Ellendale combines 250 and 150");
+}
+const ga = guard("google-georgia-power-vogtle-hatch-uprate-96");
+if (ga) {
+  if (ga.counts !== "no" || ga.status !== "announced" || ga.excludeReason !== "zec_only") fail("Georgia 96 counts, status, or excludeReason changed");
+  if (!ga.sourceUrl2?.includes("documentId=229054")) fail("Georgia 96 is missing PSC Document 229054");
+}
+const saline = guard("stargate-saline-michigan-related");
+if (saline && (saline.counterparty !== "Green Chile Ventures LLC" || saline.counts !== "no")) fail("Saline counterparty or counts changed");
+for (const id of ["amazon-constellation-calvert-cliffs-existing-500", "amazon-constellation-calvert-cliffs-uprate-190", "google-constellation-pjm-uprates-890", "google-black-hills-cheyenne-lpcsa-590", "coreweave-applied-digital-ellendale", "google-georgia-power-vogtle-hatch-uprate-96", "stargate-saline-michigan-related"]) {
+  const row = byIdGuard.get(id);
+  if (row && (hasLongDash(row.summary) || hasLongDash(row.headline) || hasLongDash(row.project) || hasLongDash(row.counterparty))) fail(`${id} copy has a long dash`);
+}
+
 const onSiteOhio = rankRows("kind:on_site state:OH", COMMITMENTS).map((hit) => hit.row.id).sort();
 const onSiteOhioWant = COMMITMENTS.filter((c) => c.numberKind === "btm_gen" && (c.state.trim().toLowerCase() === "oh" || c.state.trim().toLowerCase() === "ohio"))
   .map((c) => c.id)
   .sort();
 if (onSiteOhio.join("|") !== onSiteOhioWant.join("|")) fail("kind:on_site state:OH did not match on-site Ohio rows");
-if (rankRows("counted:yes", COMMITMENTS).length !== 23) fail("counted:yes result count changed");
+if (rankRows("counted:yes", COMMITMENTS).length !== 24) fail("counted:yes result count changed");
 const texasCode = rankRows("state:TX", COMMITMENTS).map((hit) => hit.row.id).sort().join("|");
 const texasName = rankRows("state:Texas", COMMITMENTS).map((hit) => hit.row.id).sort().join("|");
 if (!texasCode || texasCode !== texasName) fail("Texas and TX are not one filter value");
