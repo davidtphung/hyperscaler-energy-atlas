@@ -30,6 +30,7 @@ const REASONS = new Set<ExcludeReason>([
   "status_flip_pending",
   "remove_candidate",
   "unverified_construction",
+  "zec_only",
 ]);
 const NEVER = new Set<NumberKind>(["program", "equipment_supply", "storage", "utility_load", "unresolved"]);
 const COUNTABLE = new Set<NumberKind>(["it_capacity", "grid_gen_for_dc", "btm_gen", "offtake_new", "offtake_existing"]);
@@ -39,7 +40,7 @@ const ids = new Set(COMMITMENTS.map((c) => c.id));
 const byId = new Map(COMMITMENTS.map((c) => [c.id, c]));
 
 if (ids.size !== COMMITMENTS.length) errors.push("duplicate commitment ids");
-if (COMMITMENTS.length !== 156) errors.push(`expected 156 rows, got ${COMMITMENTS.length}`);
+if (COMMITMENTS.length !== 160) errors.push(`expected 160 rows, got ${COMMITMENTS.length}`);
 
 for (const c of COMMITMENTS) {
   if (!c.numberKind || !KINDS.has(c.numberKind)) errors.push(`${c.id}: missing or illegal numberKind`);
@@ -84,7 +85,7 @@ const EXPECTED: Record<string, { rows: number; mw: number; rendered: string }> =
   grid_gen_for_dc: { rows: 0, mw: 0, rendered: "0 MW" },
   btm_gen: { rows: 2, mw: 400, rendered: "400 MW" },
   offtake_new: { rows: 2, mw: 1073, rendered: "1.07 GW (1,073 MW)" },
-  offtake_existing: { rows: 0, mw: 0, rendered: "0 MW" },
+  offtake_existing: { rows: 1, mw: 500, rendered: "500 MW" },
 };
 
 const POWER_CASES: [number, string][] = [

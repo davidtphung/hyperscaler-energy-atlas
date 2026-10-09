@@ -41,7 +41,11 @@ const CLAIM_MW_REASON: Record<string, string> = {
   "google-nv-energy-clean-transition-tariff-corsac":
     "Tariff approval only. The cited link does not show a plant being built or running.",
   "coreweave-applied-digital-ellendale":
-    "CLAIM. These are company statements. 400 MW contracted across three leases. 250 MW counted. The last 150 MW is not counted: the FY2026 10-K says under construction in Item 1 (printed p.6) and currently in the design phase in Note 17 (printed p.119). It returns to the count only when a primary shows work at that hall.",
+    "CLAIM. These are company statements. 400 MW contracted across three leases. 250 MW counted, inside the 400 MW. Applied Digital says Ready for Service on 1 Oct 2026 brought fully operational critical IT load at the campus to 250 MW. That is a company statement, not measured energized load, so Energized MW is empty. The last 150 MW is not counted on this row.",
+  "google-black-hills-cheyenne-lpcsa-590":
+    "Company wording is up to 590 MW of grid-connected energy service. This is utility load and does not count. Plant nameplate, third-party resources, and the total resource mix are note-only and are not stored as capacity.",
+  "google-georgia-power-vogtle-hatch-uprate-96":
+    "About 96 MW is the approximate uprate capacity the zero-emission credits are tied to. The 6 Oct 2026 filing says no energy or capacity is sold to Google. ZEC subscription only; no energy or capacity offtake. Not counted.",
 };
 
 export function emptyPrimaryMwIds(): string[] {
