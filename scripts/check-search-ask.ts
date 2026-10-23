@@ -193,8 +193,8 @@ if (applyFacets(COMMITMENTS.map((c) => ({ ...c, actorKind: c.actorKind ?? "Undis
   categories: new Set(),
   eras: new Set(),
   query: "",
-}).length !== 160) {
-  fail("empty filters no longer return 160 rows");
+}).length !== 167) {
+  fail("empty filters no longer return 167 rows");
 }
 
 const vanBuren = COMMITMENTS.find((c) => c.id === "google-van-buren-dte-u22058");

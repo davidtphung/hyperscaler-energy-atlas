@@ -25,6 +25,7 @@ const PolicyView = lazy(() => import("./components/PolicyView"));
 const ForecastView = lazy(() => import("./components/ForecastView"));
 const EconomicsView = lazy(() => import("./components/EconomicsView"));
 const HistoryView = lazy(() => import("./components/HistoryView"));
+const RecordView = lazy(() => import("./components/RecordView"));
 const SignalsView = lazy(() => import("./components/SignalsView"));
 
 // Average month in ms. Playback speed is expressed as simulated months per real
@@ -504,6 +505,7 @@ export default function App() {
               {page === "datacenters" && <DataCentersView />}
               {page === "economics" && <EconomicsView />}
               {page === "history" && <HistoryView />}
+              {page === "record" && <RecordView />}
               {page === "contested" && <ContestedView />}
               {page === "policy" && <PolicyView />}
               {page === "portfolio" && (

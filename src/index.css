@@ -1885,6 +1885,36 @@ a { color: inherit; }
   text-transform: uppercase;
   color: var(--text-3);
 }
+.record-chart { margin-bottom: 18px; }
+.record-log { border-left: 1px solid var(--line-2); margin: 8px 0 0 5px; }
+.record-entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  gap: 16px;
+  padding: 11px 0 11px 22px;
+}
+.record-entry::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 18px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal);
+}
+.record-entry__date {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--signal);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 720px) {
+  .record-entry { grid-template-columns: 1fr; gap: 4px; }
+}
+
 @media (max-width: 900px) {
   .sig-stats, .sig-sources { grid-template-columns: 1fr; }
 }

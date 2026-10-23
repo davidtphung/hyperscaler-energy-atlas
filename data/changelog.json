@@ -1,0 +1,77 @@
+{
+  "note": "Dated changes to atlas rows. Each entry is one row. Counted totals are never summed across kinds.",
+  "entries": [
+    {
+      "date": "2026-10-23",
+      "type": "mw_corrected",
+      "rowId": "tensorwave-fermi-matador-facility-222",
+      "before": "222 MW facility power",
+      "after": "156 MW critical IT",
+      "sourceUrl": "https://www.sec.gov/Archives/edgar/data/2071778/000121390026109227/ea0308546-8k_fermi.htm",
+      "note": "Fermi's 14 Oct 2026 Form 8-K fact sheet states 156 MW of critical IT and 222 MW of total power capacity. Counts stays no."
+    },
+    {
+      "date": "2026-10-23",
+      "type": "row_added",
+      "rowId": "microsoft-nisource-genco-1100",
+      "before": "",
+      "after": "About 1,100 MW of new GenCo generation, offtake from a new plant, counts no",
+      "sourceUrl": "https://investors.nisource.com/financial-news/news-details/2026/NiSource-announces-long-term-agreement-with-Microsoft-expected-to-increase-customer-savings-and-support-Indianas-economic-growth/default.aspx",
+      "note": "20-year term from 2028. The 600 MW battery is not stored. The release does not name the city. The pin is the likely La Porte campus."
+    },
+    {
+      "date": "2026-10-23",
+      "type": "row_added",
+      "rowId": "anthropic-everwind-point-tupper-95",
+      "before": "",
+      "after": "95 MW first phase, counts no, basis not stated",
+      "sourceUrl": "https://www.globenewswire.com/news-release/2026/10/16/3382650/0/en/everwind-announces-10-billion-investment-in-point-tupper-data-centre-campus-and-renewable-energy-portfolio-across-nova-scotia.html",
+      "note": "The source does not say whether 95 MW is critical IT or facility power. The 325 MW expansion is not stored."
+    },
+    {
+      "date": "2026-10-23",
+      "type": "row_added",
+      "rowId": "google-aes-indiana-monrovia-390",
+      "before": "",
+      "after": "390 MW utility load, counts no",
+      "sourceUrl": "https://www.in.gov/iurc/files/ord_46394_100726.pdf",
+      "note": "IURC Cause 46394, 7 Oct 2026, recites 390 MW of new load in the portfolio in this filing. The AES press release does not state a megawatt figure."
+    },
+    {
+      "date": "2026-10-23",
+      "type": "row_added",
+      "rowId": "soar-ai-chillicothe-oh",
+      "before": "",
+      "after": "Construction, megawatts empty, counts no",
+      "sourceUrl": "https://ir.soarai.com/news-events/press-releases/detail/166/soar-ais-ohio-ai-compute-campus-on-track-for-december-31-in-service-date-with-contracted-revenue-expected-to-begin-january-2027",
+      "note": "154 MW is power available at the site, not critical IT, so capacity stays empty."
+    },
+    {
+      "date": "2026-10-23",
+      "type": "row_added",
+      "rowId": "google-xcel-pine-island-mn",
+      "before": "",
+      "after": "Announced utility load, megawatts empty, counts no",
+      "sourceUrl": "https://newsroom.xcelenergy.com/news/xcel-energy-to-power-new-google-data-center-in-minnesota",
+      "note": "Public Xcel and Google announcements do not state the data center load. Docket E-002/M-26-170 redacts contract capacity. About 780 MW is not in those sources, so it is not stored. The 1,900 MW clean energy portfolio is not this row."
+    },
+    {
+      "date": "2026-10-23",
+      "type": "row_added",
+      "rowId": "terawulf-muskie-ky-1000",
+      "before": "",
+      "after": "1,000 MW utility load, announced, counts no",
+      "sourceUrl": "https://www.kentuckypower.com/lib/docs/company/about/MDC_Power_Fact_Sheet_Oct_2026.pdf",
+      "note": "Load ESA signed 1 Oct 2026. Pending Kentucky PSC approval."
+    },
+    {
+      "date": "2026-10-23",
+      "type": "row_added",
+      "rowId": "amazon-aep-xenergy-sullivan-960",
+      "before": "",
+      "after": "960 MW SMR feasibility, exploratory, counts no",
+      "sourceUrl": "https://www.prnewswire.com/news-releases/aep-partners-with-amazon-and-x-energy-to-explore-advanced-nuclear-energy-in-indiana-302912113.html",
+      "note": "Feasibility study at the former Breed station. No final investment decision and no signed operating date."
+    }
+  ]
+}

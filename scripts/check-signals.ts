@@ -11,7 +11,7 @@ function fail(msg: string) {
   errors.push(msg);
 }
 
-if (COMMITMENTS.length !== 160) fail(`row count ${COMMITMENTS.length}`);
+if (COMMITMENTS.length !== 167) fail(`row count ${COMMITMENTS.length}`);
 const totals = Object.fromEntries(firmKindTotals(COMMITMENTS).map((row) => [row.kind, row]));
 const expect: Record<string, { rows: number; mw: number }> = {
   it_capacity: { rows: 19, mw: 7033.5 },

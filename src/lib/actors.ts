@@ -39,6 +39,8 @@ const BUYER_KIND: Record<string, ActorKind> = {
   Nebius: "Neocloud",
   Lambda: "Neocloud",
   TensorWave: "Neocloud",
+  TeraWulf: "Neocloud",
+  "SOAR AI": "Neocloud",
   EdgeConneX: "Colocation/landlord",
   "EdgeConneX (PowerConneX New Albany 2)": "Colocation/landlord",
   Fleet: "Colocation/landlord",

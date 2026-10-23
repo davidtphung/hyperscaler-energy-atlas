@@ -4,7 +4,7 @@ import type { Ranked } from "../lib/search";
 import type { CatalogHit } from "../lib/signalSearch";
 import SearchBox from "./SearchBox";
 
-export type Page = "atlas" | "datacenters" | "economics" | "history" | "contested" | "policy" | "portfolio" | "signals" | "about";
+export type Page = "atlas" | "datacenters" | "economics" | "history" | "record" | "contested" | "policy" | "portfolio" | "signals" | "about";
 
 interface Props {
   page: Page;
@@ -22,6 +22,7 @@ interface Props {
 const STORY_PAGES: { id: Page; label: string }[] = [
   { id: "economics", label: "Economics" },
   { id: "history", label: "History" },
+  { id: "record", label: "Record" },
   { id: "contested", label: "Contested" },
   { id: "policy", label: "Policy" },
 ];

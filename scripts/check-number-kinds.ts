@@ -40,7 +40,7 @@ const ids = new Set(COMMITMENTS.map((c) => c.id));
 const byId = new Map(COMMITMENTS.map((c) => [c.id, c]));
 
 if (ids.size !== COMMITMENTS.length) errors.push("duplicate commitment ids");
-if (COMMITMENTS.length !== 160) errors.push(`expected 160 rows, got ${COMMITMENTS.length}`);
+if (COMMITMENTS.length !== 167) errors.push(`expected 167 rows, got ${COMMITMENTS.length}`);
 
 for (const c of COMMITMENTS) {
   if (!c.numberKind || !KINDS.has(c.numberKind)) errors.push(`${c.id}: missing or illegal numberKind`);

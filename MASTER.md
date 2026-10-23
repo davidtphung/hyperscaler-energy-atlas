@@ -17,14 +17,15 @@ HYPERGRID is a single static single-page application that unifies several source
 
 ---
 
-## 2. Views (9 tabs)
+## 2. Views (10 tabs)
 
 | Tab | What it does |
 |---|---|
-| **Atlas** | Interactive map plus timeline of 160 hyperscaler energy and datacenter commitments. Speed-mode playback pill (Live / 1mo/s / 6mo/s / 1yr/s), cumulative buildout reveal, filters (buyer, era, technology, status, category), search, detail panel with stats and ledger. Map views: United States, China, Global. |
+| **Atlas** | Interactive map plus timeline of 167 hyperscaler energy and datacenter commitments. Speed-mode playback pill (Live / 1mo/s / 6mo/s / 1yr/s), cumulative buildout reveal, filters (buyer, era, technology, status, category), search, detail panel with stats and ledger. Map views: United States, China, Global. |
 | **Data Centers** | Searchable, sortable global directory of 260 facilities across 46 countries (93 in China). Map views Global / China / US, click a dot for a facility info card, top-countries breakdown, click-to-sort columns (MW top and least, undisclosed last). |
 | **Economics** | 25 real estate transactions (M&A, take-privates, sale-leasebacks, land) on a deal map with sortable table, a price-per-square-foot scatter, construction cost benchmarks (USD millions per MW by market), and a long-lead equipment chart (transformers 128 to 210 weeks, generators, switchgear, chillers, UPS). |
 | **History** | 28 source-backed milestones from ENIAC (1945) through carrier hotels, colocation, cloud and hyperscale, edge, and the AI factory era, grouped on an editorial timeline by era. |
+| **Record** | History of counted totals. One line per kind, never stacked or added together, plus a dated changelog with source links. Daily snapshots live in `data/history/`. |
 | **Contested** | Investigative tracker of 23 data center projects that were blocked, stalled, denied, withdrawn, put under moratorium, or litigated. Severity scored 1 to 5, US and world maps, contestation themes. |
 | **Policy** | 41 for / against / mixed AI data center policy actions (FERC RM26-4, White House ratepayer pledge, Texas SB6, Ireland CRU and LEAP, Virginia bills) with a stance map, balance bar, and level filters. |
 | **Analysis** | Energy source portfolio (donut, firm vs speculative, evidence strength, before and after the AI boom era comparison), a live Great Britain national grid generation feed, and a forecast fan chart (constrained / base / aggressive) of committed capacity to 2031. |
@@ -37,11 +38,13 @@ HYPERGRID is a single static single-page application that unifies several source
 
 | Dataset | File | Records |
 |---|---|---|
-| Commitments | `src/data/commitments.ts` | 160 |
+| Commitments | `src/data/commitments.ts` | 167 |
 | Data centers | `src/data/datacenters.ts` | 260 (93 China, 8 historical landmarks) |
 | Real estate deals | `src/data/realestate.ts` | 25 |
 | Construction (materials + cost) | `src/data/construction.ts` | 20 (13 materials, 7 benchmarks) |
 | History milestones | `src/data/history.ts` | 28 |
+| Counted-total snapshots | `data/history/` | one JSON file per day |
+| Row changelog | `data/changelog.json` | dated row changes |
 | Contested projects | `src/data/contested.ts` | 23 |
 | Policy actions | `src/data/policy.ts` | 41 |
 
@@ -104,6 +107,10 @@ DNS: GoDaddy CNAME `hypergrid` to `davidtphung.github.io` (GitHub Pages, not the
 ---
 
 ## 9. Changelog
+
+### v1.3, 2026-10-23
+- Added the **Record** view: counted totals over time, one line per kind, and a dated changelog.
+- Added daily snapshots in `data/history/` and a GitHub Action that records the committed data. It does not fetch news or edit rows.
 
 ### v1.2, 2026-06-29
 - Added **Economics** view: 25 real estate deals, deal map, $/sqft scatter, construction cost benchmarks, long-lead equipment lead-time chart.
