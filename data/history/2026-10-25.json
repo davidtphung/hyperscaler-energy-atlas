@@ -1,0 +1,1246 @@
+{
+  "date": "2026-10-25",
+  "source": "src/data/commitments.ts",
+  "note": "Counted totals sum capacityMW only where counts is yes, and only inside one numberKind. Kinds are never added together.",
+  "rowCount": 167,
+  "kinds": [
+    {
+      "numberKind": "it_capacity",
+      "countedMW": 7033.5,
+      "countedRows": 19,
+      "statusMix": {
+        "announced": 28,
+        "construction": 20,
+        "contracted": 1,
+        "operational": 13,
+        "ppa-signed": 1
+      }
+    },
+    {
+      "numberKind": "utility_load",
+      "countedMW": 0,
+      "countedRows": 0,
+      "statusMix": {
+        "announced": 5,
+        "contracted": 3,
+        "ppa-signed": 1
+      }
+    },
+    {
+      "numberKind": "btm_gen",
+      "countedMW": 400,
+      "countedRows": 2,
+      "statusMix": {
+        "announced": 9,
+        "construction": 3,
+        "operational": 2,
+        "permitted": 2
+      }
+    },
+    {
+      "numberKind": "offtake_new",
+      "countedMW": 1073,
+      "countedRows": 2,
+      "statusMix": {
+        "announced": 10,
+        "construction": 3,
+        "contracted": 2,
+        "exploratory": 4,
+        "operational": 1,
+        "permitted": 1,
+        "ppa-signed": 11
+      }
+    },
+    {
+      "numberKind": "offtake_existing",
+      "countedMW": 500,
+      "countedRows": 1,
+      "statusMix": {
+        "announced": 5,
+        "contracted": 1,
+        "operational": 1,
+        "ppa-signed": 7
+      }
+    },
+    {
+      "numberKind": "grid_gen_for_dc",
+      "countedMW": 0,
+      "countedRows": 0,
+      "statusMix": {
+        "announced": 1,
+        "permitted": 1
+      }
+    }
+  ],
+  "rows": [
+    {
+      "id": "abilene-onsite-gas-turbines-permit",
+      "status": "permitted",
+      "capacityMW": 360.5,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "alibaba-clean-energy-2030",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "alibaba-zhangbei-renewable",
+      "status": "operational",
+      "capacityMW": 200,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "aligned-phoenix-shippingport-dc-2000",
+      "status": "construction",
+      "capacityMW": 2000,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "alphabet-intersect-power-acquisition-4-75b",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "amazon-aep-xenergy-sullivan-960",
+      "status": "exploratory",
+      "capacityMW": 960,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "amazon-cascade-12-units-2025",
+      "status": "announced",
+      "capacityMW": 960,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "amazon-constellation-calvert-cliffs-existing-500",
+      "status": "contracted",
+      "capacityMW": 500,
+      "counts": "yes",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "amazon-constellation-calvert-cliffs-uprate-190",
+      "status": "announced",
+      "capacityMW": 190,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "amazon-dominion-north-anna-smr",
+      "status": "exploratory",
+      "capacityMW": 300,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "amazon-energy-northwest-cascade-smr",
+      "status": "announced",
+      "capacityMW": 320,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "amazon-engie-moray-west-offshore-wind",
+      "status": "operational",
+      "capacityMW": 473,
+      "counts": "yes",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "amazon-gw-ranch-gas-5000",
+      "status": "announced",
+      "capacityMW": 5000,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "amazon-iberdrola-east-anglia-three",
+      "status": "ppa-signed",
+      "capacityMW": 159,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "amazon-largest-renewable-buyer-portfolio",
+      "status": "operational",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "amazon-mississippi-warren-3b",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "amazon-pennsylvania-20b-datacenters",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "amazon-talen-1920mw-ppa-2025",
+      "status": "ppa-signed",
+      "capacityMW": 1920,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "amazon-talen-cumulus-acquisition",
+      "status": "announced",
+      "capacityMW": 960,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "amazon-xenergy-500m-investment",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "anthropic-amazon-5gw-trainium",
+      "status": "announced",
+      "capacityMW": 5000,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "anthropic-everwind-point-tupper-95",
+      "status": "announced",
+      "capacityMW": 95,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "anthropic-fluidstack-50b-tx-ny",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "anthropic-google-broadcom-tpu",
+      "status": "announced",
+      "capacityMW": 1000,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "anthropic-justified-kentucky-it-401",
+      "status": "announced",
+      "capacityMW": 401,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "anthropic-western-downs-qld-lease",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "aws-humain-ai-zone-saudi-arabia",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "aws-india-12-7bn-cloud",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "aws-indiana-11b-newcarlisle",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "aws-mississippi-10b-madison",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "aws-uk-8bn-datacenters",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "baidu-carbon-neutral-2030",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "bloom-brookfield-fuel-cells",
+      "status": "announced",
+      "capacityMW": 1000,
+      "counts": "no",
+      "numberKind": "equipment_supply"
+    },
+    {
+      "id": "chindata-100-renewable-2030",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "coreweave-applied-digital-ellendale",
+      "status": "operational",
+      "capacityMW": 250,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-corescientific-13gw",
+      "status": "announced",
+      "capacityMW": 1300,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-cs-austin-16-5",
+      "status": "operational",
+      "capacityMW": 16.5,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-cs-dalton-175",
+      "status": "construction",
+      "capacityMW": 30,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-cs-dalton-4-145",
+      "status": "announced",
+      "capacityMW": 145,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-cs-denton-262",
+      "status": "construction",
+      "capacityMW": 262,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-cs-marble-65",
+      "status": "construction",
+      "capacityMW": 65,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-cs-muskogee-70",
+      "status": "construction",
+      "capacityMW": 70,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-galaxy-helios-phase1-it-133",
+      "status": "operational",
+      "capacityMW": 133,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-lancaster-pa-6b",
+      "status": "announced",
+      "capacityMW": 300,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "coreweave-related-cheyenne-it-88",
+      "status": "construction",
+      "capacityMW": 88,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "crusoe-abilene-gas-engine-no-1",
+      "status": "announced",
+      "capacityMW": 4500,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "crusoe-abilene-stargate-12gw",
+      "status": "construction",
+      "capacityMW": 1200,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "crusoe-engineno1-45gw-gas",
+      "status": "announced",
+      "capacityMW": 4500,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "edgeconnex-pcx-ii-new-albany-216",
+      "status": "construction",
+      "capacityMW": 216,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "fermi-matador-gas-6000",
+      "status": "announced",
+      "capacityMW": 6000,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "fleet-peru-ridge-btm-218",
+      "status": "announced",
+      "capacityMW": 218,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "fleet-south-valley-btm-144",
+      "status": "announced",
+      "capacityMW": 144,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "fluidstack-abernathy-it-168",
+      "status": "construction",
+      "capacityMW": 168,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "fluidstack-barber-lake-it-168",
+      "status": "construction",
+      "capacityMW": 168,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "fluidstack-cameron-county-tx-1500",
+      "status": "construction",
+      "capacityMW": 1500,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "fluidstack-lake-mariner-it-378",
+      "status": "construction",
+      "capacityMW": 378,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "fluidstack-meridian-arc-indiana-it-430",
+      "status": "announced",
+      "capacityMW": 430,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "fluidstack-river-bend-it-245",
+      "status": "construction",
+      "capacityMW": 245,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "gds-100-renewable-2030",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "goodnight-one-crusoe-265-5",
+      "status": "announced",
+      "capacityMW": 265.5,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "goodnight-two-ensign-260",
+      "status": "announced",
+      "capacityMW": 260,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "google-adani-airtel-visakhapatnam-ai-hub",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "google-aes-indiana-monrovia-390",
+      "status": "contracted",
+      "capacityMW": 390,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "google-baseload-geothermal-taiwan",
+      "status": "ppa-signed",
+      "capacityMW": 10,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-black-hills-cheyenne-lpcsa-590",
+      "status": "contracted",
+      "capacityMW": 590,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "google-cfs-fusion-200mw-arc-virginia",
+      "status": "announced",
+      "capacityMW": 200,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-clearway-1170mw-ppa",
+      "status": "ppa-signed",
+      "capacityMW": 1170,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-constellation-pjm-uprates-890",
+      "status": "ppa-signed",
+      "capacityMW": 890,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-elementl-power-1800mw-nuclear",
+      "status": "exploratory",
+      "capacityMW": 1800,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-fervo-cape-station-ppa-396",
+      "status": "ppa-signed",
+      "capacityMW": 396,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-fervo-cape-station-utah",
+      "status": "construction",
+      "capacityMW": 100,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-fervo-project-red-nevada",
+      "status": "operational",
+      "capacityMW": 3.5,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "google-finland-wind-portfolio-629",
+      "status": "ppa-signed",
+      "capacityMW": 629,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-fortum-loviisa-nuclear-offtake-507",
+      "status": "ppa-signed",
+      "capacityMW": 507,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "google-georgia-power-vogtle-hatch-uprate-96",
+      "status": "announced",
+      "capacityMW": 96,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-germany-55bn-expansion",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "google-germany-engie-cfe-hanau",
+      "status": "announced",
+      "capacityMW": 140,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "google-intersect-tpg-energy-parks-20b",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "google-kairos-power-500mw-fleet",
+      "status": "announced",
+      "capacityMW": 500,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-kairos-tva-hermes2-oak-ridge",
+      "status": "permitted",
+      "capacityMW": 50,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-kajaani-bess-94",
+      "status": "announced",
+      "capacityMW": 94,
+      "counts": "no",
+      "numberKind": "storage"
+    },
+    {
+      "id": "google-nextera-duane-arnold",
+      "status": "announced",
+      "capacityMW": 615,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "google-nv-energy-clean-transition-tariff-corsac",
+      "status": "contracted",
+      "capacityMW": 115,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "google-storey-county-nevada-datacenter",
+      "status": "operational",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "google-tae-technologies-fusion-investment",
+      "status": "exploratory",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "google-van-buren-dte-u22058",
+      "status": "contracted",
+      "capacityMW": 1000,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "google-xcel-pine-island-mn",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "holtec-palisades-restart",
+      "status": "announced",
+      "capacityMW": 805,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "holtec-palisades-smr300",
+      "status": "exploratory",
+      "capacityMW": 680,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "hut8-beacon-point-phase2-it-352",
+      "status": "announced",
+      "capacityMW": 352,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "lambda-kansas-city-phase-24",
+      "status": "announced",
+      "capacityMW": 24,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "meta-apex-starling-solar-144",
+      "status": "ppa-signed",
+      "capacityMW": 144,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "meta-constellation-clinton-nuclear",
+      "status": "ppa-signed",
+      "capacityMW": 1121,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "meta-enbridge-clear-fork-solar",
+      "status": "construction",
+      "capacityMW": 600,
+      "counts": "yes",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "meta-engie-swenson-ranch-solar",
+      "status": "ppa-signed",
+      "capacityMW": 600,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "meta-entergy-hyperion-gas-seven",
+      "status": "announced",
+      "capacityMW": 5200,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "meta-entergy-hyperion-gas-three",
+      "status": "permitted",
+      "capacityMW": 2262,
+      "counts": "no",
+      "numberKind": "grid_gen_for_dc"
+    },
+    {
+      "id": "meta-hyperion-richland-parish",
+      "status": "announced",
+      "capacityMW": 5000,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "meta-lebanon-lcp-btm-134",
+      "status": "announced",
+      "capacityMW": 134,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "meta-nuclear-rfp-2024",
+      "status": "announced",
+      "capacityMW": 4000,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "meta-oklo-pike-county-ohio",
+      "status": "announced",
+      "capacityMW": 1200,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "meta-prometheus-new-albany-1000",
+      "status": "announced",
+      "capacityMW": 1000,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "meta-rwe-rabbits-foot-solar",
+      "status": "ppa-signed",
+      "capacityMW": 298,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "meta-sage-geosystems-geothermal",
+      "status": "announced",
+      "capacityMW": 150,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "meta-socrates-north-btm-200",
+      "status": "construction",
+      "capacityMW": 200,
+      "counts": "yes",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "meta-socrates-south-btm-200",
+      "status": "operational",
+      "capacityMW": 200,
+      "counts": "yes",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "meta-sturgeon-alberta-dc-1000",
+      "status": "construction",
+      "capacityMW": 1000,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "meta-terrapower-natrium-smr",
+      "status": "announced",
+      "capacityMW": 2800,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "meta-vistra-nuclear-pjm",
+      "status": "ppa-signed",
+      "capacityMW": 2609,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "meta-xgs-energy-geothermal-nm",
+      "status": "announced",
+      "capacityMW": 150,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "microsoft-aes-576mw-pjm",
+      "status": "ppa-signed",
+      "capacityMW": 576,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "microsoft-aragon-spain-datacenter",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-brookfield-10500mw-framework",
+      "status": "ppa-signed",
+      "capacityMW": 10500,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "microsoft-chevron-west-texas-gas",
+      "status": "announced",
+      "capacityMW": 2670,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "microsoft-constellation-boydton-cfe",
+      "status": "ppa-signed",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-constellation-crane-tmi",
+      "status": "announced",
+      "capacityMW": 835,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "microsoft-crusoe-abilene-2-btm-900",
+      "status": "announced",
+      "capacityMW": 900,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "microsoft-crusoe-abilene-2-it-672",
+      "status": "announced",
+      "capacityMW": 672,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-fairwater-atlanta-superfactory",
+      "status": "operational",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-fairwater-mount-pleasant",
+      "status": "operational",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-fairwater2-wisconsin-expansion",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "microsoft-fortum-finland-heat-reuse",
+      "status": "operational",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-g42-khazna-uae-200mw",
+      "status": "announced",
+      "capacityMW": 200,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-helion-fusion-ppa",
+      "status": "construction",
+      "capacityMW": 50,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "microsoft-iren-childress-it-200",
+      "status": "construction",
+      "capacityMW": 200,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-japan-2-9bn-ai-cloud",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "microsoft-nisource-genco-1100",
+      "status": "contracted",
+      "capacityMW": 1100,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "microsoft-nuclear-smr-hiring",
+      "status": "exploratory",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "microsoft-qcells-12gw-solar",
+      "status": "ppa-signed",
+      "capacityMW": 12000,
+      "counts": "no",
+      "numberKind": "equipment_supply"
+    },
+    {
+      "id": "microsoft-qcells-2500mw-solar",
+      "status": "ppa-signed",
+      "capacityMW": 2500,
+      "counts": "no",
+      "numberKind": "equipment_supply"
+    },
+    {
+      "id": "microsoft-uk-25bn-ai-datacenters",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    },
+    {
+      "id": "microsoft-union-city-atlanta-datacenter",
+      "status": "announced",
+      "capacityMW": 202,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "microsoft-vattenfall-sweden-247-renewable",
+      "status": "operational",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "nebius-aib-clt01-sc-50",
+      "status": "contracted",
+      "capacityMW": 50,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "nebius-highridge-pa-phase-260",
+      "status": "announced",
+      "capacityMW": 260,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "nebius-independence-200",
+      "status": "announced",
+      "capacityMW": 200,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "newera-tcdc-vistra-offtake-207",
+      "status": "ppa-signed",
+      "capacityMW": 207,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "openai-camellia-effingham-demand-3200",
+      "status": "ppa-signed",
+      "capacityMW": 3200,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "openai-ports-pike-it-8000",
+      "status": "announced",
+      "capacityMW": 8000,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "oracle-engie-texas-matching-568",
+      "status": "ppa-signed",
+      "capacityMW": 568,
+      "counts": "no",
+      "numberKind": "offtake_new"
+    },
+    {
+      "id": "oracle-rwe-panther-creek-vppa-433",
+      "status": "ppa-signed",
+      "capacityMW": 433,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "oracle-we-energies-point-beach",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "soar-ai-chillicothe-oh",
+      "status": "construction",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "softbank-portsmouth-ohio-gas-plant",
+      "status": "announced",
+      "capacityMW": 9200,
+      "counts": "no",
+      "numberKind": "grid_gen_for_dc"
+    },
+    {
+      "id": "stargate-abilene-crusoe-lancium",
+      "status": "operational",
+      "capacityMW": 1200,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "stargate-dona-ana-new-mexico-oracle",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "stargate-lordstown-ohio-softbank",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "stargate-milam-county-sb-energy",
+      "status": "construction",
+      "capacityMW": 1200,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "stargate-oracle-4-5gw-partnership",
+      "status": "announced",
+      "capacityMW": 4500,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "stargate-port-washington-wisconsin-vantage",
+      "status": "construction",
+      "capacityMW": 902,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "stargate-project-500b-announcement",
+      "status": "announced",
+      "capacityMW": 10000,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "stargate-saline-michigan-related",
+      "status": "construction",
+      "capacityMW": 1000,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "stargate-shackelford-county-oracle",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "stargate-uae-abu-dhabi-g42",
+      "status": "announced",
+      "capacityMW": 1000,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "stargate-uae-phase1-200",
+      "status": "construction",
+      "capacityMW": 200,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "tencent-carbon-neutral-2030",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "program"
+    },
+    {
+      "id": "tensorwave-fermi-matador-facility-222",
+      "status": "announced",
+      "capacityMW": 156,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "terawulf-muskie-ky-1000",
+      "status": "announced",
+      "capacityMW": 1000,
+      "counts": "no",
+      "numberKind": "utility_load"
+    },
+    {
+      "id": "vistra-comanche-peak-ppa",
+      "status": "ppa-signed",
+      "capacityMW": 1200,
+      "counts": "no",
+      "numberKind": "offtake_existing"
+    },
+    {
+      "id": "xai-colossus-1",
+      "status": "operational",
+      "capacityMW": 130,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "xai-colossus-1-power",
+      "status": "operational",
+      "capacityMW": 422,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "xai-colossus-2",
+      "status": "operational",
+      "capacityMW": 430,
+      "counts": "yes",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "xai-colossus-2-power-solaris",
+      "status": "construction",
+      "capacityMW": 900,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "xai-colossus-2-southaven-turbines",
+      "status": "permitted",
+      "capacityMW": 1200,
+      "counts": "no",
+      "numberKind": "btm_gen"
+    },
+    {
+      "id": "xai-colossus1-memphis-mlgw",
+      "status": "operational",
+      "capacityMW": 130,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "xai-colossus2-southaven-solaris",
+      "status": "construction",
+      "capacityMW": 1100,
+      "counts": "no",
+      "numberKind": "it_capacity"
+    },
+    {
+      "id": "xai-macrohard",
+      "status": "announced",
+      "capacityMW": null,
+      "counts": "no",
+      "numberKind": "unresolved"
+    }
+  ]
+}
