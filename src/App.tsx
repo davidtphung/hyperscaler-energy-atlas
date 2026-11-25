@@ -27,6 +27,7 @@ const EconomicsView = lazy(() => import("./components/EconomicsView"));
 const HistoryView = lazy(() => import("./components/HistoryView"));
 const RecordView = lazy(() => import("./components/RecordView"));
 const SignalsView = lazy(() => import("./components/SignalsView"));
+const ComputeMarketView = lazy(() => import("./components/ComputeMarketView"));
 
 // Average month in ms. Playback speed is expressed as simulated months per real
 // second, so "6mo/s" advances the scrubber six months for every wall-clock
@@ -49,7 +50,8 @@ export default function App() {
   const domain = useMemo(() => domainOf(prepared), [prepared]);
 
   const [filters, setFilters] = useState<FilterState>(() => currentUrl().filters);
-  const [page, setPage] = useState<Page>(() => (currentUrl().anchor ? "about" : "atlas"));
+  const [page, setPage] = useState<Page>(() => currentUrl().page);
+  const historyMode = useRef<"push" | "replace">("replace");
   const [anchor, setAnchor] = useState<"donate" | "what-counts" | null>(() => currentUrl().anchor);
   const [scrollDonate, setScrollDonate] = useState(() => currentUrl().anchor === "donate");
   const [scrollRule, setScrollRule] = useState(() => currentUrl().anchor === "what-counts");
@@ -92,11 +94,10 @@ export default function App() {
       setSelectedId(url.row);
       setAskQuestion(url.ask ?? "");
       setAnchor(url.anchor);
-      if (url.anchor) {
-        setPage("about");
-        setScrollDonate(url.anchor === "donate");
-        setScrollRule(url.anchor === "what-counts");
-      }
+      setPage(url.page);
+      setScrollDonate(url.anchor === "donate");
+      setScrollRule(url.anchor === "what-counts");
+      if (url.page !== "signals") setSignalAnchor(null);
       if (url.row) setDetailOpen(true);
     };
     window.addEventListener("hashchange", apply);
@@ -111,6 +112,7 @@ export default function App() {
     const next = writeUrl(
       {
         filters,
+        page,
         row: page === "atlas" ? selectedId : null,
         ask: page === "atlas" && askQuestion.trim() ? askQuestion.trim() : null,
         anchor: page === "about" ? anchor : null,
@@ -118,7 +120,11 @@ export default function App() {
       window.location,
     );
     const current = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-    if (next !== current) history.replaceState(null, "", next);
+    if (next !== current) {
+      if (historyMode.current === "push") history.pushState(null, "", next);
+      else history.replaceState(null, "", next);
+    }
+    historyMode.current = "replace";
   }, [filters, selectedId, askQuestion, page, anchor]);
 
   useEffect(() => {
@@ -326,6 +332,7 @@ export default function App() {
   }, []);
 
   const onPageChange = useCallback((p: Page) => {
+    historyMode.current = "push";
     setPage(p);
     if (p !== "about") setAnchor(null);
     if (p !== "signals") setSignalAnchor(null);
@@ -334,6 +341,7 @@ export default function App() {
   }, []);
 
   const onOpenExtra = useCallback((hit: CatalogHit) => {
+    historyMode.current = "push";
     setPage("signals");
     setAnchor(null);
     setSignalAnchor(hit.anchor);
@@ -342,6 +350,7 @@ export default function App() {
   }, []);
 
   const onOpenRule = useCallback(() => {
+    historyMode.current = "push";
     setPage("about");
     setAnchor("what-counts");
     setScrollRule(true);
@@ -515,6 +524,7 @@ export default function App() {
                 </>
               )}
               {page === "signals" && <SignalsView anchor={signalAnchor} />}
+              {page === "compute" && <ComputeMarketView />}
               {page === "about" && (
                 <>
                   <AboutView total={prepared.length} />

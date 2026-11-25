@@ -1,0 +1,60 @@
+name: Compute market data
+
+# Once an hour, plus a manual run. The fetch job commits data files on main
+# when they change. The deploy job stays off unless DEPLOY_ON_DATA=true
+# or the manual run sets deploy to true.
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: "Also deploy gh-pages after this data run"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: compute-market-data
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Fetch public compute prices
+        run: node --experimental-strip-types scripts/fetch-compute-market.ts
+      - name: Commit data files when they change
+        run: |
+          git add public/data/compute-market
+          if git diff --cached --quiet; then
+            echo "Data matches the committed files. No commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update compute market data"
+          git push
+
+  deploy:
+    needs: fetch
+    if: ${{ vars.DEPLOY_ON_DATA == 'true' || (github.event_name == 'workflow_dispatch' && inputs.deploy) }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy dist to gh-pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: npx gh-pages -d dist -b gh-pages -u "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"

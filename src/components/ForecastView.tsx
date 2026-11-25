@@ -17,7 +17,7 @@ export default function ForecastView() {
         </p>
       </header>
 
-      <div className="dc-stats">
+      <div className="dc-stats dc-stats--kinds">
         {kinds.map((k) => (
           <div className="dc-stat" key={k.kind}>
             <span className="dc-stat__v">{formatPower(k.mw, k.approx)}{k.mw >= 1000 ? <> <small>{formatExactMW(k.mw)}</small></> : null}</span>

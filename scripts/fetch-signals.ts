@@ -505,10 +505,20 @@ async function main() {
     };
 
     const json = `${JSON.stringify(payload, null, 2)}\n`;
+    const dc = built[0]?.points.at(-1);
+    const prior = JSON.parse(fs.readFileSync(OUT_SRC, "utf8")) as {
+      series?: { id: string; points?: { month: string; value: number }[] }[];
+    };
+    const priorDc = prior.series?.find((row) => row.id === "C30-PRIVATE-DATA-CENTER-SAAR")?.points?.at(-1);
+    if (priorDc && dc && (priorDc.month !== dc.month || priorDc.value !== dc.value)) {
+      console.warn(
+        `fetch-signals: Census latest is ${dc.month} ${dc.value}. The reviewed file is ${priorDc.month} ${priorDc.value}. Keeping the reviewed file.`,
+      );
+      return;
+    }
     fs.mkdirSync(path.dirname(OUT_SRC), { recursive: true });
     fs.writeFileSync(OUT_SRC, json);
     fs.writeFileSync(OUT_PUBLIC, json);
-    const dc = built[0]?.points.at(-1);
     console.log(`fetch-signals: wrote ${built.length} series, latest data center ${dc?.month} ${dc?.value}`);
   } catch (err) {
     keep(err instanceof Error ? err.message : String(err));
