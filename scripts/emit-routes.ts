@@ -5,7 +5,7 @@ import { TAB_ROUTES } from "../src/lib/routes.ts";
 const dist = path.resolve("dist");
 const indexPath = path.join(dist, "index.html");
 const index = fs.readFileSync(indexPath, "utf8");
-if (!index.includes("document.write") || !index.includes("/hyperscaler-energy-atlas")) {
+if (!index.includes('<base href="/">') || !index.includes("/hyperscaler-energy-atlas")) {
   console.error("built index.html is missing the base href script");
   process.exit(1);
 }

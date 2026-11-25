@@ -45,7 +45,7 @@ if (rule.page !== "about" || rule.anchor !== "what-counts") fail("what-counts mi
 if (readUrl("https://hypergrid.davidtphung.com/no-such-tab").page !== "atlas") fail("unknown path did not fall back");
 
 const vite = fs.readFileSync("vite.config.ts", "utf8");
-if (!vite.includes("document.write") || !vite.includes("/hyperscaler-energy-atlas")) {
+if (!vite.includes('<base href="/">') || !vite.includes("/hyperscaler-energy-atlas")) {
   fail("vite config is missing the base href script");
 }
 const emit = fs.readFileSync("scripts/emit-routes.ts", "utf8");

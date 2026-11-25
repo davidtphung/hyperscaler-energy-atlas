@@ -2,7 +2,7 @@ import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 
 const BASE_HREF_SCRIPT =
-  `<script>(function(){var path=location.pathname;var marker="/hyperscaler-energy-atlas";var atProject=path===marker||path.indexOf(marker+"/")===0;var href=atProject?marker+"/":"/";document.write('<base href="'+href+'">');})();</script>`;
+  `<base href="/"><script>(function(){var path=location.pathname;var marker="/hyperscaler-energy-atlas";if(path===marker||path.indexOf(marker+"/")===0){var base=document.querySelector("base");if(base)base.setAttribute("href",marker+"/");}})();</script>`;
 
 function hypergridBaseHref(): Plugin {
   return {
