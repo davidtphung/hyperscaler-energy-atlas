@@ -1,4 +1,5 @@
 import type { Category, CountsFlag, Era, NumberKind, Status, TechType } from "../types";
+import { pageFromPath, pathForPage, type Page } from "./routes.ts";
 import { emptyFilters, type FilterState } from "./select.ts";
 
 const KINDS = new Set<NumberKind>([
@@ -46,6 +47,7 @@ const ERAS = new Set<Era>(["pre-ai", "ai-onset", "acceleration", "current", "for
 const CATS = new Set<Category>(["energy", "datacenter"]);
 
 export interface UrlView {
+  page: Page;
   filters: FilterState;
   row: string | null;
   ask: string | null;
@@ -88,6 +90,7 @@ export function readUrl(href: string): UrlView {
   else if (hashKey === "what-counts") anchor = "what-counts";
   else if (hashKey.startsWith("row=")) row = decodeURIComponent(hash.slice(4)) || row;
   return {
+    page: anchor ? "about" : pageFromPath(url.pathname),
     filters,
     row: row || null,
     ask: params.get("ask"),
@@ -110,5 +113,7 @@ export function writeUrl(view: UrlView, current: { pathname: string }): string {
   if (view.ask) params.set("ask", view.ask);
   const hash = view.anchor === "donate" ? "#donate" : view.anchor === "what-counts" ? "#what-counts" : "";
   const search = params.toString();
-  return `${current.pathname}${search ? `?${search}` : ""}${hash}`;
+  const page = view.anchor ? "about" : view.page;
+  const pathname = pathForPage(page, current.pathname);
+  return `${pathname}${search ? `?${search}` : ""}${hash}`;
 }

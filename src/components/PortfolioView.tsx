@@ -49,7 +49,7 @@ export default function PortfolioView({ commitments }: Props) {
               <li key={k.kind}>
                 <span className="donut-legend__name">{formatNumberKind(k.kind)}</span>
                 <span className="donut-legend__val">{formatPower(k.mw, k.approx)}{k.mw >= 1000 ? ` (${formatExactMW(k.mw)})` : ""}</span>
-                <span className="donut-legend__pct">{k.rows} rows</span>
+                <span className="donut-legend__pct">{k.rows} {k.rows === 1 ? "row" : "rows"}</span>
               </li>
             ))}
           </ul>
@@ -91,7 +91,6 @@ export default function PortfolioView({ commitments }: Props) {
                   />
                 </span>
                 <span className="era-bar__val">{d.n}</span>
-                <span className="era-bar__n">{d.n}</span>
               </div>
             ))}
           </div>

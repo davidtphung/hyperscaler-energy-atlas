@@ -2,9 +2,10 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type 
 import type { PreparedCommitment } from "../types";
 import type { Ranked } from "../lib/search";
 import type { CatalogHit } from "../lib/signalSearch";
+import type { Page } from "../lib/routes";
 import SearchBox from "./SearchBox";
 
-export type Page = "atlas" | "datacenters" | "economics" | "history" | "record" | "contested" | "policy" | "portfolio" | "signals" | "about";
+export type { Page };
 
 interface Props {
   page: Page;
@@ -231,6 +232,10 @@ export default function TopBar({ page, onPageChange, query, onQuery, ranked, ext
           <span className="nav-sep" aria-hidden="true" />
           <div className="nav-group" role="group" aria-label="Signals">
             <NavTab id="signals" label="Signals" page={page} onPageChange={onPageChange} />
+          </div>
+          <span className="nav-sep" aria-hidden="true" />
+          <div className="nav-group" role="group" aria-label="Compute Market">
+            <NavTab id="compute" label="Compute Market" page={page} onPageChange={onPageChange} />
           </div>
         </div>
 
