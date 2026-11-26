@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { COMMITMENTS } from "../data/commitments";
 import { ACTORS, CONTRACTS, GLOSSARY, ONTOLOGY } from "../data/computeOntology";
 import { TIMELINE } from "../data/computeTimeline";
+import { marketRank } from "../lib/computeSeries";
 import { formatExactMW, formatKindTotal, formatPower } from "../lib/format";
 import {
   DROPPED_SOURCES,
@@ -27,6 +28,7 @@ import {
 
 const PAGE_CAP = 4;
 const ComputeMarketCharts = lazy(() => import("./ComputeMarketCharts"));
+const ComputeDashboard = lazy(() => import("./ComputeMarketCharts").then((mod) => ({ default: mod.ComputeDashboard })));
 
 type LivePoly =
   | { status: "loading" }
@@ -69,6 +71,8 @@ export default function ComputeMarketView() {
   const tie = useMemo(() => hypergridTie(COMMITMENTS), []);
   const [openLayers, setOpenLayers] = useState<Set<string>>(() => new Set(["power"]));
   const [query, setQuery] = useState("");
+  const [scope, setScope] = useState<"relevant" | "all">("relevant");
+  const [cardWindow, setCardWindow] = useState(12);
   const [live, setLive] = useState<LivePoly>({ status: "loading" });
   const [snap, setSnap] = useState<SnapState>({ status: "loading" });
   const [sourceNotes, setSourceNotes] = useState<{ source: string; mode: string; url: string; note: string }[]>([]);
@@ -129,11 +133,17 @@ export default function ComputeMarketView() {
   const liveMarkets = live.status === "live" || live.status === "stale" ? live.markets : [];
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    if (!needle) return liveMarkets;
-    return liveMarkets.filter((market) =>
-      `${market.eventTitle} ${market.question}`.toLowerCase().includes(needle),
-    );
-  }, [liveMarkets, query]);
+    const rows = liveMarkets.filter((market) => {
+      if (scope === "relevant" && marketRank(market.question, market.eventTitle) >= 4) return false;
+      if (!needle) return true;
+      return `${market.eventTitle} ${market.question}`.toLowerCase().includes(needle);
+    });
+    return rows.slice().sort((a, b) => {
+      const rankDelta = marketRank(a.question, a.eventTitle) - marketRank(b.question, b.eventTitle);
+      if (rankDelta !== 0) return rankDelta;
+      return (b.volumeUsd ?? -1) - (a.volumeUsd ?? -1);
+    });
+  }, [liveMarkets, query, scope]);
   const groups = useMemo(() => {
     const order: { title: string; url: string; markets: PolyMarket[] }[] = [];
     const index = new Map<string, number>();
@@ -167,6 +177,13 @@ export default function ComputeMarketView() {
       </header>
 
       <div className="cm-stack">
+        <Suspense fallback={<p className="cm-status">Loading the dashboard.</p>}>
+          <ComputeDashboard
+            markets={liveMarkets}
+            asOf={live.status === "live" ? live.fetchedAt : live.status === "stale" ? live.asOf : null}
+          />
+        </Suspense>
+
         <section className="cm-block" aria-labelledby="cm-ontology">
           <h2 id="cm-ontology">Ontology</h2>
           <p className="cm-note">Open a layer to read its unit and what changes hands. Power stays split on purpose.</p>
@@ -289,7 +306,7 @@ export default function ComputeMarketView() {
           <p className="cm-note">
             <span className="sig-tag">CLAIM</span>
             Each chance is the market's implied probability. It is not a fact about the world.
-            The list is the open Compute tag, ordered by volume, and it can be shorter than the whole site.
+            Compute, AI capex, chip, and data center markets are listed first. All markets opens the rest of the tag.
           </p>
           <p className="cm-note">
             Source: <a href={POLY_PAGE}>polymarket.com/tech/compute</a>
@@ -307,6 +324,30 @@ export default function ComputeMarketView() {
                   ? `Using the live Gamma API. Fetched ${formatPacific(live.fetchedAt)}.`
                   : `Using latest.json. ${live.message} Saved value time ${formatPacific(live.asOf)}.`}
               </p>
+              <div className="cm-scrollchips" role="group" aria-label="Which markets to list">
+                <button
+                  type="button"
+                  className="cm-range"
+                  aria-pressed={scope === "relevant"}
+                  onClick={() => {
+                    setScope("relevant");
+                    setCardWindow(12);
+                  }}
+                >
+                  Compute, capex, chips, data centers
+                </button>
+                <button
+                  type="button"
+                  className="cm-range"
+                  aria-pressed={scope === "all"}
+                  onClick={() => {
+                    setScope("all");
+                    setCardWindow(12);
+                  }}
+                >
+                  All markets
+                </button>
+              </div>
               <label className="cm-search-label" htmlFor="cm-market-search">
                 Filter markets
               </label>
@@ -314,40 +355,38 @@ export default function ComputeMarketView() {
                 id="cm-market-search"
                 className="cm-search"
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setCardWindow(12);
+                }}
                 placeholder="Search questions"
                 type="search"
               />
               <p className="cm-status">
                 {filtered.length} markets in {groups.length} events.
               </p>
-              {groups.map((group, index) => (
-                <details
-                  className="cm-market"
-                  key={`${group.url}-${query.trim() ? "filtered" : "all"}`}
-                  open={query.trim() !== "" || index === 0}
-                >
-                  <summary>
-                    {group.title} ({group.markets.length} {group.markets.length === 1 ? "market" : "markets"})
-                  </summary>
-                  <p className="cm-note">
-                    <a href={group.url}>Open this event</a>
-                  </p>
-                  {group.markets.map((market) => (
-                    <div className="cm-quote" key={market.id}>
-                      <p>
-                        <span className="sig-tag">CLAIM</span>
-                        {market.question}
-                      </p>
-                      <p>
-                        {market.outcome} {formatChance(market.probability)}
-                        {market.volumeUsd == null ? "" : ` · Volume ${formatVolume(market.volumeUsd)}`}
-                        {market.endDate ? ` · Ends ${formatPacific(market.endDate)}` : ""}
-                      </p>
-                    </div>
-                  ))}
-                </details>
-              ))}
+              <div className="cm-cards">
+                {filtered.slice(0, cardWindow).map((market) => (
+                  <article className="cm-card" key={market.id}>
+                    <p className="cm-card__label">{market.eventTitle}</p>
+                    <h3 className="cm-card__q">{market.question}</h3>
+                    <p className="cm-card__odds">{formatChance(market.probability)}</p>
+                    <p className="cm-card__meta">
+                      {market.volumeUsd == null ? "Volume unavailable" : `Volume ${formatVolume(market.volumeUsd)}`}
+                    </p>
+                    <p className="cm-card__meta">{market.endDate ? `Ends ${formatPacific(market.endDate)}` : "End date unavailable"}</p>
+                    <p className="cm-card__src">
+                      <span className="sig-tag">CLAIM</span>
+                      <a href={market.url}>Polymarket</a>
+                    </p>
+                  </article>
+                ))}
+              </div>
+              {cardWindow < filtered.length && (
+                <button type="button" className="cm-more" onClick={() => setCardWindow((count) => count + 12)}>
+                  Show more
+                </button>
+              )}
               {filtered.length === 0 && <p className="cm-status">No market question matched that filter.</p>}
             </>
           )}

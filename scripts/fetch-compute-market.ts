@@ -33,16 +33,19 @@ import {
   type RunpodOffer,
   type VastOffer,
 } from "../src/lib/computeMarket.ts";
+import { parseCoreweavePricing, parseLambdaGpuCloud, parseSfFromPrice, type ArchivedPrice } from "../src/lib/archivePrices.ts";
 import {
   blankSeries,
   historyKind,
   indexEntry,
   mergePoint,
+  pacificDay,
   pointForRecord,
   seriesIdForRecord,
   validateIndex,
   validateSeries,
   type SeriesFile,
+  type SeriesPoint,
 } from "../src/lib/computeSeries.ts";
 
 const LATEST = path.resolve("public/data/compute-market/latest.json");
@@ -434,6 +437,7 @@ async function main() {
   atomicWrite(LATEST, validated);
   atomicWrite(historyPath, history);
   appendSeries(validated.records, validated.fetched_at);
+  await appendLivePages(validated.fetched_at);
   const oldFlat = path.resolve("public/data/compute-market.json");
   if (fs.existsSync(oldFlat)) fs.unlinkSync(oldFlat);
   console.log(`wrote ${LATEST} and ${historyPath}`);
@@ -482,10 +486,75 @@ function appendSeries(records: DataRecord[], fetchedAt: string) {
     .sort((a, b) => a.id.localeCompare(b.id));
   const index = validateIndex({
     fetched_at: fetchedAt,
-    note: "Polymarket lines are CLOB prices-history, interval max, fidelity 720 minutes. Other lines are saved snapshots, or the dated changelog price. No point is filled in.",
+    note: "Polymarket lines are CLOB prices-history, interval max, fidelity 720 minutes. Archived lines are posted prices read from Wayback snapshots. Dataset lines are the CC BY 4.0 gpu-price-history panel. No point is filled in.",
     series: entries,
   });
   writeCompact(path.join(dir, "index.json"), index);
+}
+
+async function appendLivePages(fetchedAt: string) {
+  const jobs: { source: string; url: string; prefix: string; parse: (html: string) => ArchivedPrice[] }[] = [
+    { source: "Lambda", url: "https://lambdalabs.com/service/gpu-cloud", prefix: "lambda", parse: parseLambdaGpuCloud },
+    { source: "CoreWeave", url: "https://www.coreweave.com/pricing", prefix: "coreweave", parse: parseCoreweavePricing },
+    { source: "SF Compute", url: "https://sfcompute.com/", prefix: "sf-archive", parse: parseSfFromPrice },
+  ];
+  const dir = path.resolve("public/data/compute-market/series");
+  if (!fs.existsSync(path.join(dir, "index.json"))) return;
+  let changed = false;
+  for (const job of jobs) {
+    try {
+      await assertRobots(job.url);
+      const html = await getText(job.url, { headers: { accept: "text/html" } });
+      const prices = job.parse(html);
+      if (prices.length === 0) {
+        console.log(`${job.source} live page had no parseable GPU-hour price`);
+        continue;
+      }
+      const t = Date.parse(fetchedAt);
+      for (const price of prices) {
+        const file = path.join(dir, `${job.prefix}-${price.sku}.json`);
+        if (!fs.existsSync(file)) continue;
+        const existing = validateSeries(JSON.parse(fs.readFileSync(file, "utf8")));
+        const point: SeriesPoint = { t, v: price.usdPerGpuHour, url: job.url, origin: "live" };
+        const last = existing.points[existing.points.length - 1];
+        if (last && last.t === point.t && last.v === point.v) continue;
+        const points = mergePoint(existing.points, point);
+        let history = existing.history;
+        let archiveEnd = existing.archive_end;
+        let liveStart = existing.live_start;
+        let historyNote = existing.history_note;
+        if ((history === "archive" || history === "dataset") && archiveEnd != null && t > archiveEnd) {
+          liveStart = t;
+          history = "joined";
+          historyNote = `Posted price as archived through ${pacificDay(archiveEnd)}. Live snapshots start on ${pacificDay(t)}. The marker is the first live point.`;
+        }
+        writeCompact(file, validateSeries({
+          ...existing,
+          points,
+          history,
+          archive_end: archiveEnd,
+          live_start: liveStart,
+          history_note: historyNote,
+          fetched_at: fetchedAt,
+        }));
+        changed = true;
+      }
+      console.log(`${job.source} live prices ${prices.length}`);
+    } catch (error) {
+      console.warn(`${job.source} live page skipped: ${error instanceof Error ? error.message : error}`);
+    }
+  }
+  if (!changed) return;
+  const entries = fs
+    .readdirSync(dir)
+    .filter((name) => name.endsWith(".json") && name !== "index.json")
+    .map((name) => indexEntry(validateSeries(JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")))))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  writeCompact(path.join(dir, "index.json"), validateIndex({
+    fetched_at: fetchedAt,
+    note: "Polymarket lines are CLOB prices-history, interval max, fidelity 720 minutes. Archived lines are posted prices read from Wayback snapshots. Dataset lines are the CC BY 4.0 gpu-price-history panel. No point is filled in.",
+    series: entries,
+  }));
 }
 
 function writeCompact(file: string, data: unknown) {
