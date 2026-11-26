@@ -33,6 +33,17 @@ import {
   type RunpodOffer,
   type VastOffer,
 } from "../src/lib/computeMarket.ts";
+import {
+  blankSeries,
+  historyKind,
+  indexEntry,
+  mergePoint,
+  pointForRecord,
+  seriesIdForRecord,
+  validateIndex,
+  validateSeries,
+  type SeriesFile,
+} from "../src/lib/computeSeries.ts";
 
 const LATEST = path.resolve("public/data/compute-market/latest.json");
 const HISTORY = path.resolve("public/data/compute-market/history");
@@ -422,6 +433,7 @@ async function main() {
   fs.mkdirSync(HISTORY, { recursive: true });
   atomicWrite(LATEST, validated);
   atomicWrite(historyPath, history);
+  appendSeries(validated.records, validated.fetched_at);
   const oldFlat = path.resolve("public/data/compute-market.json");
   if (fs.existsSync(oldFlat)) fs.unlinkSync(oldFlat);
   console.log(`wrote ${LATEST} and ${historyPath}`);
@@ -434,6 +446,52 @@ function priorLatestGaps(source: string) {
   } catch {
     return [];
   }
+}
+
+function appendSeries(records: DataRecord[], fetchedAt: string) {
+  const dir = path.resolve("public/data/compute-market/series");
+  if (!fs.existsSync(path.join(dir, "index.json"))) return;
+  let changed = false;
+  for (const row of records) {
+    const id = seriesIdForRecord(row);
+    const point = pointForRecord(row);
+    if (!id || !point || !historyKind(row.source)) continue;
+    const file = path.join(dir, `${id}.json`);
+    if (!fs.existsSync(file)) {
+      if (row.source === "Polymarket") continue;
+      const created = blankSeries(row, [point], fetchedAt);
+      if (!created) continue;
+      writeCompact(file, validateSeries(created));
+      changed = true;
+      continue;
+    }
+    const existing = validateSeries(JSON.parse(fs.readFileSync(file, "utf8")));
+    const last = existing.points[existing.points.length - 1];
+    const points = mergePoint(existing.points, point);
+    const same = points.length === existing.points.length && last.t === point.t && last.v === point.v;
+    if (same) continue;
+    const next: SeriesFile = { ...existing, points, fetched_at: fetchedAt };
+    writeCompact(file, validateSeries(next));
+    changed = true;
+  }
+  if (!changed) return;
+  const entries = fs
+    .readdirSync(dir)
+    .filter((name) => name.endsWith(".json") && name !== "index.json")
+    .map((name) => indexEntry(validateSeries(JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")))))
+    .sort((a, b) => a.id.localeCompare(b.id));
+  const index = validateIndex({
+    fetched_at: fetchedAt,
+    note: "Polymarket lines are CLOB prices-history, interval max, fidelity 720 minutes. Other lines are saved snapshots, or the dated changelog price. No point is filled in.",
+    series: entries,
+  });
+  writeCompact(path.join(dir, "index.json"), index);
+}
+
+function writeCompact(file: string, data: unknown) {
+  const temp = `${file}.tmp`;
+  fs.writeFileSync(temp, `${JSON.stringify(data)}\n`);
+  fs.renameSync(temp, file);
 }
 
 function atomicWrite(file: string, data: unknown) {

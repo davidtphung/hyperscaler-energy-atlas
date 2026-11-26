@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { COMMITMENTS } from "../data/commitments";
 import { ACTORS, CONTRACTS, GLOSSARY, ONTOLOGY } from "../data/computeOntology";
 import { TIMELINE } from "../data/computeTimeline";
@@ -26,6 +26,7 @@ import {
 } from "../lib/computeMarket";
 
 const PAGE_CAP = 4;
+const ComputeMarketCharts = lazy(() => import("./ComputeMarketCharts"));
 
 type LivePoly =
   | { status: "loading" }
@@ -278,6 +279,10 @@ export default function ComputeMarketView() {
             </article>
           ))}
         </section>
+
+        <Suspense fallback={<p className="cm-status">Loading charts.</p>}>
+          <ComputeMarketCharts />
+        </Suspense>
 
         <section className="cm-block" aria-labelledby="cm-poly">
           <h2 id="cm-poly">Polymarket compute markets</h2>

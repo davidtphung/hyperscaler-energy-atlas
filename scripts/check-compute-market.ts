@@ -3,6 +3,7 @@ import { COMMITMENTS } from "../src/data/commitments.ts";
 import { ONTOLOGY } from "../src/data/computeOntology.ts";
 import { TIMELINE } from "../src/data/computeTimeline.ts";
 import { hypergridTie, robotsAllows, snapshotFromLatest, validateHistory, validateLatest } from "../src/lib/computeMarket.ts";
+import { filterRange, splitGaps, validateIndex, validateSeries } from "../src/lib/computeSeries.ts";
 
 const errors: string[] = [];
 function fail(message: string) {
@@ -15,7 +16,10 @@ const files = [
   "src/data/computeOntology.ts",
   "src/data/computeTimeline.ts",
   "src/components/ComputeMarketView.tsx",
+  "src/components/ComputeMarketCharts.tsx",
+  "src/lib/computeSeries.ts",
   "scripts/fetch-compute-market.ts",
+  "scripts/backfill-compute-series.ts",
   "scripts/check-compute-market.ts",
   "scripts/check-routes.ts",
   "scripts/emit-routes.ts",
@@ -67,6 +71,19 @@ if (view.includes("7033")) fail("compute view hardcodes a firm total");
 if (!view.includes("David T Phung")) fail("compute view is missing the byline");
 
 if (!view.includes("latest.json")) fail("compute view does not read latest.json");
+if (!view.includes('lazy(() => import("./ComputeMarketCharts"))')) fail("charts are not lazy loaded");
+const charts = fs.readFileSync("src/components/ComputeMarketCharts.tsx", "utf8");
+const seriesLib = fs.readFileSync("src/lib/computeSeries.ts", "utf8");
+if (!charts.includes("Live now") || !charts.includes("RANGE_IDS")) fail("chart controls are missing");
+if (!seriesLib.includes('"1W"') || !seriesLib.includes('"1M"') || !seriesLib.includes('"3M"') || !seriesLib.includes('"1Y"') || !seriesLib.includes('"Max"')) {
+  fail("range buttons are missing");
+}
+if (charts.includes("reduce(")) fail("charts reduce a list");
+if (/\/\s*1000\s*\*\s*mw|mw\s*=\s*.*\$/.test(charts)) fail("charts convert dollars and megawatts");
+const hour = 60 * 60 * 1000;
+if (splitGaps([{ t: 0, v: 1 }, { t: hour, v: 2 }]).length !== 1) fail("a one hour gap was broken");
+if (splitGaps([{ t: 0, v: 1 }, { t: 10 * 24 * hour, v: 2 }]).length !== 2) fail("a long gap was connected");
+if (filterRange([{ t: Date.now(), v: 1 }], "1W").length !== 1) fail("a fresh point fell out of 1W");
 
 if (!robotsAllows("User-agent: *\nAllow: /\nDisallow: /dashboard\n", "/")) fail("robots parser blocked /");
 if (robotsAllows("User-agent: *\nAllow: /\nDisallow: /dashboard\n", "/dashboard")) fail("robots parser allowed a blocked path");
@@ -104,6 +121,25 @@ if (latest) {
   if (!latest.sources.some((item) => item.mode === "api") || !latest.sources.some((item) => item.mode === "scrape")) {
     fail("latest.json does not name an api source and a scraped source");
   }
+}
+
+try {
+  const index = validateIndex(JSON.parse(fs.readFileSync("public/data/compute-market/series/index.json", "utf8")));
+  let clob = 0;
+  let snapshot = 0;
+  let changelog = 0;
+  for (const entry of index.series) {
+    const series = validateSeries(JSON.parse(fs.readFileSync(`public/data/compute-market/series/${entry.file}`, "utf8")));
+    if (series.points.length !== entry.points || series.points[0].t !== entry.start) fail(`${entry.id} index does not match the file`);
+    if (series.history === "clob") clob += 1;
+    if (series.history === "snapshot") snapshot += 1;
+    if (series.history === "changelog") changelog += 1;
+  }
+  if (clob < 1) fail("no Polymarket CLOB series");
+  if (snapshot < 1) fail("no snapshot series");
+  if (changelog < 1) fail("changelog series is missing");
+} catch (error) {
+  fail(error instanceof Error ? error.message : "series index missing");
 }
 
 if (errors.length) {
