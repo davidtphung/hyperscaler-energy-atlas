@@ -53,8 +53,18 @@ export default function TopBar({ page, onPageChange, query, onQuery, ranked, ext
     if (!current) return;
     const navBox = nav.getBoundingClientRect();
     const box = current.getBoundingClientRect();
-    if (box.left < navBox.left + 4) nav.scrollBy({ left: box.left - navBox.left - 8 });
-    else if (box.right > navBox.right - 4) nav.scrollBy({ left: box.right - navBox.right + 8 });
+    if (box.left < navBox.left + 2) nav.scrollLeft += box.left - navBox.left - 4;
+    else if (box.right > navBox.right - 2) nav.scrollLeft += box.right - navBox.right + 4;
+    const edge = nav.getBoundingClientRect();
+    for (const tab of nav.querySelectorAll<HTMLElement>(".nav-tab")) {
+      const rect = tab.getBoundingClientRect();
+      const sliced = rect.left < edge.left - 1 && rect.right > edge.left + 1;
+      if (!sliced) continue;
+      const hideBy = rect.right - edge.left + 6;
+      const currentAfter = current.getBoundingClientRect().right - hideBy;
+      if (currentAfter <= edge.right + 1) nav.scrollLeft += hideBy;
+      break;
+    }
   }, [page]);
 
   useLayoutEffect(() => {

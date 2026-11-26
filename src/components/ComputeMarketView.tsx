@@ -165,15 +165,15 @@ export default function ComputeMarketView() {
       <header className="page__head">
         <p className="overview__eyebrow">Compute as a commodity</p>
         <h1 className="page__title">Compute Market</h1>
-        <p className="page__lead">
-          Compute is bought and sold in layers. A megawatt of IT load is not a megawatt of generation. A GPU-hour is not a token.
-          Each layer below says what is traded and in what unit.
-        </p>
-        <p className="cm-note">
-          This tab reads latest.json first. Polymarket is then requested in the browser, because that API allows it.
-          Vast, RunPod, and the Autoresearch pages stay on the saved file, because the browser blocks those hosts.
-          Times are shown in America/Los_Angeles.
-        </p>
+        <p className="page__lead">A GPU-hour, a megawatt, and a token are different trades.</p>
+        <details className="cm-about">
+          <summary>About this data</summary>
+          <p className="cm-note">
+            This tab reads latest.json first. Polymarket is then requested in the browser, because that API allows it.
+            Vast, RunPod, and the Autoresearch pages stay on the saved file, because the browser blocks those hosts.
+            Times are shown in America/Los_Angeles. A price tile is live only when its latest point is under 48 hours old.
+          </p>
+        </details>
       </header>
 
       <div className="cm-stack">
@@ -183,6 +183,97 @@ export default function ComputeMarketView() {
             asOf={live.status === "live" ? live.fetchedAt : live.status === "stale" ? live.asOf : null}
           />
         </Suspense>
+
+        <section className="cm-block" aria-labelledby="cm-poly">
+          <h2 id="cm-poly">Polymarket compute markets</h2>
+          <p className="cm-note">
+            <span className="sig-tag">CLAIM</span>
+            Each chance is the market's implied probability. It is not a fact about the world.
+            Compute, AI capex, chip, and data center markets are listed first. All markets opens the rest of the tag.
+          </p>
+          <p className="cm-note">
+            Source: <a href={POLY_PAGE}>polymarket.com/tech/compute</a>
+          </p>
+          {live.status === "loading" && <p className="cm-status">Loading the live feed.</p>}
+          {live.status === "error" && (
+            <p className="cm-status">
+              {live.message} <a href={POLY_PAGE}>Open Polymarket</a>
+            </p>
+          )}
+          {(live.status === "live" || live.status === "stale") && (
+            <>
+              <p className="cm-status">
+                {live.status === "live"
+                  ? `Using the live Gamma API. Fetched ${formatPacific(live.fetchedAt)}.`
+                  : `Using latest.json. ${live.message} Saved value time ${formatPacific(live.asOf)}.`}
+              </p>
+              <div className="cm-scrollchips" role="group" aria-label="Which markets to list">
+                <button
+                  type="button"
+                  className="cm-range"
+                  aria-pressed={scope === "relevant"}
+                  onClick={() => {
+                    setScope("relevant");
+                    setCardWindow(12);
+                  }}
+                >
+                  Compute, capex, chips, data centers
+                </button>
+                <button
+                  type="button"
+                  className="cm-range"
+                  aria-pressed={scope === "all"}
+                  onClick={() => {
+                    setScope("all");
+                    setCardWindow(12);
+                  }}
+                >
+                  All markets
+                </button>
+              </div>
+              <label className="cm-search-label" htmlFor="cm-market-search">
+                Filter markets
+              </label>
+              <input
+                id="cm-market-search"
+                className="cm-search"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  setCardWindow(12);
+                }}
+                placeholder="Search questions"
+                type="search"
+              />
+              <p className="cm-status">
+                {filtered.length} markets in {groups.length} events.
+              </p>
+              <div className="cm-cards">
+                {filtered.slice(0, cardWindow).map((market) => (
+                  <article className="cm-card" key={market.id}>
+                    <p className="cm-card__label">{market.eventTitle}</p>
+                    <h3 className="cm-card__q">{market.question}</h3>
+                    <p className="cm-card__odds">{formatChance(market.probability)}</p>
+                    <p className="cm-card__meta">
+                      {market.volumeUsd == null ? "Volume unavailable" : `Volume ${formatVolume(market.volumeUsd)}`}
+                    </p>
+                    <p className="cm-card__meta">{market.endDate ? `Ends ${formatPacific(market.endDate)}` : "End date unavailable"}</p>
+                    <p className="cm-card__src">
+                      <span className="sig-tag">CLAIM</span>
+                      <a href={market.url}>Polymarket</a>
+                    </p>
+                  </article>
+                ))}
+              </div>
+              {cardWindow < filtered.length && (
+                <button type="button" className="cm-more" onClick={() => setCardWindow((count) => count + 12)}>
+                  Show more
+                </button>
+              )}
+              {filtered.length === 0 && <p className="cm-status">No market question matched that filter.</p>}
+            </>
+          )}
+        </section>
 
         <section className="cm-block" aria-labelledby="cm-ontology">
           <h2 id="cm-ontology">Ontology</h2>
@@ -300,97 +391,6 @@ export default function ComputeMarketView() {
         <Suspense fallback={<p className="cm-status">Loading charts.</p>}>
           <ComputeMarketCharts />
         </Suspense>
-
-        <section className="cm-block" aria-labelledby="cm-poly">
-          <h2 id="cm-poly">Polymarket compute markets</h2>
-          <p className="cm-note">
-            <span className="sig-tag">CLAIM</span>
-            Each chance is the market's implied probability. It is not a fact about the world.
-            Compute, AI capex, chip, and data center markets are listed first. All markets opens the rest of the tag.
-          </p>
-          <p className="cm-note">
-            Source: <a href={POLY_PAGE}>polymarket.com/tech/compute</a>
-          </p>
-          {live.status === "loading" && <p className="cm-status">Loading the live feed.</p>}
-          {live.status === "error" && (
-            <p className="cm-status">
-              {live.message} <a href={POLY_PAGE}>Open Polymarket</a>
-            </p>
-          )}
-          {(live.status === "live" || live.status === "stale") && (
-            <>
-              <p className="cm-status">
-                {live.status === "live"
-                  ? `Using the live Gamma API. Fetched ${formatPacific(live.fetchedAt)}.`
-                  : `Using latest.json. ${live.message} Saved value time ${formatPacific(live.asOf)}.`}
-              </p>
-              <div className="cm-scrollchips" role="group" aria-label="Which markets to list">
-                <button
-                  type="button"
-                  className="cm-range"
-                  aria-pressed={scope === "relevant"}
-                  onClick={() => {
-                    setScope("relevant");
-                    setCardWindow(12);
-                  }}
-                >
-                  Compute, capex, chips, data centers
-                </button>
-                <button
-                  type="button"
-                  className="cm-range"
-                  aria-pressed={scope === "all"}
-                  onClick={() => {
-                    setScope("all");
-                    setCardWindow(12);
-                  }}
-                >
-                  All markets
-                </button>
-              </div>
-              <label className="cm-search-label" htmlFor="cm-market-search">
-                Filter markets
-              </label>
-              <input
-                id="cm-market-search"
-                className="cm-search"
-                value={query}
-                onChange={(event) => {
-                  setQuery(event.target.value);
-                  setCardWindow(12);
-                }}
-                placeholder="Search questions"
-                type="search"
-              />
-              <p className="cm-status">
-                {filtered.length} markets in {groups.length} events.
-              </p>
-              <div className="cm-cards">
-                {filtered.slice(0, cardWindow).map((market) => (
-                  <article className="cm-card" key={market.id}>
-                    <p className="cm-card__label">{market.eventTitle}</p>
-                    <h3 className="cm-card__q">{market.question}</h3>
-                    <p className="cm-card__odds">{formatChance(market.probability)}</p>
-                    <p className="cm-card__meta">
-                      {market.volumeUsd == null ? "Volume unavailable" : `Volume ${formatVolume(market.volumeUsd)}`}
-                    </p>
-                    <p className="cm-card__meta">{market.endDate ? `Ends ${formatPacific(market.endDate)}` : "End date unavailable"}</p>
-                    <p className="cm-card__src">
-                      <span className="sig-tag">CLAIM</span>
-                      <a href={market.url}>Polymarket</a>
-                    </p>
-                  </article>
-                ))}
-              </div>
-              {cardWindow < filtered.length && (
-                <button type="button" className="cm-more" onClick={() => setCardWindow((count) => count + 12)}>
-                  Show more
-                </button>
-              )}
-              {filtered.length === 0 && <p className="cm-status">No market question matched that filter.</p>}
-            </>
-          )}
-        </section>
 
         <section className="cm-block" aria-labelledby="cm-vast">
           <h2 id="cm-vast">Vast.ai posted asks</h2>

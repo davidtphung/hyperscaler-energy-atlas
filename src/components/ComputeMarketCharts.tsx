@@ -307,6 +307,7 @@ function LineChart({
   formatValue,
   curve,
   label,
+  unitLabel,
 }: {
   lines: { name: string; color: string; points: SeriesPoint[]; joinAt?: number | null; gapMs?: number }[];
   range: RangeId;
@@ -314,6 +315,7 @@ function LineChart({
   formatValue: (value: number) => string;
   curve: "monotone" | "step";
   label: string;
+  unitLabel?: string;
 }) {
   const gradId = useId().replace(/:/g, "");
   const svgRef = useRef<SVGSVGElement | null>(null);
@@ -483,7 +485,10 @@ function LineChart({
             <span className="cm-chart__swatch" style={{ background: nearestLine(shown, hoverPoint).color }} />
             {nearestLine(shown, hoverPoint).name}
           </p>
-          <p>{formatValue(hoverPoint.v)}</p>
+          <p>
+            {formatValue(hoverPoint.v)}
+            {unitLabel ? ` ${unitLabel}` : ""}
+          </p>
         </div>
       )}
       <ul className="cm-chart__legend">
@@ -512,6 +517,20 @@ function formatValue(value: number, unit: string): string {
   if (unit === "implied probability") return formatChance(value);
   if (/minute/i.test(unit)) return `$${trimNumber(value)}/min`;
   return `$${trimNumber(value)}`;
+}
+
+const FRESH_MS = 48 * 60 * 60 * 1000;
+
+function unitTitle(unit: string): string {
+  const count = unit.match(/(\d+) GPU/);
+  if (unit.includes("node-hour")) return count ? `per node-hour (${count[1]} GPU)` : "per node-hour";
+  if (/minute/i.test(unit)) return "per minute";
+  return "per GPU-hour";
+}
+
+function isFresh(series: SeriesFile): boolean {
+  const last = series.points[series.points.length - 1];
+  return Boolean(last) && Date.now() - last.t <= FRESH_MS;
 }
 
 function trimNumber(value: number): string {
@@ -784,68 +803,13 @@ export function ComputeDashboard({ markets, asOf }: { markets: PolyMarket[]; asO
   if (error) return <p className="cm-status">{error}</p>;
   if (!index) return <p className="cm-status">Loading the dashboard.</p>;
 
+  const liveTiles = tiles.map((group) => ({ chip: group.chip, series: group.series.filter((series) => isFresh(series)) }));
+  const archivedTiles = tiles.map((group) => ({ chip: group.chip, series: group.series.filter((series) => !isFresh(series)) }));
+  const liveCount = liveTiles.filter((group) => group.series.length > 0).length;
+
   return (
     <section className="cm-block" aria-labelledby="cm-dashboard">
-      <h2 id="cm-dashboard">Live prices</h2>
-      <p className="cm-note">
-        Each tile is one posted GPU-hour price. Sources are not averaged. A per-minute rate stays in the list below.
-        The change is the latest point minus the first point. Nothing is filled in.
-      </p>
-      {tiles.map((group) => (
-        <div className="cm-chip" key={group.chip}>
-          <h3>{group.chip}</h3>
-          {group.series.length === 0 ? (
-            <p className="cm-status">No hourly price for this chip yet.</p>
-          ) : (
-            <div className="cm-kpis">
-              {group.series.map((series) => {
-                const last = series.points[series.points.length - 1];
-                const delta = changeChip(series);
-                return (
-                  <article className="cm-kpi" key={series.id}>
-                    <p className="cm-kpi__label">{series.source}</p>
-                    <p className="cm-kpi__value">{formatValue(last.v, series.unit)}</p>
-                    <p className={`cm-kpi__delta cm-kpi__delta--${delta.dir}`}>{delta.text}</p>
-                    <p className="cm-kpi__src">
-                      <span className="sig-tag">{series.label}</span>
-                      <a href={last.url || series.url}>{series.name}</a>
-                    </p>
-                    <p className="cm-kpi__time">As of {formatPacific(new Date(last.t).toISOString())}.</p>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      ))}
-
-      <h3>Odds now</h3>
-      <p className="cm-note">
-        <span className="sig-tag">CLAIM</span>
-        The top compute, AI capex, chip, and data center markets, by volume. A chance is not a fact about the world.
-      </p>
-      {featured.length === 0 && <p className="cm-status">Loading Polymarket odds.</p>}
-      <div className="cm-cards">
-        {featured.map((market) => {
-          const history = claims.find((series) => series.id === `polymarket-${market.id}-yes`);
-          return (
-            <article className="cm-card" key={market.id}>
-              <p className="cm-card__label">{market.eventTitle}</p>
-              <h4 className="cm-card__q">{market.question}</h4>
-              <p className="cm-card__odds">{formatChance(market.probability)}</p>
-              {history && history.points.length > 1 ? <Sparkline points={history.points} color="#d6ef6a" /> : <span className="cm-spark cm-spark--empty" />}
-              <p className="cm-card__meta">{market.volumeUsd == null ? "Volume unavailable" : `Volume ${formatVolume(market.volumeUsd)}`}</p>
-              <p className="cm-card__meta">{market.endDate ? `Ends ${formatPacific(market.endDate)}` : "End date unavailable"}</p>
-              <p className="cm-card__src">
-                <span className="sig-tag">CLAIM</span>
-                <a href={market.url}>Polymarket</a>
-                {asOf ? `. As of ${formatPacific(asOf)}.` : ". As of time unavailable."}
-              </p>
-            </article>
-          );
-        })}
-      </div>
-
+      <h2 id="cm-dashboard" className="cm-kicker">Charts</h2>
       <div className="cm-ranges cm-ranges--sticky" role="group" aria-label="Dashboard time range">
         {RANGE_IDS.map((id) => (
           <button key={id} type="button" className="cm-range" aria-pressed={range === id} onClick={() => setRange(id)}>
@@ -856,15 +820,30 @@ export function ComputeDashboard({ markets, asOf }: { markets: PolyMarket[]; asO
 
       {HERO_CHIPS.map((chip) => {
         const lines = onePerSource(prices.filter((series) => chipFamily(series.name) === chip));
-        return (
-          <article className="cm-chart-card cm-hero" key={chip}>
-            <h3>{chip} GPU-hour price</h3>
-            <p className="cm-note">Each line is one source. Lines are not averaged. A break is a missing point.</p>
-            {lines.length === 0 ? (
+        const units: string[] = [];
+        for (const series of lines) {
+          const phrase = unitTitle(series.unit);
+          if (!units.includes(phrase)) units.push(phrase);
+        }
+        if (lines.length === 0) {
+          return (
+            <article className="cm-chart-card cm-hero" key={chip}>
+              <h3>{chip}</h3>
               <p className="cm-status">No hourly history for this chip.</p>
-            ) : (
+            </article>
+          );
+        }
+        return units.map((phrase) => {
+          const group = lines.filter((series) => unitTitle(series.unit) === phrase);
+          const unit = group[0].unit;
+          return (
+            <article className="cm-chart-card cm-hero" key={`${chip}-${unit}`}>
+              <h3>
+                {chip} {phrase}
+              </h3>
+              <p className="cm-note">Each line is one source. Lines are not averaged. A break is a missing point.</p>
               <LineChart
-                lines={lines.map((series) => ({
+                lines={group.map((series) => ({
                   name: lineLabel(series),
                   color: sourceColor(series),
                   points: series.points,
@@ -873,19 +852,20 @@ export function ComputeDashboard({ markets, asOf }: { markets: PolyMarket[]; asO
                 }))}
                 range={range}
                 marker="Latest saved"
-                formatValue={(value) => formatValue(value, "USD per GPU-hour")}
+                formatValue={(value) => formatValue(value, unit)}
                 curve="monotone"
-                label={`${chip} GPU-hour price`}
+                label={`${chip} ${phrase}`}
+                unitLabel={phrase}
               />
-            )}
-            <details className="cm-market">
-              <summary>Sources for this chart</summary>
-              {lines.map((series) => (
-                <ChartCredit key={series.id} series={series} />
-              ))}
-            </details>
-          </article>
-        );
+              <details className="cm-market">
+                <summary>Sources for this chart</summary>
+                {group.map((series) => (
+                  <ChartCredit key={series.id} series={series} />
+                ))}
+              </details>
+            </article>
+          );
+        });
       })}
 
       <article className="cm-chart-card cm-hero">
@@ -914,6 +894,80 @@ export function ComputeDashboard({ markets, asOf }: { markets: PolyMarket[]; asO
           <ChartCredit key={series.id} series={series} />
         ))}
       </article>
+
+      <h3>Live now</h3>
+      <p className="cm-note">A tile is here only when its latest point is under 48 hours old. Sources are not averaged.</p>
+      {liveCount === 0 && <p className="cm-status">No price in the last 48 hours.</p>}
+      {liveTiles.map((group) =>
+        group.series.length === 0 ? null : (
+          <div className="cm-chip" key={`live-${group.chip}`}>
+            <h4>{group.chip}</h4>
+            <PriceTiles series={group.series} />
+          </div>
+        ),
+      )}
+
+      <h3>Last archived price</h3>
+      <p className="cm-note">These latest points are older than 48 hours. The date is when that price was posted. The same series stays in the chart above.</p>
+      {archivedTiles.map((group) =>
+        group.series.length === 0 ? null : (
+          <div className="cm-chip" key={`arch-${group.chip}`}>
+            <h4>{group.chip}</h4>
+            <PriceTiles series={group.series} archived />
+          </div>
+        ),
+      )}
+
+      <h3>Market cards</h3>
+      <p className="cm-note">
+        <span className="sig-tag">CLAIM</span>
+        The top compute, AI capex, chip, and data center markets, by volume. A chance is not a fact about the world.
+      </p>
+      {featured.length === 0 && <p className="cm-status">Loading Polymarket odds.</p>}
+      <div className="cm-cards">
+        {featured.map((market) => {
+          const history = claims.find((series) => series.id === `polymarket-${market.id}-yes`);
+          return (
+            <article className="cm-card" key={market.id}>
+              <p className="cm-card__label">{market.eventTitle}</p>
+              <h4 className="cm-card__q">{market.question}</h4>
+              <p className="cm-card__odds">{formatChance(market.probability)}</p>
+              {history && history.points.length > 1 ? <Sparkline points={history.points} color="#d6ef6a" /> : <span className="cm-spark cm-spark--empty" />}
+              <p className="cm-card__meta">{market.volumeUsd == null ? "Volume unavailable" : `Volume ${formatVolume(market.volumeUsd)}`}</p>
+              <p className="cm-card__meta">{market.endDate ? `Ends ${formatPacific(market.endDate)}` : "End date unavailable"}</p>
+              <p className="cm-card__src">
+                <span className="sig-tag">CLAIM</span>
+                <a href={market.url}>Polymarket</a>
+                {asOf ? `. As of ${formatPacific(asOf)}.` : ". As of time unavailable."}
+              </p>
+            </article>
+          );
+        })}
+      </div>
     </section>
+  );
+}
+
+function PriceTiles({ series, archived }: { series: SeriesFile[]; archived?: boolean }) {
+  return (
+    <div className="cm-kpis">
+      {series.map((item) => {
+        const last = item.points[item.points.length - 1];
+        const delta = changeChip(item);
+        return (
+          <article className={archived ? "cm-kpi cm-kpi--archived" : "cm-kpi"} key={item.id}>
+            <p className="cm-kpi__value">{formatValue(last.v, item.unit)}</p>
+            <p className="cm-kpi__unit">{unitTitle(item.unit)}</p>
+            <p className={`cm-kpi__delta cm-kpi__delta--${delta.dir}`}>{delta.text}</p>
+            <p className="cm-kpi__src">
+              <span className="sig-tag">{item.label}</span>
+              <span className="cm-kpi__who">{item.source}</span>
+              <a href={last.url || item.url}>{item.name}</a>
+            </p>
+            <p className="cm-kpi__time">As of {formatPacific(new Date(last.t).toISOString())}.</p>
+          </article>
+        );
+      })}
+    </div>
   );
 }

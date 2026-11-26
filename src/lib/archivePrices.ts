@@ -3,6 +3,7 @@ export interface ArchivedPrice {
   name: string;
   chip: string;
   usdPerGpuHour: number;
+  unit: string;
   detail: string;
 }
 
@@ -26,7 +27,7 @@ function keep(rows: ArchivedPrice[]): ArchivedPrice[] {
   for (const row of rows) {
     if (rejected.has(row.sku)) continue;
     if (!CHIPS.includes(row.chip)) continue;
-    if (!Number.isFinite(row.usdPerGpuHour) || row.usdPerGpuHour <= 0 || row.usdPerGpuHour > 80) continue;
+    if (!Number.isFinite(row.usdPerGpuHour) || row.usdPerGpuHour <= 0 || row.usdPerGpuHour > 400) continue;
     const prior = bySku.get(row.sku);
     if (prior && prior.usdPerGpuHour !== row.usdPerGpuHour) {
       bySku.delete(row.sku);
@@ -54,6 +55,7 @@ export function parseLambdaGpuCloud(html: string): ArchivedPrice[] {
       name: `On-demand ${count}x ${chip} ${match[3]}`,
       chip,
       usdPerGpuHour: Number(match[4]),
+      unit: "USD per GPU-hour",
       detail: "The archived page prints this as dollars per GPU per hour.",
     });
   }
@@ -84,8 +86,9 @@ export function parseCoreweavePricing(html: string): ArchivedPrice[] {
       sku: `${chip.toLowerCase()}-${count}gpu`,
       name: `${name}, ${count} GPU`,
       chip,
-      usdPerGpuHour: Math.round((instance / count) * 10000) / 10000,
-      detail: `The page prints $${instance} per hour for the instance and a GPU count of ${count}. This point is that instance price divided by that count.`,
+      usdPerGpuHour: instance,
+      unit: `USD per node-hour (${count} GPU)`,
+      detail: `The page prints $${instance} per hour for the ${count} GPU instance. This point is that printed instance price.`,
     });
   }
   return keep(rows);
@@ -99,6 +102,7 @@ export function parseSfFromPrice(html: string): ArchivedPrice[] {
       name: `${match[1]} from price`,
       chip: match[1],
       usdPerGpuHour: Number(match[2]),
+      unit: "USD per GPU-hour",
       detail: "The page prints this as a from price, the advertised floor for that chip.",
     });
   }
