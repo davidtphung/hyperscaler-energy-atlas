@@ -11,7 +11,17 @@ interface Props {
 function buildLabel(): string {
   const raw = typeof __ATLAS_BUILD_DATE__ === "string" ? __ATLAS_BUILD_DATE__ : "";
   if (!raw) return "not recorded";
-  return formatFullDate(raw);
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) return formatFullDate(raw);
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  }).format(date);
 }
 
 export default function TrustStrip({ dataThrough, rowCount, countedCount, onOpenRule }: Props) {

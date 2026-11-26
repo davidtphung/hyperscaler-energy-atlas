@@ -34,7 +34,7 @@ const PAGES: PageJob[] = [
     source: "CoreWeave",
     pageUrl: "https://www.coreweave.com/pricing",
     idPrefix: "coreweave",
-    note: "Posted price as archived. Each point is the printed instance price per hour divided by the printed GPU count on that snapshot. Snapshots without that table are omitted. No other price was filled in.",
+    note: "Posted price as archived. Each point is the printed instance price per hour for that GPU count. The page prices the whole instance, so the number is not split into a per-GPU price. Snapshots without that table are omitted. No other price was filled in.",
     parse: parseCoreweavePricing,
   },
   {
@@ -296,7 +296,7 @@ async function main() {
       const series: SeriesFile = {
         source: job.source,
         url: job.pageUrl,
-        unit: "USD per GPU-hour",
+        unit: bundle.price.unit,
         label: "FACT",
         points,
         id: `${job.idPrefix}-${sku}`,

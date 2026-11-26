@@ -25,7 +25,7 @@ function hypergridBaseHref(): Plugin {
 export default defineConfig({
   base: "./",
   define: {
-    __ATLAS_BUILD_DATE__: JSON.stringify(new Date().toISOString().slice(0, 10)),
+    __ATLAS_BUILD_DATE__: JSON.stringify(new Date().toISOString()),
   },
   plugins: [react(), hypergridBaseHref()],
   build: {

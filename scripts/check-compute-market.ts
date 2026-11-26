@@ -87,6 +87,10 @@ const lambdaRow = parseLambdaGpuCloud("<table><tr><td>On-demand 1x NVIDIA H100 S
 if (lambdaRow.length !== 1 || lambdaRow[0].usdPerGpuHour !== 3.29) fail("lambda archive parser missed the printed GPU-hour price");
 const gh200 = parseCoreweavePricing('<div class="kubernetes-gpu-pricing"><div role="listitem"><h3 class="table-model-name">NVIDIA GH200</h3><div>1</div><div>$6.50</div></div>');
 if (gh200.length !== 0) fail("GH200 was parsed as one of the tracked chips");
+const nodePrice = parseCoreweavePricing('<div class="kubernetes-gpu-pricing"><div role="listitem"><h3 class="table-model-name">NVIDIA HGX H100</h3><div>8</div><div>$49.24</div></div>');
+if (nodePrice.length !== 1 || nodePrice[0].usdPerGpuHour !== 49.24 || nodePrice[0].unit !== "USD per node-hour (8 GPU)") {
+  fail("CoreWeave parser split a node price into a per-GPU price");
+}
 const fromPrice = parseSfFromPrice("Buy H100s from $2.12/hr");
 if (fromPrice.length !== 1 || fromPrice[0].usdPerGpuHour !== 2.12) fail("SF from-price parser failed");
 if (!seriesLib.includes('"1W"') || !seriesLib.includes('"1M"') || !seriesLib.includes('"3M"') || !seriesLib.includes('"1Y"') || !seriesLib.includes('"Max"')) {
