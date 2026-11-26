@@ -12,6 +12,10 @@ on:
         description: "Also deploy gh-pages after this data run"
         type: boolean
         default: false
+      backfill:
+        description: "Refresh Polymarket CLOB history. This is slow and stays off unless you ask for it."
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -30,6 +34,9 @@ jobs:
           node-version: "22"
       - name: Fetch public compute prices
         run: node --experimental-strip-types scripts/fetch-compute-market.ts
+      - name: Refresh Polymarket price history
+        if: github.event_name == 'workflow_dispatch' && inputs.backfill
+        run: node --experimental-strip-types scripts/backfill-compute-series.ts
       - name: Commit data files when they change
         run: |
           git add public/data/compute-market
