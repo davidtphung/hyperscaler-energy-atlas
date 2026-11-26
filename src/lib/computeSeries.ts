@@ -2,7 +2,8 @@ import type { DataRecord, EvidenceLabel } from "./computeMarket.ts";
 
 export const SERIES_LAYERS = ["power", "it-mw", "chips", "gpu-hours", "tokens", "land", "unplaced"] as const;
 export type SeriesLayer = (typeof SERIES_LAYERS)[number];
-export type SeriesHistory = "clob" | "snapshot" | "changelog";
+export type SeriesHistory = "clob" | "snapshot" | "changelog" | "archive" | "joined" | "dataset";
+export type PointOrigin = "archive" | "live" | "dataset";
 
 export const RANGE_IDS = ["1W", "1M", "3M", "1Y", "Max"] as const;
 export type RangeId = (typeof RANGE_IDS)[number];
@@ -16,13 +17,16 @@ const RANGE_MS: Record<Exclude<RangeId, "Max">, number> = {
 
 const LABELS = new Set<EvidenceLabel>(["FACT", "ESTIMATE", "CLAIM"]);
 const LAYERS = new Set<string>(SERIES_LAYERS);
-const HISTORIES = new Set<SeriesHistory>(["clob", "snapshot", "changelog"]);
+const HISTORIES = new Set<SeriesHistory>(["clob", "snapshot", "changelog", "archive", "joined", "dataset"]);
+const ORIGINS = new Set<PointOrigin>(["archive", "live", "dataset"]);
 const ISO_UTC = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export interface SeriesPoint {
   t: number;
   v: number;
+  url?: string;
+  origin?: PointOrigin;
 }
 
 export interface SeriesFile {
@@ -39,6 +43,8 @@ export interface SeriesFile {
   fetched_at: string;
   outcome: string | null;
   group: string | null;
+  archive_end: number | null;
+  live_start: number | null;
 }
 
 export interface SeriesIndexEntry {
@@ -58,6 +64,8 @@ export interface SeriesIndexEntry {
   fetched_at: string;
   outcome: string | null;
   group: string | null;
+  archive_end: number | null;
+  live_start: number | null;
 }
 
 export interface SeriesIndex {
@@ -153,7 +161,7 @@ export function snapshotNote(firstMs: number): string {
 
 export function mergePoint(points: SeriesPoint[], point: SeriesPoint): SeriesPoint[] {
   const next = points.filter((item) => item.t !== point.t);
-  next.push({ t: point.t, v: point.v });
+  next.push({ ...point });
   next.sort((a, b) => a.t - b.t);
   return next;
 }
@@ -174,14 +182,23 @@ export function filterRange(points: SeriesPoint[], range: RangeId, now = Date.no
   return points.filter((point) => point.t >= start);
 }
 
-export function splitGaps(points: SeriesPoint[]): SeriesPoint[][] {
+export function marketRank(question: string, group: string): number {
+  const text = `${group} ${question}`.toLowerCase();
+  if (/gpu-hour|gpu hour|per hour|h100|h200|b200|b300/.test(text) && /price|\$|cost|below|above|rent/.test(text)) return 0;
+  if (/capex|capital expenditure|ai spend/.test(text)) return 1;
+  if (/\bchip\b|nvidia|\bgpu\b|blackwell|hopper|\bh100\b|\bh200\b|\bb200\b|\bb300\b/.test(text)) return 2;
+  if (/data center|datacenter|data centre/.test(text)) return 3;
+  return 4;
+}
+
+export function splitGaps(points: SeriesPoint[], minGapMs?: number): SeriesPoint[][] {
   if (points.length === 0) return [];
   if (points.length === 1) return [points];
   const deltas: number[] = [];
   for (let i = 1; i < points.length; i += 1) deltas.push(points[i].t - points[i - 1].t);
   const sorted = [...deltas].sort((a, b) => a - b);
   const median = sorted[Math.floor((sorted.length - 1) / 2)];
-  const limit = points.length === 2 ? 36 * 60 * 60 * 1000 : Math.max(median * 2.5, 36 * 60 * 60 * 1000);
+  const limit = minGapMs ?? (points.length === 2 ? 36 * 60 * 60 * 1000 : Math.max(median * 2.5, 36 * 60 * 60 * 1000));
   const groups: SeriesPoint[][] = [[points[0]]];
   for (let i = 1; i < points.length; i += 1) {
     if (points[i].t - points[i - 1].t > limit) groups.push([]);
@@ -210,6 +227,8 @@ export function indexEntry(series: SeriesFile): SeriesIndexEntry {
     fetched_at: series.fetched_at,
     outcome: series.outcome,
     group: series.group,
+    archive_end: series.archive_end,
+    live_start: series.live_start,
   };
 }
 
@@ -242,8 +261,23 @@ export function validateSeries(data: unknown): SeriesFile {
     if (!item || typeof item.t !== "number" || typeof item.v !== "number") throw new Error(`${id} has a bad point`);
     if (!Number.isFinite(item.t) || !Number.isFinite(item.v)) throw new Error(`${id} has a non-finite point`);
     if (item.t <= last) throw new Error(`${id} points are not in time order`);
+    if (item.url != null && (typeof item.url !== "string" || !item.url.startsWith("https://"))) {
+      throw new Error(`${id} has a bad point url`);
+    }
+    if (item.origin != null && !ORIGINS.has(item.origin as PointOrigin)) throw new Error(`${id} has a bad point origin`);
     last = item.t;
-    parsed.push({ t: item.t, v: item.v });
+    const next: SeriesPoint = { t: item.t, v: item.v };
+    if (typeof item.url === "string") next.url = item.url;
+    if (typeof item.origin === "string") next.origin = item.origin as PointOrigin;
+    parsed.push(next);
+  }
+  const archiveEnd = row.archive_end == null ? null : row.archive_end;
+  const liveStart = row.live_start == null ? null : row.live_start;
+  if (archiveEnd != null && (typeof archiveEnd !== "number" || !Number.isFinite(archiveEnd))) {
+    throw new Error(`${id} bad archive_end`);
+  }
+  if (liveStart != null && (typeof liveStart !== "number" || !Number.isFinite(liveStart))) {
+    throw new Error(`${id} bad live_start`);
   }
   if (row.history === "snapshot") {
     const note = row.history_note;
@@ -254,6 +288,24 @@ export function validateSeries(data: unknown): SeriesFile {
   if (row.history === "clob" && row.label !== "CLAIM") throw new Error(`${id} CLOB series must be CLAIM`);
   if ((row.history === "snapshot" || row.history === "changelog") && row.label !== "FACT") {
     throw new Error(`${id} saved price must be FACT`);
+  }
+  if (row.history === "archive" || row.history === "dataset" || row.history === "joined") {
+    if (row.label !== "FACT") throw new Error(`${id} archived price must be FACT`);
+    const note = row.history_note;
+    if (typeof note !== "string") throw new Error(`${id} is missing its history note`);
+    if (row.history === "archive" && !note.includes("Posted price as archived")) {
+      throw new Error(`${id} archive note is missing`);
+    }
+    if (row.history === "dataset" && !note.includes("CC BY 4.0")) throw new Error(`${id} dataset note is missing`);
+    if (row.history === "joined" && !note.includes("first live point")) throw new Error(`${id} join note is missing`);
+    if (row.history === "joined" && (archiveEnd == null || liveStart == null || liveStart <= archiveEnd)) {
+      throw new Error(`${id} join times are missing`);
+    }
+    for (const point of parsed) {
+      if ((point.origin === "archive" || point.origin === "dataset") && !point.url) {
+        throw new Error(`${id} archive point is missing its source url`);
+      }
+    }
   }
   const span = parsed[parsed.length - 1].t - parsed[0].t;
   if (span < 0 || span > 20 * 365 * DAY_MS) throw new Error(`${id} time span is not credible`);
@@ -271,6 +323,8 @@ export function validateSeries(data: unknown): SeriesFile {
     fetched_at: row.fetched_at,
     outcome: (row.outcome as string | null) ?? null,
     group: (row.group as string | null) ?? null,
+    archive_end: archiveEnd,
+    live_start: liveStart,
   };
 }
 
@@ -322,5 +376,7 @@ export function blankSeries(row: DataRecord, points: SeriesPoint[], fetchedAt: s
     fetched_at: fetchedAt,
     outcome: row.outcome,
     group: row.group,
+    archive_end: null,
+    live_start: null,
   };
 }
